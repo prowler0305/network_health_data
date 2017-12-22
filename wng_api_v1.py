@@ -54,7 +54,7 @@ class Subscriber(Resource):
         """
         user = get_user_by_id(sub_id)
         if not user:
-            return {"error": "User not Found"}
+            return {"error": "User not Found"}, 404
         return user
 
     def put(self, sub_id):
