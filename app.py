@@ -1,29 +1,57 @@
-from flask import Flask, url_for
-from flask import request, jsonify
+from flask import Flask, url_for, request, jsonify
+
+
 import logging
+
 app = Flask(__name__)
-file_handler = logging.FileHandler('app.log.py')
-app.logger.addHandler(file_handler)
-app.logger.setLevel(logging.INFO)
+api_logger = logging.getLogger('wng_api')
+api_logger.setLevel(logging.DEBUG)
+api_fh = logging.FileHandler('app.log', mode='w')
+api_fh.setLevel(logging.INFO)
+api_ch = logging.StreamHandler()
+api_ch.setLevel(logging.ERROR)
+formatter = logging.Formatter('%(asctime)s - %(name)s:%(module)s - %(levelname)s - %(message)s',
+                              datefmt='%m/%d/%Y - %I:%M:%S %p')
+api_fh.setFormatter(formatter)
+api_logger.addHandler(api_fh)
+api_ch.setFormatter(formatter)
+api_logger.addHandler(api_ch)
 
 
 @app.route('/')
 def api_root():
+    """
+    curl http://127.0.0.1:5000/
+    :return:
+    """
     return 'Welcome'
 
 
 @app.route('/articles')
 def api_articles():
+    """
+    curl http://127.0.0.1:5000/articles
+    :return:
+    """
     return 'List of ' + url_for('api_articles')
 
 
 @app.route('/articles/<articleid>')
 def api_article(articleid):
+    """
+    curl http://127.0.0.1:5000/articles/123
+    :param articleid:
+    :return:
+    """
     return 'You are reading ' + articleid
 
 
 @app.route('/hello')
 def api_hello():
+    """
+    curl http://127.0.0.1:5000/hello?name=Andrew
+    :return:
+    """
     if 'name' in request.args:
         return 'Hello ' + request.args['name']
     else:
@@ -32,6 +60,10 @@ def api_hello():
 
 @app.route('/echo', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
 def api_echo():
+    """
+    curl -X GET http://127.0.0.1:5000/echo
+    :return:
+    """
 
     if request.method == 'GET':
         return "ECHO: GET\n"
@@ -45,6 +77,10 @@ def api_echo():
 
 @app.route('/data', methods=['GET'])
 def api_return_data():
+    """
+    curl -i http://127.0.0.1:5000/data
+    :return:
+    """
 
     data = {
         'hello': 'world',
@@ -58,10 +94,16 @@ def api_return_data():
 
 @app.route('/users/<userid>', methods=['GET'])
 def api_users(userid):
+    """
+    curl -i http://127.0.0.1:5000/users/1 for successful run
+    curl -i http://127.0.0.1:5000/users/4 for unsuccessful call which triggers errorhandler
+    :param userid:
+    :return:
+    """
 
     users = {'1': 'john', '2': 'steve', '3': 'bill'}
     if userid in users:
-        return jsonify({userid:users[userid]})
+        return jsonify({userid: users[userid]})
     else:
         return not_found()
 
@@ -76,12 +118,10 @@ def not_found(error=None):
     resp = jsonify(message)
     resp.status_code = 404
 
-    app.logger.info('informing')
-    app.logger.warning('warning')
-    app.logger.error('screaming bloody murder!')
-    logging.warning('Watch out!')
-    logging.info('I told you so!')
-
+    api_logger.debug("this message won't go to the filehandler cause of its severity. Instead goes to console")
+    api_logger.info('informing')
+    api_logger.warning('warning')
+    api_logger.error('screaming bloody murder!')
     return resp
 
 if __name__ == '__main__':

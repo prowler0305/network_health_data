@@ -1,9 +1,26 @@
 import logging
 
 
-def logging_tutorial():
-    """
-    :return:
+# Create module level logger
+module_logger = logging.getLogger('wng_api.' + __name__)
+
+
+class MyApp:
     """
 
-    logging.critical('This is a critical message logging %s by %s', 'data', 'Andrew Spear')
+    """
+    def __init__(self):
+        module_logger.info('creating an instance of MyApp')
+
+    def app_function(self):
+        """
+
+        :return:
+        """
+        module_logger.info('performing application functionality')
+        a = 1 + 1
+        module_logger.critical("application encountered a critical error")
+
+
+def some_module_function():
+    module_logger.info('received a call to this function. %s', 'Passing variable data as part of the logging')
