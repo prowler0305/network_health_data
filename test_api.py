@@ -25,16 +25,23 @@ def main():
     #     print_api_status_code(req_rc)
 
     subscribers_collection_req = root_url + 'subscribers'
+    # Query entire list of subscribers
     print_api_status_code(requests.get(subscribers_collection_req))
+
+    # Post a new subscriber
     payload = {'name': 'Christian Spear', 'email': 'cspear@gmail.com', 'id': '3'}
     req = requests.post(url=subscribers_collection_req, data=payload)
     print_api_status_code(req)
+
+    # Query a for a single subscribers
     req = requests.get(url=subscribers_collection_req + '/3')
     print_api_status_code(req)
+
+    # Delete a single subscriber
     req = requests.delete(subscribers_collection_req + '/2')
     print_api_status_code(req)
 
-
+    # Query the whole list of subscribers
     print_api_status_code(requests.get(subscribers_collection_req))
 
 

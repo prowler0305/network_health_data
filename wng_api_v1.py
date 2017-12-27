@@ -14,6 +14,7 @@ subscriber_request_parser.add_argument('name', type=str, required=True, help='Na
 subscriber_request_parser.add_argument('email', required=True)
 subscriber_request_parser.add_argument('id', type=int, required=True, help='Please enter valid integer as ID')
 
+
 def get_user_by_id(user_id):
     """
     Gets a users information by ID number and returns it.
