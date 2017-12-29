@@ -8,15 +8,15 @@ def main():
     :return:
     """
 
-    root_url = 'http://127.0.0.1:5000/'
-    auth_url = 'auth'
-    resource = 'api/v1/private'
+    root_url = 'http://127.0.0.1:5000/jwt_simple'
+    auth_url = '/login'
+    resource = '/protected'
 
     # Set header content to indicate auth request data is in JSON format
     headers = {"Content-Type": "application/json"}
     # Dict of auth credentials
-    data = {"username": "andrew",
-            "password": "spizzle83"}
+    data = {"username": "test",
+            "password": "test"}
     # Perform POST request to API auth URL, passing credentials dict to be converted to JSON format and custom header
     resp = requests.post(root_url + auth_url, json=data, headers=headers)
     # check status code for either Client or Server errors and raise exception if needed.
@@ -24,7 +24,7 @@ def main():
     # convert response to JSON object and hold in python dictionary
     resp_dict = resp.json()
     # Key "access_token" contains the JWT which is required for all future requests so save it.
-    wng_api_jwt = resp_dict.get('access_token')
+    wng_api_jwt = resp_dict.get('jwt')
     # Let's print it
     print('JSON Web Token received: %s' % wng_api_jwt)
     # Example of how to make an HTTP GET request using JWT to a private resource.
@@ -35,7 +35,7 @@ def main():
     # Print GET response text.
     print(resp.content)
     print(resp.json())
-    print(resp.json().get('user_id'))
+    print(resp.json().get('hello_from'))
 
 
     # # Post a new subscriber
