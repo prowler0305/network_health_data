@@ -23,6 +23,7 @@ class User(object):
     def __str__(self):
         return "User(id='%s')" % self.id
 
+
 user_data = {
     "andrew": "spizzle83"
 }

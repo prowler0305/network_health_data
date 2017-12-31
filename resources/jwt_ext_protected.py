@@ -14,7 +14,10 @@ class Protected(Resource):
         Protected view with jwt_required, which requires a valid jwt to be present in the header.
 
         Test using following cURL command after obtain JWT from login method:
-            curl -H "Authorization: JWT $ACCESS" http://localhost:5000/jwt_simple/protected
+        Linux:
+            curl -H "Authorization: JWT $ACCESS" http://localhost:5000/jwt_ext/protected
+        Windows:
+            curl -H "Authorization: JWT %access%" http://localhost:5000/jwt_ext/protected
 
         :return: JSON encoded identity and status code
         """
