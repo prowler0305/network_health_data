@@ -8,12 +8,14 @@ from flask_jwt_extended import JWTManager
 
 
 app = Flask(__name__)
+# App configuration is for use with FLASK JWT authentication. Which is not in use currently as the HBASE API access uses
+# the Kerboso authentication mechanism.
 # TODO: SECRET_KEY - digitally-sign for the JWT token. This needs to be more difficult. Maybe a random generated string?
 app.config['JWT_SECRET_KEY'] = 'super-secret'
 app.config['JWT_HEADER_TYPE'] = 'JWT'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=20)
 jwt = JWTManager(app)
-api = Api(app, prefix='/jwt_ext')
+api = Api(app)
 
 api.add_resource(Authenticate, '/login')
 api.add_resource(Refresh, '/refresh_token')

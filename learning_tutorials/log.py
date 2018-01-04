@@ -1,7 +1,8 @@
 import argparse
 import logging
-from log_tutorial import MyApp
-from log_tutorial import some_module_function
+
+from learning_tutorials.log_tutorial import MyApp
+from learning_tutorials.log_tutorial import some_module_function
 
 
 def main():

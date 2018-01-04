@@ -3,6 +3,9 @@ from flask_restful import Resource
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, get_jwt_identity
 
 
+# This Authentication resource is currently not in use as the WNG data is controlled using kerberos authentication. See
+# class: AuthenticateKerberos in py file: auth_kerb.py.
+
 class Authenticate(Resource):
     @staticmethod
     def post():
@@ -47,7 +50,7 @@ class Authenticate(Resource):
             'access_token': create_access_token(identity=username),
             'refresh_token': create_refresh_token(identity=username)
         }
-        print(art)
+        # print(art)
         response = jsonify(art)
         response.status_code = 200
         return response

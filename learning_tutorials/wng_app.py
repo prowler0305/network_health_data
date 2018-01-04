@@ -1,10 +1,11 @@
 import datetime
-from flask import Flask
-from flask_restful import Api
-from resources.protected import Protected
-from resources.auth import Authenticate
-from flask_jwt_simple import JWTManager
 
+from flask import Flask
+from flask_jwt_simple import JWTManager
+from flask_restful import Api
+
+from local_test_library.protected import Protected
+from resources.auth import Authenticate
 
 app = Flask(__name__)
 # TODO: SECRET_KEY - digitally-sign for the JWT token. This needs to be more difficult. Maybe a random generated string?

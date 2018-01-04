@@ -39,30 +39,30 @@ def main():
         if resp.status_code == 401 and resp.json().get('msg') == 'Token has expired':
             break
 
-    refresh_header = {"Authorization": "JWT {}".format(refresh_token)}
-    print(refresh_header)
-    resp = requests.get(root_url + token_refresh, headers=refresh_header)
-    print(resp.status_code)
-    print(resp.json())
-    if resp.status_code == 200:
-        new_access_token = resp_dict.get('access_token')
-        print(new_access_token)
-        if new_access_token == access_token:
-            print('Access tokens are the same')
-            print(access_token)
-            print(new_access_token)
-        auth_header = {"Authorization": "JWT {}".format(new_access_token)}
-        print(auth_header)
-        # Print the new Access Token
-        print('New Access Token: %s' % new_access_token)
-        while True:
-            resp = requests.get(root_url + resource, headers=auth_header)
-            # Print GET response text
-            print(resp.json())
-            if resp.status_code == 401 and resp.json().get('msg') == 'Token has expired':
-                break
-    else:
-        print(resp.json())
+    # refresh_header = {"Authorization": "JWT {}".format(refresh_token)}
+    # # print(refresh_header)
+    # resp = requests.get(root_url + token_refresh, headers=refresh_header)
+    # # print(resp.status_code)
+    # # print(resp.json())
+    # if resp.status_code == 200:
+    #     new_access_token = resp_dict.get('access_token')
+    #     # print(new_access_token)
+    #     # if new_access_token == access_token:
+    #     #     print('Access tokens are the same')
+    #     #     print(access_token)
+    #     #     print(new_access_token)
+    #     auth_header = {"Authorization": "JWT {}".format(new_access_token)}
+    #     # print(auth_header)
+    #     # Print the new Access Token
+    #     # print('New Access Token: %s' % new_access_token)
+    #     while True:
+    #         resp = requests.get(root_url + resource, headers=auth_header)
+    #         # Print GET response text
+    #         print(resp.json())
+    #         if resp.status_code == 401 and resp.json().get('msg') == 'Token has expired':
+    #             break
+    # else:
+    #     print(resp.json())
 
 
 if __name__ == '__main__':
