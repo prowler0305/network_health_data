@@ -28,4 +28,4 @@ api = Api(app)
 api.add_resource(WngApiManager, '/wng_api')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

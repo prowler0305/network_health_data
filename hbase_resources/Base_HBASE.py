@@ -42,8 +42,11 @@ class BaseHbase(object):
             if rc:
                 if parm == 'table_name':
                     self.table_name = value.lower()
+                else:
+                    continue
             else:
                 return False, parm
+        return True, ""
 
     def get_parm_value(self, parameter_to_find):
         """
