@@ -1,8 +1,8 @@
 # import datetime
 from flask import Flask
-from flask_restful import Api, reqparse
-from resources.auth_kerb import AuthenticateKerberos
+from flask_restful import Api
 from resources.wng_api_manager import WngApiManager
+# from resources.auth_kerb import AuthenticateKerberos
 # from resources.auth import Authenticate
 # from resources.refresh import Refresh
 # from flask_jwt_extended import JWTManager
@@ -24,7 +24,7 @@ api = Api(app)
 
 # api.add_resource(Authenticate, '/login')
 # api.add_resource(Refresh, '/refresh_token')
-api.add_resource(AuthenticateKerberos, '/auth')
+# api.add_resource(AuthenticateKerberos, '/auth')
 api.add_resource(WngApiManager, '/wng_api')
 
 if __name__ == '__main__':
