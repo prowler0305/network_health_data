@@ -1,8 +1,8 @@
 from flask import jsonify, request
 from flask_restful import Resource
-import requests
-import kerberos
-from requests_kerberos import HTTPKerberosAuth, OPTIONAL
+# import requests
+# import kerberos
+# from requests_kerberos import HTTPKerberosAuth, OPTIONAL
 
 
 class AuthenticateKerberos(Resource):
