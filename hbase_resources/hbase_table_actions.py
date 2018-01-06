@@ -1,4 +1,5 @@
 from hbase_resources.Base_HBASE import *
+from common.common import Common
 
 
 class TableAction(BaseHbase):
@@ -20,7 +21,7 @@ class TableAction(BaseHbase):
         if not super_rc:
             error_text = "'%s' parameter is required and was either not found or found to not have a value. Please include" \
                          " parameter with request and try again." % bad_parm
-            return super().generate_error_response(error_text, 400)
+            return Common.generate_error_response(self.error_msg_key, error_text, 400)
 
         for parm in expected_parms:
             rc, value = self.get_parm_value(parm)
@@ -32,13 +33,13 @@ class TableAction(BaseHbase):
             else:
                 error_text = "Parameter 'hbase_keyword' value of %s requires the '%s' parameter to be provided. " \
                              "Please include parameter with request and retry." % (self.request, parm)
-                return super().generate_error_response(error_text, 400)
+                return Common.generate_error_response(self.error_msg_key, error_text, 400)
 
         if self.action == 'schema' or self.action == 'regions':
             return self.get_url()
         else:
             not_implemented_message = "WNG API action '%s' is not available. Please see WNG API documentation." % self.action
-            response = super().generate_error_response(not_implemented_message, 501)
+            response = Common.generate_error_response(self.error_msg_key, not_implemented_message, 501)
 
         return response
 

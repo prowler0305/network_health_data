@@ -57,18 +57,18 @@ class BaseHbase(object):
 
         return RequestParms.check_parms(self.request_args, parameter_to_find)
 
-    def generate_error_response(self, error_text, response_code):
-        """
-        Formats a simple error message to be returned in http response as a JSON object.
-        :param error_text: Message text to be returned. It will be sent as a part of a JSON response with the
-        "wng_api_msg" key value. (i.e. {"msg_api_msg": "<error_text>"})
-        :param response_code: the HTTP response code to be set as the response.status_code
-        :return: Error message and status code in a JSON format
-        """
-
-        error_response = jsonify({self.error_msg_key: error_text})
-        error_response.status_code = response_code
-        return error_response
+    # def generate_error_response(self, error_text, response_code):
+    #     """
+    #     Formats a simple error message to be returned in http response as a JSON object.
+    #     :param error_text: Message text to be returned. It will be sent as a part of a JSON response with the
+    #     "wng_api_msg" key value. (i.e. {"msg_api_msg": "<error_text>"})
+    #     :param response_code: the HTTP response code to be set as the response.status_code
+    #     :return: Error message and status code in a JSON format
+    #     """
+    #
+    #     error_response = jsonify({self.error_msg_key: error_text})
+    #     error_response.status_code = response_code
+    #     return error_response
 
     def format_hbase_url_response(self, sending_url=None, status_code_override=200):
         """

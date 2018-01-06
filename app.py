@@ -29,5 +29,8 @@ api = Api(app)
 api.add_resource(WngApiManager, '/wng_api')
 
 if __name__ == '__main__':
-    # app.run(debug=True)
-    app.run(host='0.0.0.0', port=8080)
+    try:
+        if sys.argv[1] == '--debug':
+            app.run(debug=True)
+    except IndexError:
+        app.run(host='0.0.0.0', port=8080)
