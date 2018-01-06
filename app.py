@@ -1,4 +1,5 @@
 # import datetime
+import sys
 from flask import Flask
 from flask_restful import Api
 from resources.wng_api_manager import WngApiManager
@@ -28,4 +29,7 @@ api = Api(app)
 api.add_resource(WngApiManager, '/wng_api')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    if sys.argv[1] == '--debug':
+        app.run(debug=True)
+    else:
+        app.run(host='0.0.0.0', port=8080)

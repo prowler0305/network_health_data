@@ -27,9 +27,9 @@ class WngApiManager(Resource):
         wng_parser = reqparse.RequestParser()
         wng_parser.add_argument('hbase_keyword', required=True, choices=list_o_hbase_requests, help=hbase_keyword_help_message)
         wng_parser.add_argument('action', choices=list_o_actions, help=action_keyword_help_message)
-        wng_parser.add_argument('table_name')
+        wng_parser.add_argument('table_name', store_missing=False)
 
-        args = wng_parser.parse_args()
+        args = wng_parser.parse_args(strict=True)
         service_instance = HbaseBuilder.build_hbase_service(args.get('hbase_keyword'), args)
         response = service_instance.service_request()
         return response

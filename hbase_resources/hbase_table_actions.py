@@ -19,7 +19,7 @@ class TableAction(BaseHbase):
         super_rc, bad_parm = super().build_parameters()
         if not super_rc:
             error_text = "'%s' parameter is required and was either not found or found to not have a value. Please include" \
-                         "parameter with request and try again." % bad_parm
+                         " parameter with request and try again." % bad_parm
             return super().generate_error_response(error_text, 400)
 
         for parm in expected_parms:
@@ -30,8 +30,8 @@ class TableAction(BaseHbase):
                 else:
                     continue
             else:
-                error_text = "Parameter 'hbase_keyword' value of %s requires the '%s' parameter to be provided. Please include" \
-                             "parameter with request and retry." % (self.request, parm)
+                error_text = "Parameter 'hbase_keyword' value of %s requires the '%s' parameter to be provided. " \
+                             "Please include parameter with request and retry." % (self.request, parm)
                 return super().generate_error_response(error_text, 400)
 
         if self.action == 'schema' or self.action == 'regions':
@@ -50,6 +50,6 @@ class TableAction(BaseHbase):
         """
 
         self.url = self.get_base_url()
-        self.url = self.url + '/' + self.table_name + '/' + self.action
+        self.url = self.url + self.table_name + '/' + self.action
         response = super().format_hbase_url_response()
         return response
