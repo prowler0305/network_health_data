@@ -7,7 +7,8 @@ class DBbuilder(object):
     Static class that contains static methods to service different WNG API Endpoints
     """
 
-    db_service_dict = {'hbase_list_all': HbaseListTables, 'hbase_action': HbaseTableAction}
+    db_service_dict = {'hbase_list_all': HbaseListTables, 'hbase_action': HbaseTableAction, 'list_all': HbaseListTables,
+                       'action': HbaseTableAction}
 
     @staticmethod
     def build_service(db_service, request_args):

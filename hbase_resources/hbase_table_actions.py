@@ -18,12 +18,10 @@ class HbaseTableAction(BaseHbase):
 
         expected_parms = ['action_type']
         super_rc, bad_parm = super().build_parameters()
-        # TODO: If going with WNG Version 2 then don't need to check return code if 'table_name' not present.
-        # add_argument method handles this (required=True)
         if not super_rc:
             error_text = "'%s' parameter is required and was either not found or found to not have a value. Please include" \
                          " parameter with request and try again." % bad_parm
-            return Common.generate_error_response(self.error_msg_key, error_text, 400)
+            return False, Common.generate_error_response(self.error_msg_key, error_text, 400)
 
         for parm in expected_parms:
             rc, value = self.get_parm_value(parm)
@@ -35,9 +33,9 @@ class HbaseTableAction(BaseHbase):
             else:
                 error_text = "Parameter 'hbase_keyword' value of %s requires the '%s' parameter to be provided. " \
                              "Please include parameter with request and retry." % (self.request, parm)
-                return Common.generate_error_response(self.error_msg_key, error_text, 400)
+                return False, Common.generate_error_response(self.error_msg_key, error_text, 400)
 
-        return True
+        return True, ""
 
     def execute_request(self):
         """

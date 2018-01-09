@@ -15,7 +15,7 @@ class HbaseListTables(BaseHbase):
 
         :return: Just return to caller.
         """
-        return True
+        return True, ""
 
     def execute_request(self):
         """

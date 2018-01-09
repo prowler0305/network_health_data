@@ -34,5 +34,7 @@ class ListAll(Resource):
             build_rc = service_instance.build_request()
             if build_rc:
                 response = service_instance.execute_request()
-
-        return response
+                return response
+            else:
+                return build_rc
+        # TODO: what HTTP error status should we return here. Maybe 501?
