@@ -3,6 +3,8 @@ import sys
 from flask import Flask
 from flask_restful import Api
 from resources.wng_api_manager import WngApiManager
+from resources.list_all import ListAll
+from resources.table_action import TableAction
 # from resources.auth_kerb import AuthenticateKerberos
 # from resources.auth import Authenticate
 # from resources.refresh import Refresh
@@ -27,10 +29,16 @@ api = Api(app)
 # api.add_resource(Refresh, '/refresh_token')
 # api.add_resource(AuthenticateKerberos, '/auth')
 api.add_resource(WngApiManager, '/wng_api')
+api.add_resource(ListAll, '/wng_api/list_all')
+api.add_resource(TableAction, '/wng_api/action')
+# TODO: separate the hbase_keyword parameter into separate API endpoints?
+# /list_all
+# /action
+# /table
 
 if __name__ == '__main__':
     try:
-        if sys.argv[1] == '--debug':
+        if sys.argv[1] == '--dev':
             app.run(debug=True)
     except IndexError:
         app.run(host='0.0.0.0', port=8080)

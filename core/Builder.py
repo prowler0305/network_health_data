@@ -1,24 +1,24 @@
-from hbase_resources.hbase_list_tables import ListTables
-from hbase_resources.hbase_table_actions import TableAction
+from hbase_resources.hbase_list_tables import HbaseListTables
+from hbase_resources.hbase_table_actions import HbaseTableAction
 
 
-class HbaseBuilder(object):
+class DBbuilder(object):
     """
-    Static class that contains static methods to service building an HBASE URL requests.
+    Static class that contains static methods to service different WNG API Endpoints
     """
 
-    hbase_class_dict = {'list_all': ListTables, 'action': TableAction}
+    db_service_dict = {'hbase_list_all': HbaseListTables, 'hbase_action': HbaseTableAction}
 
     @staticmethod
-    def build_hbase_service(request_service, request_args):
+    def build_service(db_service, request_args):
         """
-        Creates and returns the correct class instance needed based on the hbase_keyword.
+        Creates and returns the correct class instance needed based on the database service request.
 
-        :param request_service: Hbase service request keyword. (e.g. 'list_all')
+        :param db_service: Database Service class request keyword. (e.g. 'hbase_list_all')
         :param request_args: Dictionary of arguments from HTTP request.
         :return: instance of correct hbase class
         """
 
-        if request_service in HbaseBuilder.hbase_class_dict:
-            service_instance = HbaseBuilder.hbase_class_dict.get(request_service)(request_service, request_args)
+        if db_service in DBbuilder.db_service_dict:
+            service_instance = DBbuilder.db_service_dict.get(db_service)(db_service, request_args)
             return service_instance
