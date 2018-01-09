@@ -5,6 +5,7 @@ from flask_restful import Api
 from resources.wng_api_manager import WngApiManager
 from resources.list_all import ListAll
 from resources.table_action import TableAction
+from resources.row_query import RowQuery
 # from resources.auth_kerb import AuthenticateKerberos
 # from resources.auth import Authenticate
 # from resources.refresh import Refresh
@@ -31,6 +32,7 @@ api = Api(app)
 api.add_resource(WngApiManager, '/wng_api')
 api.add_resource(ListAll, '/wng_api/list_all')
 api.add_resource(TableAction, '/wng_api/action')
+api.add_resource(RowQuery, '/wng_api/row_query')
 # TODO: separate the hbase_keyword parameter into separate API endpoints?
 # /list_all
 # /action

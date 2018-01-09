@@ -1,5 +1,6 @@
 from hbase_resources.hbase_list_tables import HbaseListTables
 from hbase_resources.hbase_table_actions import HbaseTableAction
+from hbase_resources.hbase_row_query import HbaseRowQuery
 
 
 class DBbuilder(object):
@@ -8,7 +9,7 @@ class DBbuilder(object):
     """
 
     db_service_dict = {'hbase_list_all': HbaseListTables, 'hbase_action': HbaseTableAction, 'list_all': HbaseListTables,
-                       'action': HbaseTableAction}
+                       'action': HbaseTableAction, 'hbase_row_query': HbaseRowQuery}
 
     @staticmethod
     def build_service(db_service, request_args):
