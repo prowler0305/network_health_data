@@ -4,7 +4,7 @@ from flask import Flask, url_for, request, jsonify
 import logging
 
 app = Flask(__name__)
-api_logger = logging.getLogger('wng_api')
+api_logger = logging.getLogger('uscc_eng_parser_api')
 api_logger.setLevel(logging.DEBUG)
 api_fh = logging.FileHandler('app.log', mode='w')
 api_fh.setLevel(logging.INFO)

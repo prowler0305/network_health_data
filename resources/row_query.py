@@ -28,11 +28,11 @@ class RowQuery(Resource):
         # action_keyword_help_message = "Value given is not a valid choice. Choices are %s. " \
         #                               % list_o_actions
 
-        wng_parser = Common.create_api_parser()
-        Common.add_common_request_args(wng_parser)
-        wng_parser.add_argument('row_number', required=True)
-        wng_parser.add_argument('table_name', required=True)
-        args = Common.parse_request_args(wng_parser)
+        uscc_eng_parser = Common.create_api_parser()
+        Common.add_common_request_args(uscc_eng_parser)
+        uscc_eng_parser.add_argument('row_number', required=True)
+        uscc_eng_parser.add_argument('table_name', required=True)
+        args = Common.parse_request_args(uscc_eng_parser)
         database_service_request_key = args.get('db_name') + '_' + common_service_request
         service_instance = DBbuilder.build_service(database_service_request_key, args)
         if service_instance is not None:

@@ -12,7 +12,7 @@ class BaseHbase(object):
         self.request = request_keyword
         self.request_args = api_args
         self.hbase_root_url = "http://ilscha03-hden-01.uscc.com:20550/"
-        self.error_msg_key = "wng_api_msg"
+        self.error_msg_key = "uscc_eng_parser_api_msg"
         self.url = None
         self.table_name = None
         self.common_expected_parms_list = ['table_name']
@@ -33,7 +33,7 @@ class BaseHbase(object):
 
     def build_parameters(self):
         """
-        Check and set all the expected and optional parameters that are needed for any WNG API request.
+        Check and set all the expected and optional parameters that are needed for any USCC Engineering API API request.
         :return:
         """
 
@@ -61,7 +61,7 @@ class BaseHbase(object):
     #     """
     #     Formats a simple error message to be returned in http response as a JSON object.
     #     :param error_text: Message text to be returned. It will be sent as a part of a JSON response with the
-    #     "wng_api_msg" key value. (i.e. {"msg_api_msg": "<error_text>"})
+    #     "uscc_eng_parser_api_msg" key value. (i.e. {"msg_api_msg": "<error_text>"})
     #     :param response_code: the HTTP response code to be set as the response.status_code
     #     :return: Error message and status code in a JSON format
     #     """

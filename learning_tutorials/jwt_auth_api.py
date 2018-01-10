@@ -48,7 +48,7 @@ def authenticate(username, password):
         return User(id=123)
 
 
-def wng_identity(payload):
+def uscc_eng_parser_identity(payload):
     """
     Called by Flask_JWT to look up a user by their ID and return the user object.
     :param payload:
@@ -57,7 +57,7 @@ def wng_identity(payload):
     user_id = payload['identity']
     return {'user_id': user_id}
 
-jwt = JWT(app, authentication_handler=authenticate, identity_handler=wng_identity)
+jwt = JWT(app, authentication_handler=authenticate, identity_handler=uscc_eng_parser_identity)
 
 
 class PrivateResource(Resource):

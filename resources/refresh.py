@@ -2,7 +2,7 @@ from flask import jsonify
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, jwt_refresh_token_required, get_jwt_identity
 
-# This Authentication resource is currently not in use as the WNG data is controlled using kerberos authentication. See
+# This Authentication resource is currently not in use as the USCC Engineering API data is controlled using kerberos authentication. See
 # class: AuthenticateKerberos in py file: auth_kerb.py.
 
 

@@ -2,7 +2,7 @@ import logging
 
 
 # Create module level logger
-module_logger = logging.getLogger('wng_api.' + __name__)
+module_logger = logging.getLogger('uscc_eng_parser_api.' + __name__)
 
 
 class MyApp:

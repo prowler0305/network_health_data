@@ -54,10 +54,10 @@ def logging_setup(log_level='INFO'):
     """
 
     # Create logger
-    api_logger = logging.getLogger('wng_api')
+    api_logger = logging.getLogger('uscc_eng_parser_api')
     api_logger.setLevel(log_level)
     # Create file handler
-    fh = logging.FileHandler('wng_api.log', mode='w')
+    fh = logging.FileHandler('uscc_eng_parser_api.log', mode='w')
     fh.setLevel(log_level)
     # Create console stream handler.
     # ch = logging.StreamHandler()

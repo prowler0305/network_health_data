@@ -5,7 +5,7 @@ from hbase_resources.hbase_row_query import HbaseRowQuery
 
 class DBbuilder(object):
     """
-    Static class that contains static methods to service different WNG API Endpoints
+    Static class that contains static methods to service different USCC Engineering API API Endpoints
     """
 
     db_service_dict = {'hbase_list_all': HbaseListTables, 'hbase_action': HbaseTableAction, 'list_all': HbaseListTables,

@@ -10,10 +10,10 @@ class WngApiManager(Resource):
     @staticmethod
     def get():
         """
-        Main landing URL for the WNG API manager.
+        Main landing URL for the USCC Engineering API API manager.
 
         Test with cURL command:
-            curl "http://localhost:5000/wng_api?hbase_keyword=view1"
+            curl "http://localhost:5000/uscc_eng_parser_api?hbase_keyword=view1"
 
         :param: hbase_keyword: Indicates what HBASE data view the users wants. This keyword resolves to a HBASE URL.
         :return: HBASE URL
@@ -21,16 +21,16 @@ class WngApiManager(Resource):
 
         list_o_hbase_requests = ['table', 'list_all', 'action']
         list_o_actions = ['schema', 'regions']
-        error_key_str = 'wng_api_msg'
+        error_key_str = 'uscc_eng_parser_api_msg'
         hbase_keyword_help_message = "Parameter 'hbase_keyword' either missing or incorrect value given. Choices are [%s]." % list_o_hbase_requests
         action_keyword_help_message = "Parameter either missing or incorrect value given. Choices are %s." % list_o_actions
 
-        wng_parser = reqparse.RequestParser()
-        wng_parser.add_argument('hbase_keyword', required=True, choices=list_o_hbase_requests, help=hbase_keyword_help_message)
-        wng_parser.add_argument('action_type', choices=list_o_actions, help=action_keyword_help_message)
-        wng_parser.add_argument('table_name', store_missing=False)
+        uscc_eng_parser = reqparse.RequestParser()
+        uscc_eng_parser.add_argument('hbase_keyword', required=True, choices=list_o_hbase_requests, help=hbase_keyword_help_message)
+        uscc_eng_parser.add_argument('action_type', choices=list_o_actions, help=action_keyword_help_message)
+        uscc_eng_parser.add_argument('table_name', store_missing=False)
 
-        args = wng_parser.parse_args(strict=True)
+        args = uscc_eng_parser.parse_args(strict=True)
         service_instance = DBbuilder.build_service(args.get('hbase_keyword'), args)
         if service_instance is not None:
             build_rc, build_error_response = service_instance.build_request()

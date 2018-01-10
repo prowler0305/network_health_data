@@ -46,7 +46,7 @@ class HbaseRowQuery(BaseHbase):
         if self.rownum is not None:
             return self.get_url()
         else:
-            not_implemented_message = "WNG API row number is not valid. Please see WNG API documentation."
+            not_implemented_message = "USCC Engineering API API row number is not valid. Please see USCC Engineering API API documentation."
             response = Common.generate_error_response(self.error_msg_key, not_implemented_message, 501)
 
         return response

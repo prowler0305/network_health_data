@@ -3,7 +3,7 @@ from flask_restful import Resource, Api
 from flask_restful.reqparse import RequestParser
 
 app = Flask(__name__)
-wng_api = Api(app=app, prefix="/api/v1")
+uscc_eng_parser_api = Api(app=app, prefix="/api/v1")
 
 users = [
     {"email": "masnun@gmail.com", "name": "Masnun", "id": 1}
@@ -83,8 +83,8 @@ class Subscriber(Resource):
         return {"message": "Deleted"}, 204
 
 
-wng_api.add_resource(SubscriberCollection, '/subscribers')
-wng_api.add_resource(Subscriber, '/subscribers/<int:sub_id>')
+uscc_eng_parser_api.add_resource(SubscriberCollection, '/subscribers')
+uscc_eng_parser_api.add_resource(Subscriber, '/subscribers/<int:sub_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)

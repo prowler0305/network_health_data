@@ -16,7 +16,7 @@ class Common(object):
 
         :param error_msg_key: string to use as the key in the JSON object error response returned.
         :param error_text: Message text to be returned. It will be sent as a part of a JSON response with the
-        "wng_api_msg" key value. (i.e. {"msg_api_msg": "<error_text>"})
+        "uscc_eng_parser_api_msg" key value. (i.e. {"msg_api_msg": "<error_text>"})
         :param response_code: the HTTP response code to be set as the response.status_code
         :return: Error message and status code in a JSON format
         """
@@ -94,7 +94,7 @@ class Common(object):
     @staticmethod
     def add_common_request_args(parser_instance):
         """
-        Adds common parameters needed by the WNG API.
+        Adds common parameters needed by the USCC Engineering API API.
 
         :param parser_instance: Instance of RequestParser
         :return: Nothing

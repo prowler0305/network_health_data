@@ -25,9 +25,9 @@ class ListAll(Resource):
         """
         common_service_request = 'list_all'
 
-        wng_parser = Common.create_api_parser()
-        Common.add_common_request_args(wng_parser)
-        args = Common.parse_request_args(wng_parser)
+        uscc_eng_parser = Common.create_api_parser()
+        Common.add_common_request_args(uscc_eng_parser)
+        args = Common.parse_request_args(uscc_eng_parser)
         database_service_request_key = args.get('db_name') + '_' + common_service_request
         service_instance = DBbuilder.build_service(database_service_request_key, args)
         if service_instance is not None:

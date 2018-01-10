@@ -24,11 +24,11 @@ def main():
     # convert response to JSON object and hold in python dictionary
     resp_dict = resp.json()
     # Key "access_token" contains the JWT which is required for all future requests so save it.
-    wng_api_jwt = resp_dict.get('jwt')
+    uscc_eng_parser_api_jwt = resp_dict.get('jwt')
     # Let's print it
-    print('JSON Web Token received: %s' % wng_api_jwt)
+    print('JSON Web Token received: %s' % uscc_eng_parser_api_jwt)
     # Example of how to make an HTTP GET request using JWT to a private resource.
-    auth_header = {"Authorization": "JWT {}".format(wng_api_jwt)}
+    auth_header = {"Authorization": "JWT {}".format(uscc_eng_parser_api_jwt)}
     resp = requests.get(root_url + resource, headers=auth_header)
     # Check again for Server or Client Errors and raise exception if needed.
     resp.raise_for_status()

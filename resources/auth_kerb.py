@@ -41,9 +41,9 @@ class AuthenticateKerberos(Resource):
         # kerberos.authGSSClientStep(krb_context, "")
         # negotiate_details = kerberos.authGSSClientResponse(krb_context)
         # print(negotiate_details)
-        # wng_auth_header = {"Authorization": "Negotiate" + negotiate_details}
+        # uscc_eng_parser_auth_header = {"Authorization": "Negotiate" + negotiate_details}
         # hbase_base_url = "http://ilscha03-hden-01.uscc.com:20550/"
-        # r = requests.get(hbase_base_url, headers=wng_auth_header, verify=False)
+        # r = requests.get(hbase_base_url, headers=uscc_eng_parser_auth_header, verify=False)
         # print(r.status_code)
         # print(r)
         if username != 'aspea002' or password != 'test':
