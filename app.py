@@ -21,7 +21,7 @@ uscc_eng_app = Flask(__name__)
 # app.config['JWT_HEADER_TYPE'] = 'JWT'
 # app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=20)
 # jwt = JWTManager(app)
-api = Api(uscc_eng_app)
+api = Api(uscc_eng_app, prefix='/v1')
 
 
 # Add resources via the add_resource method
@@ -30,9 +30,9 @@ api = Api(uscc_eng_app)
 # api.add_resource(Refresh, '/refresh_token')
 # api.add_resource(AuthenticateKerberos, '/auth')
 # api.add_resource(WngApiManager, '/uscc_eng_parser_api')
-api.add_resource(ListAll, '/v1/list_all')
-api.add_resource(TableAction, '/v1/action')
-api.add_resource(RowQuery, '/v1/row_query')
+api.add_resource(ListAll, '/list_all')
+api.add_resource(TableAction, '/action')
+api.add_resource(RowQuery, '/row_query')
 # TODO: separate the hbase_keyword parameter into separate API endpoints?
 # /list_all
 # /action
