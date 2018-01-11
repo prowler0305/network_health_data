@@ -6,6 +6,7 @@ from flask_restful import Api
 from resources.list_all import ListAll
 from resources.table_action import TableAction
 from resources.row_query import RowQuery
+from resources.site_map import SiteMap
 # from resources.auth_kerb import AuthenticateKerberos
 # from resources.auth import Authenticate
 # from resources.refresh import Refresh
@@ -30,6 +31,7 @@ api = Api(uscc_eng_app, prefix='/v1')
 # api.add_resource(Refresh, '/refresh_token')
 # api.add_resource(AuthenticateKerberos, '/auth')
 # api.add_resource(WngApiManager, '/uscc_eng_parser_api')
+api.add_resource(SiteMap, '/')
 api.add_resource(ListAll, '/list_all')
 api.add_resource(TableAction, '/action')
 api.add_resource(RowQuery, '/row_query')
