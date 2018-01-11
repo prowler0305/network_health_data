@@ -30,9 +30,9 @@ api = Api(uscc_eng_app)
 # api.add_resource(Refresh, '/refresh_token')
 # api.add_resource(AuthenticateKerberos, '/auth')
 # api.add_resource(WngApiManager, '/uscc_eng_parser_api')
-api.add_resource(ListAll, '/uscc_eng_api/list_all')
-api.add_resource(TableAction, '/uscc_eng_api/action')
-api.add_resource(RowQuery, '/uscc_eng_api/row_query')
+api.add_resource(ListAll, '/v1/list_all')
+api.add_resource(TableAction, '/v1/action')
+api.add_resource(RowQuery, '/v1/row_query')
 # TODO: separate the hbase_keyword parameter into separate API endpoints?
 # /list_all
 # /action
