@@ -2,7 +2,7 @@ from flask import jsonify
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-# Example of protecting a resource with Flask_JWT_extended. This is currently not being used by the USCC Engineering API API as we are
+# Example of protecting a resource with Flask_JWT_extended. This is currently not being used by the USCC Engineering API as we are
 # using kerberos authentication.
 
 

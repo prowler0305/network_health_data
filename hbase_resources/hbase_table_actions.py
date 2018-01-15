@@ -46,7 +46,7 @@ class HbaseTableAction(BaseHbase):
         if self.action == 'schema' or self.action == 'regions':
             return self.get_url()
         else:
-            not_implemented_message = "USCC Engineering API API action '%s' is not available. Please see USCC Engineering API API documentation." % self.action
+            not_implemented_message = "USCC Engineering API action '%s' is not available. Please see USCC Engineering API documentation." % self.action
             response = Common.generate_error_response(self.error_msg_key, not_implemented_message, 501)
 
         return response

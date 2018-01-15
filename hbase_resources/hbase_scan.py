@@ -2,13 +2,13 @@ from hbase_resources.Base_HBASE import *
 from common.common import Common
 
 
-class HbaseRowQuery(BaseHbase):
+class HbaseScan(BaseHbase):
     """
-    Class that encapsulates building the HBASE URL to query data for a single row in HBASE
+    Class that encapsulates building the HBASE URL to query data using the multirow Scanner mechanism
     """
     def __init__(self, request_keyword, api_args):
         BaseHbase.__init__(self, request_keyword, api_args)
-        self.rownum = None
+        self.scan_file = None
 
     def build_request(self):
         """
@@ -16,7 +16,7 @@ class HbaseRowQuery(BaseHbase):
         :return:
         """
 
-        expected_parms = ['row_number']
+        expected_parms = ['scan_filter_data']
         super_rc, bad_parm = super().build_parameters()
         if not super_rc:
             error_text = "'%s' parameter is required and was either not found or found to not have a value. Please include" \
@@ -26,8 +26,8 @@ class HbaseRowQuery(BaseHbase):
         for parm in expected_parms:
             rc, value = self.get_parm_value(parm)
             if rc:
-                if parm == 'row_number':
-                    self.rownum = value
+                if parm == 'scan_filter_data':
+                    self.scan_file = value
                 else:
                     continue
             else:
@@ -43,10 +43,11 @@ class HbaseRowQuery(BaseHbase):
         :return:
         """
 
-        if self.rownum is not None:
+        if self.scan_file is not None:
             return self.get_url()
+
         else:
-            not_implemented_message = "USCC Engineering API row number is not valid. Please see USCC Engineering API documentation."
+            not_implemented_message = "USCC Engineering API scan_file_data is not valid. Please see USCC Engineering API documentation."
             response = Common.generate_error_response(self.error_msg_key, not_implemented_message, 501)
 
         return response
@@ -59,6 +60,6 @@ class HbaseRowQuery(BaseHbase):
         """
 
         self.url = self.get_base_url()
-        self.url = self.url + self.table_name + '/' + self.rownum
+        self.url = self.url + self.table_name + '/scanner'
         response = super().format_hbase_url_response()
         return response

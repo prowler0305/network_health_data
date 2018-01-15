@@ -10,7 +10,7 @@ class WngApiManager(Resource):
     @staticmethod
     def get():
         """
-        Main landing URL for the USCC Engineering API API manager.
+        Main landing URL for the USCC Engineering API manager.
 
         Test with cURL command:
             curl "http://localhost:5000/uscc_eng_parser_api?hbase_keyword=view1"

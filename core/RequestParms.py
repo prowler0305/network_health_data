@@ -1,6 +1,6 @@
 class RequestParms(object):
     """
-    static class with methods for finding and interacting with USCC Engineering API API request parameters
+    static class with methods for finding and interacting with USCC Engineering API request parameters
     """
 
     @staticmethod

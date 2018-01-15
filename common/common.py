@@ -94,7 +94,7 @@ class Common(object):
     @staticmethod
     def add_common_request_args(parser_instance):
         """
-        Adds common parameters needed by the USCC Engineering API API.
+        Adds common parameters needed by the USCC Engineering API.
 
         :param parser_instance: Instance of RequestParser
         :return: Nothing
