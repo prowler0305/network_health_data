@@ -7,10 +7,13 @@ from common.common import Common
 class FUT(Resource):
     """
     """
-    if sys.argv[1] != '--dev':
+    try:
+        if sys.argv[1] != '--dev':
+            fut_subscribers_file = '/opt/app-root/src/data_only/FUT-Subscribers'
+        else:
+            fut_subscribers_file = '/home/aspea002/IdeaProjects/USCC_ENG_API/data_only/FUT-subscribers'
+    except IndexError:
         fut_subscribers_file = '/opt/app-root/src/data_only/FUT-Subscribers'
-    else:
-        fut_subscribers_file = '/home/aspea002/IdeaProjects/USCC_ENG_API/data_only/FUT-subscribers'
 
     @staticmethod
     def get():
