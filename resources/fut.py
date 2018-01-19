@@ -30,9 +30,6 @@ class FUT(Resource):
                     line = line.rstrip('\n')
                     list_o_subscriber_ids.append(line)
 
-            for subscriber_id in list_o_subscriber_ids:
-                print(subscriber_id)
-
             for list_index in range(len(list_o_subscriber_ids)):
                 dict_of_subscribers[list_index] = list_o_subscriber_ids[list_index]
 
