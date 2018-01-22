@@ -1,0 +1,35 @@
+{
+  "ColumnSchema":
+  [
+    {
+      "VERSIONS": "1",
+      "KEEP_DELETED_CELLS": "FALSE",
+      "IN_MEMORY": "false",
+      "BLOOMFILTER": "ROW",
+      "DATA_BLOCK_ENCODING": "NONE",
+      "BLOCKSIZE": "65536",
+      "MIN_VERSIONS": "0",
+      "COMPRESSION": "SNAPPY",
+      "REPLICATION_SCOPE": "0",
+      "name": "d",
+      "BLOCKCACHE": "true",
+      "TTL": "2147483647"
+    },
+    {
+      "VERSIONS": "1",
+      "KEEP_DELETED_CELLS": "FALSE",
+      "IN_MEMORY": "false",
+      "BLOOMFILTER": "ROW",
+      "DATA_BLOCK_ENCODING": "NONE",
+      "BLOCKSIZE": "65536",
+      "MIN_VERSIONS": "0",
+      "COMPRESSION": "NONE",
+      "REPLICATION_SCOPE": "0",
+      "name": "m",
+      "BLOCKCACHE": "true",
+      "TTL": "2147483647"
+    }
+  ],
+  "IS_META": "false",
+  "name": "enodeb"
+}

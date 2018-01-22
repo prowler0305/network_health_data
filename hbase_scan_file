@@ -1,0 +1,8 @@
+<Scanner batch="100">
+    <filter>
+        {
+        "type": "PrefixFilter",
+        "value": "u123"
+        }
+    </filter>
+</Scanner>
