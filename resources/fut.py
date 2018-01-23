@@ -46,7 +46,8 @@ class FUT(Resource):
         """
 
         if not FUT.check_path_exists(FUT.fut_subscribers_file):
-            open(FUT.fut_subscribers_file, "w+")
+            with open(FUT.fut_subscribers_file, "w+") as sfhw:
+                pass
 
         uscc_eng_parser = Common.create_api_parser()
         uscc_eng_parser.add_argument('imsi', location='json')
