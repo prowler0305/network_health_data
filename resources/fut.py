@@ -8,12 +8,10 @@ class FUT(Resource):
     """
     """
     try:
-        if sys.argv[1] != '--dev':
-            fut_subscribers_file = '/opt/app-root/src/data_only/FUT-Subscribers'
-        else:
+        if sys.argv[1] == '--dev':
             fut_subscribers_file = '/home/aspea002/IdeaProjects/USCC_ENG_API/data_only/FUT-subscribers'
     except IndexError:
-        fut_subscribers_file = '/opt/app-root/src/data_only/FUT-Subscribers'
+        fut_subscribers_file = '/opt/app-root/data-only/FUT-Subscribers'
 
     @staticmethod
     def get():
