@@ -1,4 +1,5 @@
 import collections
+import os
 from flask import jsonify
 from flask_restful import reqparse
 
@@ -118,3 +119,14 @@ class Common(object):
 
         args = parser_instance.parse_args(strict=True)
         return args
+
+    @staticmethod
+    def check_path_exists(path):
+        """
+        Check if a file exists within the USCC-ENG-API file structure.
+
+        :param path: Path to the directory or file
+        :return: True or False the directory or file exists
+        """
+
+        return os.path.exists(path)
