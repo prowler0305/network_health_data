@@ -57,10 +57,10 @@ class FUT(Resource):
         Examples using cUrl commands:
 
             Single imsi
-                curl -d '{"imis":"123456789"}' -H "Content-type: application/json" -X POST http://localhost:5000/v1/fut
+                curl -d '{"imsi":"123456789"}' -H "Content-type: application/json" -X POST http://localhost:5000/v1/fut
 
             Multiple imsi
-                curl -d '{"imis":"123456789,12346789,123456789"}' -H "Content-type: application/json" -X POST http://localhost:5000/v1/fut
+                curl -d '{"imsi":"123456789,12346789,123456789"}' -H "Content-type: application/json" -X POST http://localhost:5000/v1/fut
 
         List of test Imsis used to test:
         311580704895154
@@ -110,10 +110,10 @@ class FUT(Resource):
         Examples using cUrl commands:
 
             Single imsi
-                curl -d '{"imis":"123456789"}' -H "Content-type: application/json" -X DELETE http://localhost:5000/v1/fut
+                curl -d '{"imsi":"123456789"}' -H "Content-type: application/json" -X DELETE http://localhost:5000/v1/fut
 
             Multiple imsi
-                curl -d '{"imis":"123456789,12346789,123456789"}' -H "Content-type: application/json" -X DELETE http://localhost:5000/v1/fut
+                curl -d '{"imsi":"123456789,12346789,123456789"}' -H "Content-type: application/json" -X DELETE http://localhost:5000/v1/fut
 
 
         :return: Successful - Standard HTTP 200 response code in JSON format
@@ -132,6 +132,6 @@ class FUT(Resource):
                 if imsi.strip('\n') not in delete_imsi_list:
                     sfhw.write(imsi)
 
-        response = jsonify({'fut_msg': 'IMSI(s) successfully delete'})
+        response = jsonify({'fut_msg': 'IMSI(s) successfully deleted'})
         response.status_code = 200
         return response

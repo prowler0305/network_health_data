@@ -38,7 +38,7 @@ api.add_resource(ListAll, '/list_all')
 api.add_resource(TableAction, '/action')
 api.add_resource(RowQuery, '/row_query')
 api.add_resource(Scanning, '/scan')
-api.add_resource(FUT, '/fut')
+api.add_resource(FUT, '/imsis')
 
 if __name__ == '__main__':
     try:
