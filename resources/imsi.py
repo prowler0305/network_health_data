@@ -129,7 +129,7 @@ class Imsi(Resource):
             sfhr.close()
         with open(Imsi.imsi_subscribers_file, "w") as sfhw:
             for imsi in lines:
-                if Imsi.strip('\n') not in delete_imsi_list:
+                if imsi.strip('\n') not in delete_imsi_list:
                     sfhw.write(imsi)
 
         response = jsonify({'imsi_msg': 'IMSI(s) successfully deleted'})
