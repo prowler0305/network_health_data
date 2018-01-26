@@ -8,7 +8,7 @@ from resources.table_action import TableAction
 from resources.row_query import RowQuery
 from resources.site_map import SiteMap
 from resources.scanning import Scanning
-from resources.fut import FUT
+from resources.imsi import Imsi
 # from resources.auth_kerb import AuthenticateKerberos
 # from resources.auth import Authenticate
 # from resources.refresh import Refresh
@@ -37,7 +37,7 @@ api.add_resource(ListAll, '/list_all')
 api.add_resource(TableAction, '/action')
 api.add_resource(RowQuery, '/row_query')
 api.add_resource(Scanning, '/scan')
-api.add_resource(FUT, '/imsis')
+api.add_resource(Imsi, '/imsis')
 
 if __name__ == '__main__':
     try:
