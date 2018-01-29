@@ -3,3 +3,4 @@ site_name: U.S. Cellular Engineering REST API
 pages:
   - Introduction: index.md
   - Getting Started: getting-started.md
+  - About API via Mkdocs: about-api-mkdocs.md

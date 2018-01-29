@@ -1,7 +1,7 @@
-from hbase_resources.hbase_list_tables import HbaseListTables
-from hbase_resources.hbase_table_actions import HbaseTableAction
-from hbase_resources.hbase_row_query import HbaseRowQuery
-from hbase_resources.hbase_scan import HbaseScan
+from data_source_resources.hbase_resources.hbase_list_tables import HbaseListTables
+from data_source_resources.hbase_resources.hbase_table_actions import HbaseTableAction
+from data_source_resources.hbase_resources.hbase_row_query import HbaseRowQuery
+from data_source_resources.hbase_resources.hbase_scan import HbaseScan
 
 
 class DBbuilder(object):
