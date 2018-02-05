@@ -90,13 +90,13 @@ class Imsi(Resource):
         with open(Imsi.imsi_subscribers_file, "r") as sfhr:
             lines = sfhr.readlines()
             sfhr.close()
-        with open(Imsi.imsi_subscribers_file, "a") as sfh:
-            for imsi in list_imsi:
-                if imsi + '\n' not in lines:
-                    sfh.write(imsi + "\n")
+            with open(Imsi.imsi_subscribers_file, "a") as sfh:
+                for imsi in list_imsi:
+                    if imsi + '\n' not in lines:
+                        sfh.write(imsi + "\n")
+                response = jsonify({'imsi_msg': 'IMSI(s) successfully added'})
+                response.status_code = 201
 
-        response = jsonify({'imsi_msg': 'IMSI(s) successfully added'})
-        response.status_code = 201
         return response
 
     @staticmethod
