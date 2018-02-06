@@ -1,4 +1,4 @@
-from flask import flash
+from flask import flash, json
 from requests import Response
 
 
@@ -20,7 +20,11 @@ class Common(object):
         """
 
         if isinstance(message, Response):
-            message_dict = message.json()
+            if 'message' in message:
+                message_dict = json.loads(message)
+            else:
+                message_dict = dict(message=None)
+                message_dict['message'] = str(message.status_code) + ':' + message.reason
             return flash(message_dict['message'], category=category_request)
         else:
             return flash(message, category=category_request)

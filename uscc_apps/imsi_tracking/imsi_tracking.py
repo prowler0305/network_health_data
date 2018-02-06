@@ -36,7 +36,9 @@ class ImsiTracking(MethodView):
         if imsi_list_get_resp.status_code == requests.codes.ok:
             imsi_list = imsi_list_get_resp.json()
         else:
-            Common.create_flash_message(imsi_list_get_resp)
+            get_imsi_list_error = "Retrieving list of tracked Imsi failed with: %s:%s.\nPlease contact Core Automation Team" %\
+                            (str(imsi_list_get_resp.status_code), imsi_list_get_resp.reason)
+            Common.create_flash_message(get_imsi_list_error)
 
         return render_template('imsi_tracking/imsi_tracking.html', form=form, imsi_list=imsi_list)
 
