@@ -87,6 +87,8 @@ class Imsi(Resource):
         uscc_eng_parser = Common.create_api_parser()
         uscc_eng_parser.add_argument('imsi', location='json')
         args = Common.parse_request_args(uscc_eng_parser)
+        # Remove whitespace in case user specified multiple imsis with a space after the ','
+        args['imsi'] = args.get('imsi').replace(' ', '')
         list_imsi = args.get('imsi').split(',')
         with open(Imsi.imsi_subscribers_file, "r") as sfhr:
             lines = sfhr.readlines()
