@@ -9,12 +9,18 @@ from uscc_apps.common import Common
 # Misc
 import requests
 import json
+import sys
 
 
 class ImsiTracking(MethodView):
     def __init__(self):
 
-        self.imsi_tracking_api_url = 'http://127.0.0.1:5000/v1/imsis'
+        try:
+            if sys.argv[1] == '--dev':
+                self.imsi_tracking_api_url = 'http://localhost:5000/v1/imsis'
+        except IndexError:
+            self.imsi_tracking_api_url = 'http://www.uscc-eng-api.devengos.uscc.com/v1/imsis'
+
         self.imsi_header = {'content-type': 'application/json'}
         self.imsi_tracking_dict = dict(imsi=None)
 

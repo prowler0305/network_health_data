@@ -49,4 +49,4 @@ if __name__ == '__main__':
         if sys.argv[1] == '--dev':
             uscc_eng_app.run(debug=True, threaded=True)
     except IndexError:
-        uscc_eng_app.run(host='0.0.0.0', port=8080, threaded=True)
+        uscc_eng_app.run(host='0.0.0.0', port=8080)
