@@ -16,6 +16,7 @@ class ImsiTracking(MethodView):
 
         self.imsi_tracking_api_url = 'http://127.0.0.1:5000/v1/imsis'
         self.imsi_header = {'content-type': 'application/json'}
+        self.imsi_tracking_dict = dict(imsi=None)
 
     def get(self):
         """
@@ -24,13 +25,15 @@ class ImsiTracking(MethodView):
         """
 
         form = ImsiForm()
+        imsi_list = {}
         imsi_list_get_resp = requests.get(self.imsi_tracking_api_url)
         if imsi_list_get_resp.status_code == requests.codes.ok:
             # imsi_list = json.loads(imsi_list_get_resp.text)
             imsi_list = imsi_list_get_resp.json()
-            return render_template('imsi_tracking/imsi_add.html', form=form, imsi_list=imsi_list)
         else:
-            flash('Error retrieving current list')
+            Common.create_flash_message(imsi_list_get_resp)
+
+        return render_template('imsi_tracking/imsi_add.html', form=form, imsi_list=imsi_list)
 
     def post(self):
         """
@@ -38,17 +41,21 @@ class ImsiTracking(MethodView):
         :return:
         """
 
-        imsi_tracking_dict = dict(imsi=None)
         form = ImsiForm()
         if form.validate_on_submit():
-            imsi_tracking_dict['imsi'] = request.form['imsis']
-            imsi_post_resp = \
-                requests.post(self.imsi_tracking_api_url, data=json.dumps(imsi_tracking_dict), headers=self.imsi_header)
-            if imsi_post_resp.status_code == requests.codes.created:
-                Common.create_flash_message('Imsi(s) successfully added')
+            self.imsi_tracking_dict['imsi'] = request.form['imsis']
+            if request.form['add_delete_radio'] == 'A':
+                imsi_post_resp = \
+                    requests.post(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
+                                  headers=self.imsi_header)
+                if imsi_post_resp.status_code == requests.codes.created:
+                    Common.create_flash_message('Imsi(s) successfully added')
+                else:
+                    Common.create_flash_message(imsi_post_resp)
+                return redirect('/track-imsi')
             else:
-                Common.create_flash_message(imsi_post_resp)
-            return redirect('/track-imsi')
+                self.delete()
+                return redirect('/track-imsi')
         else:
             if len(form.errors) != 0:
                 for error_message_text in form.errors.values():
@@ -63,4 +70,13 @@ class ImsiTracking(MethodView):
 
         :return:
         """
+
+        imsi_delete_resp = requests.delete(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
+                                           headers=self.imsi_header)
+        if imsi_delete_resp.status_code == requests.codes.ok:
+            Common.create_flash_message('Imsi(s) successfully deleted')
+            return True
+        else:
+            Common.create_flash_message(imsi_delete_resp)
+            return False
 

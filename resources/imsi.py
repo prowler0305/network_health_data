@@ -9,7 +9,7 @@ class Imsi(Resource):
     """
     try:
         if sys.argv[1] == '--dev':
-            imsi_subscribers_file = '/home/aspea002/IdeaProjects/USCC_ENG_API/local_test_library/imsi_test_data'
+            imsi_subscribers_file = 'C:\\Users\Owner\IdeaProjects\\uscc_eng_api_personal\\local_test_library\\imsi_test_data'
     except IndexError:
         imsi_subscribers_file = '/opt/app-root/src/data_only/imsi-Subscribers'
 
@@ -40,7 +40,8 @@ class Imsi(Resource):
             response = jsonify(dict_of_subscribers)
             response.status_code = 200
         else:
-            response = jsonify({"GET_error": "Can't get to file containing subscriber IDs"})
+            response = jsonify({'message': "Can't get to file containing subscriber IDs. Please contact Core "
+                                           "Automation Team."})
             response.status_code = 500
         return response
 
@@ -102,7 +103,6 @@ class Imsi(Resource):
     @staticmethod
     def delete():
         """
-
         Removes either a single imsi or a comma delimited string of imsis from the imsi-subscribers file.
 
         A single or comma delimited string of imsis can be provided to be added on a single POST request.
@@ -120,18 +120,23 @@ class Imsi(Resource):
                     Failure - Error that occurred in JSON response
         """
 
-        uscc_eng_parser = Common.create_api_parser()
-        uscc_eng_parser.add_argument('imsi', location='json')
-        args = Common.parse_request_args(uscc_eng_parser)
-        delete_imsi_list = args.get('imsi').split(',')
-        with open(Imsi.imsi_subscribers_file, "r") as sfhr:
-            lines = sfhr.readlines()
-            sfhr.close()
-        with open(Imsi.imsi_subscribers_file, "w") as sfhw:
-            for imsi in lines:
-                if imsi.strip('\n') not in delete_imsi_list:
-                    sfhw.write(imsi)
+        if Common.check_path_exists(Imsi.imsi_subscribers_file):
+            uscc_eng_parser = Common.create_api_parser()
+            uscc_eng_parser.add_argument('imsi', location='json')
+            args = Common.parse_request_args(uscc_eng_parser)
+            delete_imsi_list = args.get('imsi').split(',')
+            with open(Imsi.imsi_subscribers_file, "r") as sfhr:
+                lines = sfhr.readlines()
+                sfhr.close()
+                with open(Imsi.imsi_subscribers_file, "w") as sfhw:
+                    for imsi in lines:
+                        if imsi.strip('\n') not in delete_imsi_list:
+                            sfhw.write(imsi)
 
-        response = jsonify({'imsi_msg': 'IMSI(s) successfully deleted'})
-        response.status_code = 200
+                    response = jsonify({'imsi_msg': 'IMSI(s) successfully deleted'})
+                    response.status_code = 200
+        else:
+            response = jsonify({"message": "Can't get to file containing subscriber IDs. Please contact Core "
+                                           "Automation Team."})
+            response.status_code = 500
         return response
