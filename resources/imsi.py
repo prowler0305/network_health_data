@@ -9,7 +9,7 @@ class Imsi(Resource):
     """
     try:
         if sys.argv[1] == '--dev':
-            imsi_subscribers_file = 'C:\\Users\Owner\IdeaProjects\\uscc_eng_api_personal\\local_test_library\\imsi_test_data'
+            imsi_subscribers_file = '/home/aspea002/IdeaProjects/USCC_ENG_API/local_test_library/imsi_test_data'
     except IndexError:
         imsi_subscribers_file = '/opt/app-root/src/data_only/imsi-Subscribers'
 
@@ -87,6 +87,7 @@ class Imsi(Resource):
         uscc_eng_parser = Common.create_api_parser()
         uscc_eng_parser.add_argument('imsi', location='json')
         args = Common.parse_request_args(uscc_eng_parser)
+        args['imsi'] = args.get('imsi').replace(' ', '')
         list_imsi = args.get('imsi').split(',')
         with open(Imsi.imsi_subscribers_file, "r") as sfhr:
             lines = sfhr.readlines()
@@ -124,6 +125,7 @@ class Imsi(Resource):
             uscc_eng_parser = Common.create_api_parser()
             uscc_eng_parser.add_argument('imsi', location='json')
             args = Common.parse_request_args(uscc_eng_parser)
+            args['imsi'] = args.get('imsi').replace(' ', '')
             delete_imsi_list = args.get('imsi').split(',')
             with open(Imsi.imsi_subscribers_file, "r") as sfhr:
                 lines = sfhr.readlines()
