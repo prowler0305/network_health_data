@@ -11,7 +11,7 @@ class Common(object):
     @staticmethod
     def create_flash_message(message=None, category_request=None):
         """
-        Creates a flask flash message object that can be used on the next request.
+        Creates a flask flash message object that can be used on the next HTTP request.
 
         :param message: Can be a string or an HTTP response object in which the response text which should contain the
         standard HTTP error text will be extracted as the message

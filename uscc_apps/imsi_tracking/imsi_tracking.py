@@ -1,5 +1,5 @@
 # Flask
-from flask import render_template, flash, redirect, request
+from flask import render_template, redirect, request
 from flask.views import MethodView
 
 # USCC
@@ -26,8 +26,11 @@ class ImsiTracking(MethodView):
 
     def get(self):
         """
+        Receives control from the HTTP GET request when accessing the Imsi tracking web app. Renders the initial html
+        web page with the empty web form and does an HTTP GET request to the USCC ENG REST API to retrieve and display
+        the current list of tracked imsis.
 
-        :return:
+        :return: Renders the html page with all substituted content needed.
         """
 
         form = ImsiForm()
@@ -44,8 +47,16 @@ class ImsiTracking(MethodView):
 
     def post(self):
         """
+        Receives control after the users clicks submit on the web page via the HTTP POST request done on the HTML form
+        action method.
 
-        :return:
+        The string of imsis is extracted from the form and passed on to either a HTTP POST or DELETE request to the
+        USCC ENG REST API. Which request to perform is determined by interrogating the Add or Delete radio button to
+        determine which value the radio button contains.
+
+        :return: If the form validates correctly then a redirect to the same page is done to reload the page with the
+        updated imsi list. If not then the web page is loaded without the imsi list so that any error messages can be
+        displayed.
         """
 
         form = ImsiForm()
@@ -72,8 +83,12 @@ class ImsiTracking(MethodView):
 
     def delete(self):
         """
+        Called by the above post() method if the radio button value is 'D' in which an HTTP DELETE request is made to
+        the USCC ENG REST API to delete the imsi(s) from the tracking file.
 
-        :return:
+        :return: True - if the delete API request is successful with a successful message
+                False - if the delete API request is unsuccessful with an error message derived from the API HTTP
+                        Response object.
         """
 
         imsi_delete_resp = requests.delete(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
