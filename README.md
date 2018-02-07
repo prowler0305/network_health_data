@@ -1,4 +1,2 @@
 # USCC Engineering API_api_manager
-API layer that manages the API access to the USCC Engineering API data on HBASE.
-
-base url - http://uscc_eng_api/
+View the [internal documentation](https://ilscha03-github-01.uscc.com/pages/uscc-engineering/USCC_API/)
