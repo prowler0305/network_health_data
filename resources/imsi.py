@@ -131,9 +131,15 @@ class Imsi(Resource):
                 lines = sfhr.readlines()
                 sfhr.close()
                 with open(Imsi.imsi_subscribers_file, "w") as sfhw:
-                    for imsi in lines:
+                    for line in lines:
+                        if '(' in line:
+                            imsi, junk = line.split('(', 1)
+                            imsi = imsi + '\n'  # Make imsi variable look like one that wasn't provided with an alias.
+                        else:
+                            imsi = line
+
                         if imsi.strip('\n') not in delete_imsi_list:
-                            sfhw.write(imsi)
+                            sfhw.write(line)
 
                     response = jsonify({'imsi_msg': 'IMSI(s) successfully deleted'})
                     response.status_code = 200
