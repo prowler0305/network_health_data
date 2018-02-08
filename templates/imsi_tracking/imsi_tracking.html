@@ -8,6 +8,14 @@
 
     {% block content %}
         <h1>U.S. Cellular Imsi Tracking</h1>
+        <p>Specify only the Imsi (e.g. 123456789) or with an identifier in () after the Imsi.</p>
+        <ul>
+            <strong>Example: 123456789(bob)</strong>
+        </ul>
+        <p>Can add or delete multiple Imsis at a time by using a comma separated string:</p>
+        <ul>
+            With or without an identifier - <strong>123456789(andrew),987654321,147258369(bill)</strong>
+        </ul>
         <form method="POST">
             {{ form.csrf_token }}
             {{ form.imsis.label }}
@@ -17,25 +25,57 @@
             <ul>
                 {% for message in messages %}
                 <p>
-                    {{ message }}
+                    {% if message == "This field is required." %}
+                        {{ message }}
+                    {% endif%}
                 </p>
                 {% endfor %}
             </ul>
             {% endif %}
             {% endwith%}
             {{ form.add_delete_radio.label }} {{form.add_delete_radio }}
-            <br>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                        <p>
+                            {% if message == "Not a valid choice" %}
+                                {{ message }}
+                            {% endif%}
+                        </p>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
             {{ form.submit() }}
         </form>
     {% endblock %}
 
 
     <h2>List of Current Tracked Imsis</h2>
-    {% if imsi_list %}
-        {% for imsi in imsi_list.values() %}
-        <li>{{imsi}}</li>
+    <form method="GET">
+        {{ form.imsi_filter.label }}
+        {{ form.imsi_filter(size=100) }}
+        <h5>To reset the list and clear the filter click "Submit" without a value.</h5>
+        {{ form.submit() }}
+        <p></p>
+        {% if imsi_list %}
+            {% for imsi in imsi_list.values() %}
+            <li>{{imsi}}</li>
+            {% endfor %}
+        {% endif %}
+    </form>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <p>
+            {{ message }}
+        </p>
         {% endfor %}
+    </ul>
     {% endif %}
+    {% endwith %}
 
 </body>
 </html>

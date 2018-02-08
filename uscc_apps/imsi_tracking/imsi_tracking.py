@@ -1,5 +1,5 @@
 # Flask
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, url_for
 from flask.views import MethodView
 
 # USCC
@@ -37,7 +37,15 @@ class ImsiTracking(MethodView):
         imsi_list = {}
         imsi_list_get_resp = requests.get(self.imsi_tracking_api_url)
         if imsi_list_get_resp.status_code == requests.codes.ok:
-            imsi_list = imsi_list_get_resp.json()
+            if request.args.get('imsi_filter') is not None and request.args.get('imsi_filter') != '':
+                for key, imsi_value in imsi_list_get_resp.json().items():
+                    if '(' in imsi_value:
+                        imsi, alias_right_paren = imsi_value.split('(', 1)
+                        alias = alias_right_paren.rstrip(')')
+                        if request.args.get('imsi_filter').lower() == alias:
+                            imsi_list[key] = imsi_value
+            else:
+                imsi_list = imsi_list_get_resp.json()
         else:
             get_imsi_list_error = "Retrieving list of tracked Imsi failed with: %s:%s.\nPlease contact Core Automation Team" %\
                             (str(imsi_list_get_resp.status_code), imsi_list_get_resp.reason)
@@ -70,10 +78,10 @@ class ImsiTracking(MethodView):
                     Common.create_flash_message('Imsi(s) successfully added')
                 else:
                     Common.create_flash_message(imsi_post_resp)
-                return redirect('/track-imsi')
+                return redirect(url_for('imsi_tracking'))
             else:
                 self.delete()
-                return redirect('/track-imsi')
+                return redirect(url_for('imsi_tracking'))
         else:
             if len(form.errors) != 0:
                 for error_message_text in form.errors.values():
