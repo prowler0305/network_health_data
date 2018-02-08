@@ -39,7 +39,7 @@
                     <ul>
                         {% for message in messages %}
                         <p>
-                            {% if message == "Not a valid choice" %}
+                            {% if message in "Not a valid choice" %}
                                 {{ message }}
                             {% endif%}
                         </p>
@@ -50,7 +50,17 @@
             {{ form.submit() }}
         </form>
     {% endblock %}
-
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <p>
+            <h3>{{ message }}</h3>
+        </p>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
 
     <h2>List of Current Tracked Imsis</h2>
     <form method="GET">
@@ -65,17 +75,7 @@
             {% endfor %}
         {% endif %}
     </form>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <p>
-            {{ message }}
-        </p>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
+
 
 </body>
 </html>
