@@ -12,10 +12,15 @@
         <ul>
             <strong>Example: 123456789(bob)</strong>
         </ul>
-        <p>Can add or delete multiple Imsis at a time by using a comma separated string:</p>
+        <p>Can add multiple Imsis at a time by using a comma separated string:</p>
         <ul>
             With or without an identifier - <strong>123456789(andrew),987654321,147258369(bill)</strong>
         </ul>
+        <p>Delete an Imsi(s) from the list by only specifying the Imsi without the identifier:</p>
+        <ul>
+            <p>Example: <strong>123456789</strong> or <strong>123456789,987654321</strong></p>
+        </ul>
+
         <form method="POST">
             {{ form.csrf_token }}
             {{ form.imsis.label }}
