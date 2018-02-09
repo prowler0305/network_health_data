@@ -42,7 +42,7 @@ class ImsiTracking(MethodView):
                     if '(' in imsi_value:
                         imsi, alias_right_paren = imsi_value.split('(', 1)
                         alias = alias_right_paren.rstrip(')')
-                        if request.args.get('imsi_filter').lower() == alias:
+                        if request.args.get('imsi_filter').lower() == alias.lower():
                             imsi_list[key] = imsi_value
             else:
                 imsi_list = imsi_list_get_resp.json()

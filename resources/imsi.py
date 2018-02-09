@@ -1,4 +1,5 @@
 import sys
+import os
 from flask import jsonify
 from flask_restful import Resource
 from common.common import Common
@@ -9,7 +10,11 @@ class Imsi(Resource):
     """
     try:
         if sys.argv[1] == '--dev':
-            imsi_subscribers_file = '/home/aspea002/IdeaProjects/USCC_ENG_API/local_test_library/imsi_test_data'
+            if os.name == 'posix':
+                imsi_subscribers_file = '/home/aspea002/IdeaProjects/USCC_ENG_API/local_test_library/imsi_test_data'
+            else:
+                imsi_subscribers_file = \
+                    'C:\\Users\\Owner\\IdeaProjects\\uscc_eng_api_personal\\local_test_library\\imsi_test_data'
     except IndexError:
         imsi_subscribers_file = '/opt/app-root/src/data_only/imsi-Subscribers'
 
