@@ -1,5 +1,5 @@
 # Flask
-from flask import render_template, flash, redirect, request
+from flask import render_template, redirect, request, url_for
 from flask.views import MethodView
 
 # USCC
@@ -9,36 +9,62 @@ from uscc_apps.common import Common
 # Misc
 import requests
 import json
+import sys
 
 
 class ImsiTracking(MethodView):
     def __init__(self):
 
-        self.imsi_tracking_api_url = 'http://127.0.0.1:5000/v1/imsis'
+        try:
+            if sys.argv[1] == '--dev':
+                self.imsi_tracking_api_url = 'http://localhost:5000/v1/imsis'
+        except IndexError:
+            self.imsi_tracking_api_url = 'http://www.uscc-eng-api.devengos.uscc.com/v1/imsis'
+
         self.imsi_header = {'content-type': 'application/json'}
         self.imsi_tracking_dict = dict(imsi=None)
 
     def get(self):
         """
+        Receives control from the HTTP GET request when accessing the Imsi tracking web app. Renders the initial html
+        web page with the empty web form and does an HTTP GET request to the USCC ENG REST API to retrieve and display
+        the current list of tracked imsis.
 
-        :return:
+        :return: Renders the html page with all substituted content needed.
         """
 
         form = ImsiForm()
         imsi_list = {}
         imsi_list_get_resp = requests.get(self.imsi_tracking_api_url)
         if imsi_list_get_resp.status_code == requests.codes.ok:
-            # imsi_list = json.loads(imsi_list_get_resp.text)
-            imsi_list = imsi_list_get_resp.json()
+            if request.args.get('imsi_filter') is not None and request.args.get('imsi_filter') != '':
+                for key, imsi_value in imsi_list_get_resp.json().items():
+                    if '(' in imsi_value:
+                        imsi, alias_right_paren = imsi_value.split('(', 1)
+                        alias = alias_right_paren.rstrip(')')
+                        if request.args.get('imsi_filter').lower() == alias:
+                            imsi_list[key] = imsi_value
+            else:
+                imsi_list = imsi_list_get_resp.json()
         else:
-            Common.create_flash_message(imsi_list_get_resp)
+            get_imsi_list_error = "Retrieving list of tracked Imsi failed with: %s:%s.\nPlease contact Core Automation Team" %\
+                            (str(imsi_list_get_resp.status_code), imsi_list_get_resp.reason)
+            Common.create_flash_message(get_imsi_list_error)
 
-        return render_template('imsi_tracking/imsi_add.html', form=form, imsi_list=imsi_list)
+        return render_template('imsi_tracking/imsi_tracking.html', form=form, imsi_list=imsi_list)
 
     def post(self):
         """
+        Receives control after the users clicks submit on the web page via the HTTP POST request done on the HTML form
+        action method.
 
-        :return:
+        The string of imsis is extracted from the form and passed on to either a HTTP POST or DELETE request to the
+        USCC ENG REST API. Which request to perform is determined by interrogating the Add or Delete radio button to
+        determine which value the radio button contains.
+
+        :return: If the form validates correctly then a redirect to the same page is done to reload the page with the
+        updated imsi list. If not then the web page is loaded without the imsi list so that any error messages can be
+        displayed.
         """
 
         form = ImsiForm()
@@ -52,23 +78,25 @@ class ImsiTracking(MethodView):
                     Common.create_flash_message('Imsi(s) successfully added')
                 else:
                     Common.create_flash_message(imsi_post_resp)
-                return redirect('/track-imsi')
+                return redirect(url_for('imsi_tracking'))
             else:
                 self.delete()
-                return redirect('/track-imsi')
+                return redirect(url_for('imsi_tracking'))
         else:
             if len(form.errors) != 0:
                 for error_message_text in form.errors.values():
-                    # imsi_field_error = form..errors[0]
-                    # flash(imsi_field_error)
-                    flash(error_message_text[0])
+                    Common.create_flash_message(error_message_text[0])
 
-        return render_template('imsi_tracking/imsi_add.html', form=form)
+        return render_template('imsi_tracking/imsi_tracking.html', form=form)
 
     def delete(self):
         """
+        Called by the above post() method if the radio button value is 'D' in which an HTTP DELETE request is made to
+        the USCC ENG REST API to delete the imsi(s) from the tracking file.
 
-        :return:
+        :return: True - if the delete API request is successful with a successful message
+                False - if the delete API request is unsuccessful with an error message derived from the API HTTP
+                        Response object.
         """
 
         imsi_delete_resp = requests.delete(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
