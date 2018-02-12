@@ -32,12 +32,23 @@ class Imsi(Resource):
         """
 
         if Common.check_path_exists(Imsi.imsi_subscribers_file):
+            imsi_parser = Common.create_api_parser()
+            imsi_parser.add_argument('no_alias', choices=['true', 'false'])
+            imsi_get_args = Common.parse_request_args(imsi_parser)
             list_o_subscriber_ids = []
             dict_of_subscribers = {}
             with open(Imsi.imsi_subscribers_file) as imsi_fh:
                 for line in imsi_fh:
-                    line = line.rstrip('\n')
-                    list_o_subscriber_ids.append(line)
+                    if imsi_get_args.get('no_alias') == 'true':
+                        if '(' in line:
+                            imsi, alias_right_paren = line.split('(', 1)
+                            list_o_subscriber_ids.append(imsi)
+                        else:
+                            line = line.rstrip('\n')
+                            list_o_subscriber_ids.append(line)
+                    else:
+                        line = line.rstrip('\n')
+                        list_o_subscriber_ids.append(line)
 
             for list_index in range(len(list_o_subscriber_ids)):
                 dict_of_subscribers[list_index] = list_o_subscriber_ids[list_index]
