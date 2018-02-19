@@ -4,12 +4,12 @@ from flask_restful import Resource, fields, marshal
 
 
 api_urls = {
-    'uri1': fields.Url('sitemap', absolute=True),
-    'uri2': fields.Url('listall', absolute=True),
-    'uri3': fields.Url('tableaction', absolute=True),
-    'uri4': fields.Url('rowquery', absolute=True),
-    'uri5': fields.Url('scanning', absolute=True),
-    'uri6': fields.Url('imsi', absolute=True)
+    'uri1': fields.Url('listall', absolute=True),
+    'uri2': fields.Url('tableaction', absolute=True),
+    'uri3': fields.Url('rowquery', absolute=True),
+    'uri4': fields.Url('scanning', absolute=True),
+    'uri5': fields.Url('imsi', absolute=True),
+    'uri6': fields.Url('authenticate', absolute=True)
 }
 
 
@@ -42,6 +42,7 @@ class SiteMap(Resource):
         temp_dict = {}
         marshal_dict = marshal(api_urls, api_urls)
         for url_key in api_urls.keys():
+            temp_dict[marshal_dict.get(url_key)] = ""
             for descrip_key in endpoint_description_dict.keys():
                 if descrip_key in marshal_dict.get(url_key):
                     temp_dict[marshal_dict.get(url_key)] = endpoint_description_dict.get(descrip_key)

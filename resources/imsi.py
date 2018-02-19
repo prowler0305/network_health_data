@@ -2,6 +2,7 @@ import sys
 import os
 from flask import jsonify
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required
 from common.common import Common
 
 
@@ -19,6 +20,7 @@ class Imsi(Resource):
         imsi_subscribers_file = '/opt/app-root/src/data_only/imsi-Subscribers'
 
     @staticmethod
+    @jwt_required
     def get():
         """
 
@@ -27,6 +29,14 @@ class Imsi(Resource):
         Example using cURL:
 
             curl http://localhost:5000/v1/imsis
+
+        Protected view with jwt_required, which requires a valid JWT to be present in the header.
+
+        Example using cURL command after obtain JWT from login method which is in a local variable "ACCESS":
+        Linux:
+            curl -H "Authorization: JWT $ACCESS" http://localhost:5000/jwt_ext/protected
+        Windows:
+            curl -H "Authorization: JWT %access%" http://localhost:5000/jwt_ext/protected
 
         :return: list of imsis as a JSON object
         """
@@ -62,6 +72,7 @@ class Imsi(Resource):
         return response
 
     @staticmethod
+    @jwt_required
     def post():
         """
         Looks for the "imsi" parameter to be provided in the body of the POST to add to the imsi-Subscribers file.

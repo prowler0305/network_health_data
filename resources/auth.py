@@ -17,38 +17,41 @@ class Authenticate(Resource):
 
         Test using following cURL command after obtain JWT from login method:
             Linux(syntax):
-                curl -H "content-type: application/json" -X POST -d '{"username":"test","password":"test"}' http://localhost:5000/jwt_ext/login
+                curl -H "content-type: application/json" -X POST -d '{"username":"test","password":"test"}' http://localhost:5000/v1/login
             Windows(syntax):
-                curl -H "Content-Type: application/json" -X POST http://localhost:5000/jwt_ext/login -d "{\"username\":\"test\",\"password\":\"test\"}"
+                curl -H "Content-Type: application/json" -X POST http://localhost:5000/v1/login -d "{\"username\":\"test\",\"password\":\"test\"}"
         :return:
         """
+        users_dict = dict(northcentral='mypass',
+                          aspea002='admin83'
+                          )
         if not request.is_json:
             response = jsonify({'msg': 'Missing JSON in request'})
             response.status_code = 400
             return response
 
         params = request.get_json()
-        username = params.get('username')
-        password = params.get('password')
+        user_name = params.get('username')
+        user_password = params.get('password')
 
-        if not username:
+        if not user_name:
             response = jsonify({'msg': 'Missing username parameter'})
             response.status_code = 400
             return response
-        if not password:
+        if not user_password:
             response = jsonify({'msg': 'Missing password parameter'})
             response.status_code = 400
             return response
 
-        if username != 'test' or password != 'test':
+        if users_dict.get(user_name) is None or users_dict.get(user_name) != user_password:
             response = jsonify({'msg': 'Bad username or password'})
             response.status_code = 401
             return response
 
         # Identity can be any data that is json serializable
         art = {
-            'access_token': create_access_token(identity=username),
-            'refresh_token': create_refresh_token(identity=username)
+            'access_token': create_access_token(identity=user_name),
+            'refresh_token': create_refresh_token(identity=user_name)
         }
         # print(art)
         response = jsonify(art)

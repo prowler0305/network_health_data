@@ -1,3 +1,4 @@
+import requests
 from flask import flash, json
 from requests import Response
 
@@ -28,3 +29,19 @@ class Common(object):
             return flash(message_dict['message'], category=category_request)
         else:
             return flash(message, category=category_request)
+
+    @staticmethod
+    def unauthorized_error(response_obj):
+        """
+        Accesses and returns the unauthorized error message an HTTP response object that contains an Unauthorized status
+         code from the USCC Engineering API
+
+        :param response_obj: http response object
+        :return: error message text or if response_obj is not a 401 or the text does not contain a msg key in json
+        string then None
+        """
+        if response_obj.status_code == requests.codes.unauthorized:
+            error_message_dict = json.loads(response_obj.text)
+            return error_message_dict.get('msg')
+        else:
+            return None

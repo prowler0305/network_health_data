@@ -21,7 +21,8 @@ class ImsiTracking(MethodView):
         except IndexError:
             self.imsi_tracking_api_url = 'http://www.uscc-eng-api.devengos.uscc.com/v1/imsis'
 
-        self.imsi_header = {'content-type': 'application/json'}
+        self.art = None
+        self.imsi_header = {'content-type': 'application/json', 'Authorization': 'JWT {}'.format(self.art)}
         self.imsi_tracking_dict = dict(imsi=None)
 
     def get(self):
@@ -32,10 +33,14 @@ class ImsiTracking(MethodView):
 
         :return: Renders the html page with all substituted content needed.
         """
-
+        if request.args.get('art') is None:
+            return redirect(url_for('uscc_login'))
+        else:
+            self.art = request.args.get('art')
+        auth_header = {'Authorization': 'JWT {}'.format(self.art)}
         form = ImsiForm()
         imsi_list = {}
-        imsi_list_get_resp = requests.get(self.imsi_tracking_api_url)
+        imsi_list_get_resp = requests.get(self.imsi_tracking_api_url, headers=auth_header)
         if imsi_list_get_resp.status_code == requests.codes.ok:
             if request.args.get('imsi_filter') is not None and request.args.get('imsi_filter') != '':
                 for key, imsi_value in imsi_list_get_resp.json().items():
@@ -46,6 +51,11 @@ class ImsiTracking(MethodView):
                             imsi_list[key] = imsi_value
             else:
                 imsi_list = imsi_list_get_resp.json()
+        elif imsi_list_get_resp.status_code == requests.codes.unauthorized:
+            return redirect(url_for('uscc_login'))
+            # get_imsi_list_error = Common.unauthorized_error(imsi_list_get_resp)
+            # if get_imsi_list_error is not None:
+            #     Common.create_flash_message("%s:%s Message: %s" %(imsi_list_get_resp.status_code, imsi_list_get_resp.reason,get_imsi_list_error))
         else:
             get_imsi_list_error = "Retrieving list of tracked Imsi failed with: %s:%s.\nPlease contact Core Automation Team" %\
                             (str(imsi_list_get_resp.status_code), imsi_list_get_resp.reason)

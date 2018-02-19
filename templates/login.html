@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>U.S. Cellular Engineering</title>
+</head>
+<body>
+
+    {% block content %}
+        <h1>U.S. Cellular Login</h1>
+        <form method="POST">
+            {{ form.csrf_token }}
+            {{ form.username.label }}
+            {{ form.username(size=25) }}
+            <p>
+            {{ form.password.label }}
+            {{ form.password(size=25) }}
+            </p>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <p>
+                    {% if message == "This field is required." %}
+                        {{ message }}
+                    {% endif%}
+                </p>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith%}
+            {{ form.submit() }}
+        </form>
+    {% endblock %}
+</body>
+</html>
