@@ -22,7 +22,7 @@ class Authenticate(Resource):
                 curl -H "Content-Type: application/json" -X POST http://localhost:5000/v1/login -d "{\"username\":\"test\",\"password\":\"test\"}"
         :return:
         """
-        api_cred_path = 'C:\\Users\\Owner\\IdeaProjects\\uscc_eng_api_personal\\local_test_library\\api_cred'
+        api_cred_path = 'local_test_library/api_cred'
 
         if not request.is_json:
             response = jsonify({'msg': 'Missing JSON in request'})
