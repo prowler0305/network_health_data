@@ -76,8 +76,11 @@
         <p></p>
         {% if imsi_list %}
             {% for imsi in imsi_list.values() %}
-            <li>{{imsi}}</li>
+            <li>{{ imsi }}</li>
             {% endfor %}
+        {% endif %}
+        {% if art %}
+            {{ form.art(value=art) }}
         {% endif %}
     </form>
 

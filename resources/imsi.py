@@ -129,6 +129,7 @@ class Imsi(Resource):
         return response
 
     @staticmethod
+    @jwt_required
     def delete():
         """
         Removes either a single imsi or a comma delimited string of imsis from the imsi-subscribers file.

@@ -2,9 +2,6 @@ from flask import jsonify
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, jwt_refresh_token_required, get_jwt_identity
 
-# This Authentication resource is currently not in use as the USCC Engineering API data is controlled using kerberos authentication. See
-# class: AuthenticateKerberos in py file: auth_kerb.py.
-
 
 class Refresh(Resource):
     @staticmethod
@@ -16,9 +13,9 @@ class Refresh(Resource):
 
         Test using following cURL command after obtain JWT from login method:
             Linux(syntax):
-                curl -H "Authorization: JWT $refresh http://localhost:5000/jwt_ext/refresh_token
+                curl -H "Authorization: JWT $refresh http://localhost:5000/v1/refresh_token
             Windows(syntax):
-                curl -H "Authorization: JWT %refresh%" http://localhost:5000/jwt_ext/refresh_token
+                curl -H "Authorization: JWT %refresh%" http://localhost:5000/v1/refresh_token
         :return:
         """
         current_user = get_jwt_identity()

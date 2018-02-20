@@ -22,7 +22,7 @@ class ImsiTracking(MethodView):
             self.imsi_tracking_api_url = 'http://www.uscc-eng-api.devengos.uscc.com/v1/imsis'
 
         self.art = None
-        self.imsi_header = {'content-type': 'application/json', 'Authorization': 'JWT {}'.format(self.art)}
+        self.imsi_header = {'content-type': 'application/json'}
         self.imsi_tracking_dict = dict(imsi=None)
 
     def get(self):
@@ -33,10 +33,10 @@ class ImsiTracking(MethodView):
 
         :return: Renders the html page with all substituted content needed.
         """
-        if request.args.get('art') is None:
+
+        if not self.set_art():
             return redirect(url_for('uscc_login'))
-        else:
-            self.art = request.args.get('art')
+
         auth_header = {'Authorization': 'JWT {}'.format(self.art)}
         form = ImsiForm()
         imsi_list = {}
@@ -61,7 +61,7 @@ class ImsiTracking(MethodView):
                             (str(imsi_list_get_resp.status_code), imsi_list_get_resp.reason)
             Common.create_flash_message(get_imsi_list_error)
 
-        return render_template('imsi_tracking/imsi_tracking.html', form=form, imsi_list=imsi_list)
+        return render_template('imsi_tracking/imsi_tracking.html', form=form, imsi_list=imsi_list, art=self.art)
 
     def post(self):
         """
@@ -77,6 +77,7 @@ class ImsiTracking(MethodView):
         displayed.
         """
 
+        self.set_art()
         form = ImsiForm()
         if form.validate_on_submit():
             self.imsi_tracking_dict['imsi'] = request.form['imsis']
@@ -88,10 +89,10 @@ class ImsiTracking(MethodView):
                     Common.create_flash_message('Imsi(s) successfully added')
                 else:
                     Common.create_flash_message(imsi_post_resp)
-                return redirect(url_for('imsi_tracking'))
+                return redirect(url_for('imsi_tracking', art=self.art))
             else:
                 self.delete()
-                return redirect(url_for('imsi_tracking'))
+                return redirect(url_for('imsi_tracking', art=self.art))
         else:
             if len(form.errors) != 0:
                 for error_message_text in form.errors.values():
@@ -109,6 +110,7 @@ class ImsiTracking(MethodView):
                         Response object.
         """
 
+
         imsi_delete_resp = requests.delete(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
                                            headers=self.imsi_header)
         if imsi_delete_resp.status_code == requests.codes.ok:
@@ -117,4 +119,17 @@ class ImsiTracking(MethodView):
         else:
             Common.create_flash_message(imsi_delete_resp)
             return False
+
+    def set_art(self):
+        """
+        Sets the class variable that contains the known JWT access token.
+        :return: True if the class instance variable is set otherwise False
+        """
+
+        if request.args.get('art') is not None:
+            self.art = request.args.get('art')
+            self.imsi_header['Authorization'] = 'JWT {}'.format(self.art)
+            return True
+
+        return False
 
