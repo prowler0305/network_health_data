@@ -45,6 +45,11 @@ class Login(MethodView):
             if auth_response.status_code == requests.codes.ok:
                 auth_data = json.loads(auth_response.text)
                 return redirect(url_for('imsi_tracking', art=auth_data.get('access_token')))
+            elif auth_response.status_code == requests.codes.unauthorized:
+                bad_cred_mmsg = 'Username and/or password is invalid. Please reenter.'
+                Common.create_flash_message(bad_cred_mmsg)
+            else:
+                Common.create_flash_message(auth_response)
         else:
             if len(form.errors) != 0:
                 for error_message_text in form.errors.values():

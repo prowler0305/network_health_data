@@ -21,7 +21,7 @@
             <ul>
                 {% for message in messages %}
                 <p>
-                    {% if message == "This field is required." %}
+                    {% if message %}
                         {{ message }}
                     {% endif%}
                 </p>

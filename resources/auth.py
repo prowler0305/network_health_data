@@ -22,9 +22,8 @@ class Authenticate(Resource):
                 curl -H "Content-Type: application/json" -X POST http://localhost:5000/v1/login -d "{\"username\":\"test\",\"password\":\"test\"}"
         :return:
         """
-        users_dict = dict(northcentral='mypass',
-                          aspea002='admin83'
-                          )
+        api_cred_path = 'C:\\Users\\Owner\\IdeaProjects\\uscc_eng_api_personal\\local_test_library\\api_cred'
+
         if not request.is_json:
             response = jsonify({'msg': 'Missing JSON in request'})
             response.status_code = 400
@@ -43,17 +42,18 @@ class Authenticate(Resource):
             response.status_code = 400
             return response
 
-        if users_dict.get(user_name) is None or users_dict.get(user_name) != user_password:
-            response = jsonify({'msg': 'Bad username or password'})
-            response.status_code = 401
-            return response
+        with open(api_cred_path) as afh:
+            for line in afh:
+                file_userid, file_password = line.split('=')
+                if file_userid == user_name and file_password.strip('\n') == user_password:
+                    # Identity can be any data that is json serializable
+                    art = {
+                        'access_token': create_access_token(identity=user_name),
+                        'refresh_token': create_refresh_token(identity=user_name)}
+                    response = jsonify(art)
+                    response.status_code = 200
+                    return response
 
-        # Identity can be any data that is json serializable
-        art = {
-            'access_token': create_access_token(identity=user_name),
-            'refresh_token': create_refresh_token(identity=user_name)
-        }
-        # print(art)
-        response = jsonify(art)
-        response.status_code = 200
+        response = jsonify({'msg': 'Bad username or password'})
+        response.status_code = 401
         return response

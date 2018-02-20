@@ -24,7 +24,7 @@ uscc_eng_app.config['SECRET_KEY'] = 'you-will-never-guess'
 # TODO: SECRET_KEY - digitally-sign for the JWT token. This needs to be more difficult. Maybe a random generated string?
 uscc_eng_app.config['JWT_SECRET_KEY'] = 'super-secret'
 uscc_eng_app.config['JWT_HEADER_TYPE'] = 'JWT'
-uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=20)
+uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(minutes=20)
 jwt = JWTManager(uscc_eng_app)
 api = Api(uscc_eng_app, prefix='/v1')
 
