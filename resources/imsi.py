@@ -40,6 +40,7 @@ class Imsi(Resource):
         if Common.check_path_exists(Imsi.imsi_subscribers_file):
             imsi_parser = Common.create_api_parser()
             imsi_parser.add_argument('no_alias', choices=['true', 'false'])
+            imsi_parser.add_argument('userid')
             imsi_get_args = Common.parse_request_args(imsi_parser)
             list_o_subscriber_ids = []
             dict_of_subscribers = {}
@@ -109,6 +110,7 @@ class Imsi(Resource):
 
         uscc_eng_parser = Common.create_api_parser()
         uscc_eng_parser.add_argument('imsi', location='json')
+        uscc_eng_parser.add_argument('userid')
         args = Common.parse_request_args(uscc_eng_parser)
         args['imsi'] = args.get('imsi').replace(' ', '')
         list_imsi = args.get('imsi').split(',')
@@ -148,6 +150,7 @@ class Imsi(Resource):
         if Common.check_path_exists(Imsi.imsi_subscribers_file):
             uscc_eng_parser = Common.create_api_parser()
             uscc_eng_parser.add_argument('imsi', location='json')
+            uscc_eng_parser.add_argument('userid')
             args = Common.parse_request_args(uscc_eng_parser)
             args['imsi'] = args.get('imsi').replace(' ', '')
             delete_imsi_list = args.get('imsi').split(',')

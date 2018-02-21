@@ -1,4 +1,3 @@
-import sys
 import datetime
 from flask import Flask
 from flask_restful import Api
@@ -9,7 +8,7 @@ from resources.site_map import SiteMap
 from resources.scanning import Scanning
 from resources.imsi import Imsi
 from uscc_apps.imsi_tracking.imsi_tracking import ImsiTracking
-from uscc_apps.uscc_app_login import *
+from uscc_apps.uscc_login.uscc_app_login import *
 # from resources.auth_kerb import AuthenticateKerberos
 from resources.auth import Authenticate
 from resources.refresh import Refresh
@@ -24,7 +23,13 @@ uscc_eng_app.config['SECRET_KEY'] = 'you-will-never-guess'
 # TODO: SECRET_KEY - digitally-sign for the JWT token. This needs to be more difficult. Maybe a random generated string?
 uscc_eng_app.config['JWT_SECRET_KEY'] = 'super-secret'
 uscc_eng_app.config['JWT_HEADER_TYPE'] = 'JWT'
-uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(minutes=20)
+try:
+    if sys.argv[1] == '--dev':
+        uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=int(sys.argv[2]))
+        uscc_eng_app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(seconds=int(sys.argv[3]))
+except IndexError:
+        pass  # Take the JWT Manager default values.
+        # uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=20)
 jwt = JWTManager(uscc_eng_app)
 api = Api(uscc_eng_app, prefix='/v1')
 

@@ -17,13 +17,14 @@ class ImsiTracking(MethodView):
 
         try:
             if sys.argv[1] == '--dev':
-                self.imsi_tracking_api_url = 'http://localhost:5000/v1/imsis'
+                self.imsi_tracking_api_url = 'http://localhost:5000/v1/imsis?userid='
         except IndexError:
             self.imsi_tracking_api_url = 'http://www.uscc-eng-api.devengos.uscc.com/v1/imsis'
 
         self.art = None
         self.imsi_header = {'content-type': 'application/json'}
         self.imsi_tracking_dict = dict(imsi=None)
+        self.userid = request.args.get('userid')
 
     def get(self):
         """
@@ -36,6 +37,11 @@ class ImsiTracking(MethodView):
 
         if not self.set_art():
             return redirect(url_for('uscc_login'))
+
+        # Get the userid used in logging in so we have it for future use
+        # self.userid = request.args.get('userid')
+        # Update the url to the Imsi API to include the userid as a query string parameter
+        self.imsi_tracking_api_url = self.imsi_tracking_api_url + self.userid
 
         auth_header = {'Authorization': 'JWT {}'.format(self.art)}
         form = ImsiForm()
@@ -53,9 +59,6 @@ class ImsiTracking(MethodView):
                 imsi_list = imsi_list_get_resp.json()
         elif imsi_list_get_resp.status_code == requests.codes.unauthorized:
             return redirect(url_for('uscc_login'))
-            # get_imsi_list_error = Common.unauthorized_error(imsi_list_get_resp)
-            # if get_imsi_list_error is not None:
-            #     Common.create_flash_message("%s:%s Message: %s" %(imsi_list_get_resp.status_code, imsi_list_get_resp.reason,get_imsi_list_error))
         else:
             get_imsi_list_error = "Retrieving list of tracked Imsi failed with: %s:%s.\nPlease contact Core Automation Team" %\
                             (str(imsi_list_get_resp.status_code), imsi_list_get_resp.reason)
@@ -89,10 +92,10 @@ class ImsiTracking(MethodView):
                     Common.create_flash_message('Imsi(s) successfully added')
                 else:
                     Common.create_flash_message(imsi_post_resp)
-                return redirect(url_for('imsi_tracking', art=self.art))
+                return redirect(url_for('imsi_tracking', art=self.art, userid=self.userid))
             else:
                 self.delete()
-                return redirect(url_for('imsi_tracking', art=self.art))
+                return redirect(url_for('imsi_tracking', art=self.art, userid=self.userid))
         else:
             if len(form.errors) != 0:
                 for error_message_text in form.errors.values():
@@ -110,8 +113,8 @@ class ImsiTracking(MethodView):
                         Response object.
         """
 
-
-        imsi_delete_resp = requests.delete(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
+        imsi_delete_resp = requests.delete(self.imsi_tracking_api_url,
+                                           data=json.dumps(self.imsi_tracking_dict),
                                            headers=self.imsi_header)
         if imsi_delete_resp.status_code == requests.codes.ok:
             Common.create_flash_message('Imsi(s) successfully deleted')
