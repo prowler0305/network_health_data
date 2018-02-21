@@ -13,7 +13,7 @@ class Imsi(Resource):
         if sys.argv[1] == '--dev':
             imsi_subscribers_file = 'local_test_library/imsi_test_data_'
     except IndexError:
-        imsi_subscribers_file = '/opt/app-root/src/data_only/imsi-Subscribers'
+        imsi_subscribers_file = '/opt/app-root/src/data_only/imsi-Subscribers-'
 
     @staticmethod
     @jwt_required
@@ -41,11 +41,11 @@ class Imsi(Resource):
         imsi_parser.add_argument('no_alias', choices=['true', 'false'])
         imsi_parser.add_argument('userid')
         imsi_get_args = Common.parse_request_args(imsi_parser)
-        Imsi.imsi_subscribers_file = Imsi.imsi_subscribers_file + imsi_get_args.get('userid')
-        if Common.check_path_exists(Imsi.imsi_subscribers_file):
+        imsi_file_path = Imsi.imsi_subscribers_file + imsi_get_args.get('userid')
+        if Common.check_path_exists(imsi_file_path):
             list_o_subscriber_ids = []
             dict_of_subscribers = {}
-            with open(Imsi.imsi_subscribers_file) as imsi_fh:
+            with open(imsi_file_path) as imsi_fh:
                 for line in imsi_fh:
                     if imsi_get_args.get('no_alias') == 'true':
                         if '(' in line:
@@ -64,9 +64,11 @@ class Imsi(Resource):
             response = jsonify(dict_of_subscribers)
             response.status_code = 200
         else:
-            response = jsonify({'message': "Can't get to file containing subscriber IDs. Please contact Core "
-                                           "Automation Team."})
-            response.status_code = 500
+            response = jsonify({"message": "File doesn't exist yet. Add an Imsi to create the File."})
+            response.status_code = 204
+            # response = jsonify({'message': "Can't get to file containing subscriber IDs. Please contact Core "
+            #                                "Automation Team."})
+            # response.status_code = 500
         return response
 
     @staticmethod
@@ -107,21 +109,21 @@ class Imsi(Resource):
 
         uscc_eng_parser = Common.create_api_parser()
         uscc_eng_parser.add_argument('imsi', location='json')
-        uscc_eng_parser.add_argument('userid')
+        uscc_eng_parser.add_argument('userid', location='json')
         args = Common.parse_request_args(uscc_eng_parser)
-        Imsi.imsi_subscribers_file = Imsi.imsi_subscribers_file + args.get('userid')
+        imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
 
         # If the tracking file doesn't exist then create it
-        if not Common.check_path_exists(Imsi.imsi_subscribers_file):
-            with open(Imsi.imsi_subscribers_file, "w+") as sfhw:
+        if not Common.check_path_exists(imsi_file_path):
+            with open(imsi_file_path, "w+") as sfhw:
                 pass
 
         args['imsi'] = args.get('imsi').replace(' ', '')
         list_imsi = args.get('imsi').split(',')
-        with open(Imsi.imsi_subscribers_file, "r") as sfhr:
+        with open(imsi_file_path, "r") as sfhr:
             lines = sfhr.readlines()
             sfhr.close()
-            with open(Imsi.imsi_subscribers_file, "a") as sfh:
+            with open(imsi_file_path, "a") as sfh:
                 for imsi in list_imsi:
                     if imsi + '\n' not in lines:
                         sfh.write(imsi + "\n")
@@ -151,17 +153,19 @@ class Imsi(Resource):
                     Failure - Error that occurred in JSON response
         """
 
-        if Common.check_path_exists(Imsi.imsi_subscribers_file):
-            uscc_eng_parser = Common.create_api_parser()
-            uscc_eng_parser.add_argument('imsi', location='json')
-            uscc_eng_parser.add_argument('userid')
-            args = Common.parse_request_args(uscc_eng_parser)
+        uscc_eng_parser = Common.create_api_parser()
+        uscc_eng_parser.add_argument('imsi', location='json')
+        uscc_eng_parser.add_argument('userid', location='json')
+        args = Common.parse_request_args(uscc_eng_parser)
+        imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
+
+        if Common.check_path_exists(imsi_file_path):
             args['imsi'] = args.get('imsi').replace(' ', '')
             delete_imsi_list = args.get('imsi').split(',')
-            with open(Imsi.imsi_subscribers_file, "r") as sfhr:
+            with open(imsi_file_path, "r") as sfhr:
                 lines = sfhr.readlines()
                 sfhr.close()
-                with open(Imsi.imsi_subscribers_file, "w") as sfhw:
+                with open(imsi_file_path, "w") as sfhw:
                     for line in lines:
                         if '(' in line:
                             imsi, junk = line.split('(', 1)

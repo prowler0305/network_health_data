@@ -17,14 +17,14 @@ class ImsiTracking(MethodView):
 
         try:
             if sys.argv[1] == '--dev':
-                self.imsi_tracking_api_url = 'http://localhost:5000/v1/imsis?userid='
+                self.imsi_tracking_api_url = 'http://localhost:5000/v1/imsis'
         except IndexError:
             self.imsi_tracking_api_url = 'http://www.uscc-eng-api.devengos.uscc.com/v1/imsis'
 
         self.art = None
         self.imsi_header = {'content-type': 'application/json'}
-        self.imsi_tracking_dict = dict(imsi=None)
-        self.userid = request.args.get('userid')
+        self.imsi_tracking_dict = dict(imsi=None,
+                                       userid=None)
 
     def get(self):
         """
@@ -38,15 +38,13 @@ class ImsiTracking(MethodView):
         if not self.set_art():
             return redirect(url_for('uscc_login'))
 
-        # Get the userid used in logging in so we have it for future use
-        # self.userid = request.args.get('userid')
-        # Update the url to the Imsi API to include the userid as a query string parameter
-        self.imsi_tracking_api_url = self.imsi_tracking_api_url + self.userid
+        # self.imsi_tracking_api_url = self.imsi_tracking_api_url + self.userid
+        self.imsi_tracking_dict['userid'] = request.args.get('userid')
 
         auth_header = {'Authorization': 'JWT {}'.format(self.art)}
         form = ImsiForm()
         imsi_list = {}
-        imsi_list_get_resp = requests.get(self.imsi_tracking_api_url, headers=auth_header)
+        imsi_list_get_resp = requests.get(self.imsi_tracking_api_url, params=self.imsi_tracking_dict, headers=auth_header)
         if imsi_list_get_resp.status_code == requests.codes.ok:
             if request.args.get('imsi_filter') is not None and request.args.get('imsi_filter') != '':
                 for key, imsi_value in imsi_list_get_resp.json().items():
@@ -59,12 +57,15 @@ class ImsiTracking(MethodView):
                 imsi_list = imsi_list_get_resp.json()
         elif imsi_list_get_resp.status_code == requests.codes.unauthorized:
             return redirect(url_for('uscc_login'))
+        elif imsi_list_get_resp.status_code == requests.codes.no_content:
+            pass
         else:
             get_imsi_list_error = "Retrieving list of tracked Imsi failed with: %s:%s.\nPlease contact Core Automation Team" %\
                             (str(imsi_list_get_resp.status_code), imsi_list_get_resp.reason)
             Common.create_flash_message(get_imsi_list_error)
 
-        return render_template('imsi_tracking/imsi_tracking.html', form=form, imsi_list=imsi_list, art=self.art, userid=self.userid)
+        return render_template('imsi_tracking/imsi_tracking.html', form=form, imsi_list=imsi_list, art=self.art,
+                               userid=self.imsi_tracking_dict.get('userid'))
 
     def post(self):
         """
@@ -84,6 +85,7 @@ class ImsiTracking(MethodView):
         form = ImsiForm()
         if form.validate_on_submit():
             self.imsi_tracking_dict['imsi'] = request.form['imsis']
+            self.imsi_tracking_dict['userid'] = request.args.get('userid')
             if request.form['add_delete_radio'] == 'A':
                 imsi_post_resp = \
                     requests.post(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
@@ -92,10 +94,10 @@ class ImsiTracking(MethodView):
                     Common.create_flash_message('Imsi(s) successfully added')
                 else:
                     Common.create_flash_message(imsi_post_resp)
-                return redirect(url_for('imsi_tracking', art=self.art, userid=self.userid))
+                return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
             else:
                 self.delete()
-                return redirect(url_for('imsi_tracking', art=self.art, userid=self.userid))
+                return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
         else:
             if len(form.errors) != 0:
                 for error_message_text in form.errors.values():
