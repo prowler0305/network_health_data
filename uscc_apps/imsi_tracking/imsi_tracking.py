@@ -64,7 +64,7 @@ class ImsiTracking(MethodView):
                             (str(imsi_list_get_resp.status_code), imsi_list_get_resp.reason)
             Common.create_flash_message(get_imsi_list_error)
 
-        return render_template('imsi_tracking/imsi_tracking.html', form=form, imsi_list=imsi_list, art=self.art)
+        return render_template('imsi_tracking/imsi_tracking.html', form=form, imsi_list=imsi_list, art=self.art, userid=self.userid)
 
     def post(self):
         """

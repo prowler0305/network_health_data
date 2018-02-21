@@ -11,7 +11,7 @@ class Imsi(Resource):
     """
     try:
         if sys.argv[1] == '--dev':
-            imsi_subscribers_file = 'local_test_library/imsi_test_data'
+            imsi_subscribers_file = 'local_test_library/imsi_test_data_'
     except IndexError:
         imsi_subscribers_file = '/opt/app-root/src/data_only/imsi-Subscribers'
 
@@ -37,11 +37,12 @@ class Imsi(Resource):
         :return: list of imsis as a JSON object
         """
 
+        imsi_parser = Common.create_api_parser()
+        imsi_parser.add_argument('no_alias', choices=['true', 'false'])
+        imsi_parser.add_argument('userid')
+        imsi_get_args = Common.parse_request_args(imsi_parser)
+        Imsi.imsi_subscribers_file = Imsi.imsi_subscribers_file + imsi_get_args.get('userid')
         if Common.check_path_exists(Imsi.imsi_subscribers_file):
-            imsi_parser = Common.create_api_parser()
-            imsi_parser.add_argument('no_alias', choices=['true', 'false'])
-            imsi_parser.add_argument('userid')
-            imsi_get_args = Common.parse_request_args(imsi_parser)
             list_o_subscriber_ids = []
             dict_of_subscribers = {}
             with open(Imsi.imsi_subscribers_file) as imsi_fh:
@@ -104,14 +105,17 @@ class Imsi(Resource):
                     Failure - HTTP response
         """
 
-        if not Common.check_path_exists(Imsi.imsi_subscribers_file):
-            with open(Imsi.imsi_subscribers_file, "w+") as sfhw:
-                pass
-
         uscc_eng_parser = Common.create_api_parser()
         uscc_eng_parser.add_argument('imsi', location='json')
         uscc_eng_parser.add_argument('userid')
         args = Common.parse_request_args(uscc_eng_parser)
+        Imsi.imsi_subscribers_file = Imsi.imsi_subscribers_file + args.get('userid')
+
+        # If the tracking file doesn't exist then create it
+        if not Common.check_path_exists(Imsi.imsi_subscribers_file):
+            with open(Imsi.imsi_subscribers_file, "w+") as sfhw:
+                pass
+
         args['imsi'] = args.get('imsi').replace(' ', '')
         list_imsi = args.get('imsi').split(',')
         with open(Imsi.imsi_subscribers_file, "r") as sfhr:
