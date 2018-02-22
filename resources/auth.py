@@ -1,3 +1,4 @@
+import sys
 from flask import jsonify, request
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, get_jwt_identity
@@ -22,7 +23,11 @@ class Authenticate(Resource):
                 curl -H "Content-Type: application/json" -X POST http://localhost:5000/v1/login -d "{\"username\":\"test\",\"password\":\"test\"}"
         :return:
         """
-        api_cred_path = 'local_test_library/api_cred'
+        try:
+            if sys.argv[1] == '--dev':
+                api_cred_path = 'local_test_library/api_cred'
+        except IndexError:
+            api_cred_path = '/opt/app-root/api-file/api'
 
         if not request.is_json:
             response = jsonify({'msg': 'Missing JSON in request'})

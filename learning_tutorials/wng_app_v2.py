@@ -1,7 +1,7 @@
 import datetime
 from flask import Flask
 from flask_restful import Api
-from resources.jwt_ext_protected import Protected
+from local_test_library.jwt_ext_protected import Protected
 from resources.auth import Authenticate
 from resources.refresh import Refresh
 from flask_jwt_extended import JWTManager
