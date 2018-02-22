@@ -38,7 +38,6 @@ class ImsiTracking(MethodView):
         if not self.set_art():
             return redirect(url_for('uscc_login'))
 
-        # self.imsi_tracking_api_url = self.imsi_tracking_api_url + self.userid
         self.imsi_tracking_dict['userid'] = request.args.get('userid')
 
         auth_header = {'Authorization': 'JWT {}'.format(self.art)}
