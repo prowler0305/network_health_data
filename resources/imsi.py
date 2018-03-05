@@ -66,9 +66,7 @@ class Imsi(Resource):
         else:
             response = jsonify({"message": "File doesn't exist yet. Add an Imsi to create the File."})
             response.status_code = 204
-            # response = jsonify({'message': "Can't get to file containing subscriber IDs. Please contact Core "
-            #                                "Automation Team."})
-            # response.status_code = 500
+
         return response
 
     @staticmethod
