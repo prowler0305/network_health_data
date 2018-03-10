@@ -12,6 +12,7 @@ from uscc_apps.uscc_login.uscc_app_login import *
 # from resources.auth_kerb import AuthenticateKerberos
 from resources.auth import Authenticate
 from resources.refresh import Refresh
+from resources.volte_load import VolteLoad
 from flask_jwt_extended import JWTManager
 
 
@@ -45,6 +46,7 @@ api.add_resource(TableAction, '/action')
 api.add_resource(RowQuery, '/row_query')
 api.add_resource(Scanning, '/scan')
 api.add_resource(Imsi, '/imsis')
+api.add_resource(VolteLoad, '/volte_load')
 
 imsi_view = ImsiTracking.as_view(name='imsi_tracking')
 login_view = Login.as_view(name='uscc_login')

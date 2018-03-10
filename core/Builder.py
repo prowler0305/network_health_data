@@ -2,6 +2,7 @@ from data_source_resources.hbase_resources.hbase_list_tables import HbaseListTab
 from data_source_resources.hbase_resources.hbase_table_actions import HbaseTableAction
 from data_source_resources.hbase_resources.hbase_row_query import HbaseRowQuery
 from data_source_resources.hbase_resources.hbase_scan import HbaseScan
+from data_source_resources.postgres_resources.VoLte_PostGres import VolteInvestigation
 
 
 class DBbuilder(object):
@@ -9,8 +10,14 @@ class DBbuilder(object):
     Static class that contains static methods to service different USCC Engineering API Endpoints
     """
 
-    db_service_dict = {'hbase_list_all': HbaseListTables, 'hbase_action': HbaseTableAction, 'list_all': HbaseListTables,
-                       'action': HbaseTableAction, 'hbase_row_query': HbaseRowQuery, 'hbase_scan': HbaseScan}
+    db_service_dict = {'hbase_list_all': HbaseListTables,
+                       'hbase_action': HbaseTableAction,
+                       'list_all': HbaseListTables,
+                       'action': HbaseTableAction,
+                       'hbase_row_query': HbaseRowQuery,
+                       'hbase_scan': HbaseScan,
+                       'volte_kcc': VolteInvestigation
+                       }
 
     @staticmethod
     def build_service(db_service, request_args):

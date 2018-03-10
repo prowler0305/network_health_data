@@ -28,7 +28,8 @@ class SiteMap(Resource):
                                          list_all='List all the tables in the database name requested',
                                          action='Query information about a specific table in the database requests. (E.g. schema)',
                                          imsis='Interacts with the imis tracking file',
-                                         scan='Creates a Scanner object for use with Hbase'
+                                         scan='Creates a Scanner object for use with Hbase',
+                                         login='Access the authentication mechanism to have JWT access and refresh tokens issued for an authorized user. Currently this uses a secret file within the container environment.'
                                          )
 
         # endpoint_url_dict = {}

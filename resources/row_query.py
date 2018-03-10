@@ -5,7 +5,7 @@ from common.common import Common
 
 
 class RowQuery(Resource):
-    """~
+    """
     """
     @staticmethod
     def get():

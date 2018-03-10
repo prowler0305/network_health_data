@@ -10,11 +10,12 @@ The core of the USCC ENG API was written, at the time this documentation was wri
 
 ## Directory Structure
 
-The structure is organized into 3 high level directories.
+The structure is organized into 4 high level directories.
 
 1. URL Endpoints (a.k.a Resources)
-2. Data Source Specific resources
-3. Core
+1. Data Source Specific resources
+1. Core
+1. Common
 
 ### Resources
 The resources directory contains the python files that correlate to a URL endpoint. These files encapsulates the specific HTTP protocol verbs, i.e. GET, POST, DELETE, PUT, etc that provide the interface to the accesses available to a data source.
@@ -23,4 +24,7 @@ The resources directory contains the python files that correlate to a URL endpoi
 The data_source_resources directory is a parent directory in which within contains sub directories. These subdirectories group together like python files that provide specific data source functionality.
 
 ### Core
-This directory contains python files that provide core api functionality or common functionality that can be used across the API.
+This directory contains python files that provide core api functionality.
+
+### Common
+This directory contains python files that provide common functionality that can be used across the API.
