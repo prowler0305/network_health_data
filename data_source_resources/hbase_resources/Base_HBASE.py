@@ -33,7 +33,7 @@ class BaseHbase(object):
 
     def build_parameters(self):
         """
-        Check and set all the expected and optional parameters that are needed for any USCC Engineering API request.
+        Check and set all the expected and optional parameters that are needed for any HBASE API request.
 
         :return: Tuple (Successful) - True, ""
                         (Unsuccessful) - False, "name-of-problematic-parm"
@@ -52,7 +52,7 @@ class BaseHbase(object):
 
     def get_parm_value(self, parameter_to_find):
         """
-        Tried to find the value for the parameter requested for in the request arguments dictionary.
+        Try to find the value for the parameter requested for in the request arguments dictionary.
         :param parameter_to_find:
         :return: Tuple returned by check_parms in py:class RequestParms
         """

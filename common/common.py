@@ -108,16 +108,17 @@ class Common(object):
         return
 
     @staticmethod
-    def parse_request_args(parser_instance):
+    def parse_request_args(parser_instance, strict_parm_list=True):
         """
-        Calls the RequestParser instances parse_args method with the 'strict=True' parameter which will throw a 404
+        Calls the RequestParser instances parse_args method with the 'strict=True' parameter which will throw a 400
         Bad Request exception if the HTTP request contains arguments not defined.
 
         :param parser_instance: instance of RequestParser
+        :param strict_parm_list: Indicates whether call to request parser should have strict flag set to True/False
         :return: parsed arguments as documented by RequestParser.parse_args() class instance method.
         """
 
-        args = parser_instance.parse_args(strict=True)
+        args = parser_instance.parse_args(strict=strict_parm_list)
         return args
 
     @staticmethod

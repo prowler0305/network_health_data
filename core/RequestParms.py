@@ -7,7 +7,7 @@ class RequestParms(object):
     def check_parms(request_args, parameter_name):
         """
         Checks to see if the request arguments contain the requested parameter name. Also checks to see that the
-        parameter requested has a value given. This serves as a way for HBASE subclass resources to do parameter
+        parameter requested has a value given. This serves as a way for subclass resources to do parameter
         validation beyond the request.RequestParser mechanism.
 
         :param request_args: dictionary of parameters.
@@ -19,7 +19,7 @@ class RequestParms(object):
 
         if parameter_name in request_args:
             arg_value = request_args.get(parameter_name)
-            if arg_value != "":
+            if arg_value != "" and arg_value is not None:
                 return True, arg_value
             else:
                 return False, ""
