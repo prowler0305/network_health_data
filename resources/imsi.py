@@ -2,6 +2,7 @@ import sys
 import os
 from flask import jsonify
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required
 from common.common import Common
 
 
@@ -10,15 +11,12 @@ class Imsi(Resource):
     """
     try:
         if sys.argv[1] == '--dev':
-            if os.name == 'posix':
-                imsi_subscribers_file = '/home/aspea002/IdeaProjects/USCC_ENG_API/local_test_library/imsi_test_data'
-            else:
-                imsi_subscribers_file = \
-                    'C:\\Users\\Owner\\IdeaProjects\\uscc_eng_api_personal\\local_test_library\\imsi_test_data'
+            imsi_subscribers_file = 'local_test_library/imsi_test_data_'
     except IndexError:
-        imsi_subscribers_file = '/opt/app-root/src/data_only/imsi-Subscribers'
+        imsi_subscribers_file = '/opt/app-root/src/data_only/imsi-Subscribers-'
 
     @staticmethod
+    @jwt_required
     def get():
         """
 
@@ -28,16 +26,26 @@ class Imsi(Resource):
 
             curl http://localhost:5000/v1/imsis
 
+        Protected view with jwt_required, which requires a valid JWT to be present in the header.
+
+        Example using cURL command after obtain JWT from login method which is in a local variable "ACCESS":
+        Linux:
+            curl -H "Authorization: JWT $ACCESS" http://localhost:5000/v1/login
+        Windows:
+            curl -H "Authorization: JWT %access%" http://localhost:5000/v1/login
+
         :return: list of imsis as a JSON object
         """
 
-        if Common.check_path_exists(Imsi.imsi_subscribers_file):
-            imsi_parser = Common.create_api_parser()
-            imsi_parser.add_argument('no_alias', choices=['true', 'false'])
-            imsi_get_args = Common.parse_request_args(imsi_parser)
+        imsi_parser = Common.create_api_parser()
+        imsi_parser.add_argument('no_alias', choices=['true', 'false'])
+        imsi_parser.add_argument('userid')
+        imsi_get_args = Common.parse_request_args(imsi_parser)
+        imsi_file_path = Imsi.imsi_subscribers_file + imsi_get_args.get('userid')
+        if Common.check_path_exists(imsi_file_path):
             list_o_subscriber_ids = []
             dict_of_subscribers = {}
-            with open(Imsi.imsi_subscribers_file) as imsi_fh:
+            with open(imsi_file_path) as imsi_fh:
                 for line in imsi_fh:
                     if imsi_get_args.get('no_alias') == 'true':
                         if '(' in line:
@@ -56,12 +64,13 @@ class Imsi(Resource):
             response = jsonify(dict_of_subscribers)
             response.status_code = 200
         else:
-            response = jsonify({'message': "Can't get to file containing subscriber IDs. Please contact Core "
-                                           "Automation Team."})
-            response.status_code = 500
+            response = jsonify({"message": "File doesn't exist yet. Add an Imsi to create the File."})
+            response.status_code = 204
+
         return response
 
     @staticmethod
+    @jwt_required
     def post():
         """
         Looks for the "imsi" parameter to be provided in the body of the POST to add to the imsi-Subscribers file.
@@ -96,19 +105,23 @@ class Imsi(Resource):
                     Failure - HTTP response
         """
 
-        if not Common.check_path_exists(Imsi.imsi_subscribers_file):
-            with open(Imsi.imsi_subscribers_file, "w+") as sfhw:
-                pass
-
         uscc_eng_parser = Common.create_api_parser()
         uscc_eng_parser.add_argument('imsi', location='json')
+        uscc_eng_parser.add_argument('userid', location='json')
         args = Common.parse_request_args(uscc_eng_parser)
+        imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
+
+        # If the tracking file doesn't exist then create it
+        if not Common.check_path_exists(imsi_file_path):
+            with open(imsi_file_path, "w+") as sfhw:
+                pass
+
         args['imsi'] = args.get('imsi').replace(' ', '')
         list_imsi = args.get('imsi').split(',')
-        with open(Imsi.imsi_subscribers_file, "r") as sfhr:
+        with open(imsi_file_path, "r") as sfhr:
             lines = sfhr.readlines()
             sfhr.close()
-            with open(Imsi.imsi_subscribers_file, "a") as sfh:
+            with open(imsi_file_path, "a") as sfh:
                 for imsi in list_imsi:
                     if imsi + '\n' not in lines:
                         sfh.write(imsi + "\n")
@@ -118,6 +131,7 @@ class Imsi(Resource):
         return response
 
     @staticmethod
+    @jwt_required
     def delete():
         """
         Removes either a single imsi or a comma delimited string of imsis from the imsi-subscribers file.
@@ -137,16 +151,19 @@ class Imsi(Resource):
                     Failure - Error that occurred in JSON response
         """
 
-        if Common.check_path_exists(Imsi.imsi_subscribers_file):
-            uscc_eng_parser = Common.create_api_parser()
-            uscc_eng_parser.add_argument('imsi', location='json')
-            args = Common.parse_request_args(uscc_eng_parser)
+        uscc_eng_parser = Common.create_api_parser()
+        uscc_eng_parser.add_argument('imsi', location='json')
+        uscc_eng_parser.add_argument('userid', location='json')
+        args = Common.parse_request_args(uscc_eng_parser)
+        imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
+
+        if Common.check_path_exists(imsi_file_path):
             args['imsi'] = args.get('imsi').replace(' ', '')
             delete_imsi_list = args.get('imsi').split(',')
-            with open(Imsi.imsi_subscribers_file, "r") as sfhr:
+            with open(imsi_file_path, "r") as sfhr:
                 lines = sfhr.readlines()
                 sfhr.close()
-                with open(Imsi.imsi_subscribers_file, "w") as sfhw:
+                with open(imsi_file_path, "w") as sfhw:
                     for line in lines:
                         if '(' in line:
                             imsi, junk = line.split('(', 1)
