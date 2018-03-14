@@ -24,7 +24,8 @@ class ImsiTracking(MethodView):
         self.art = None
         self.imsi_header = {'content-type': 'application/json'}
         self.imsi_tracking_dict = dict(imsi=None,
-                                       userid=None)
+                                       userid=None,
+                                       no_alias='true')
 
     def get(self):
         """

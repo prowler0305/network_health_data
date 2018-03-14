@@ -1,7 +1,8 @@
+import json
 from common.common import Common
 from flask import jsonify
 from data_source_resources.postgres_resources.Base_PostGres import *
-from core.RequestParms import RequestParms
+from psycopg2.extensions import AsIs
 
 
 class VolteInvestigation(BasePostGres):
@@ -42,7 +43,7 @@ class VolteInvestigation(BasePostGres):
             rc, value = self.get_parm_value(parm)
             if rc:
                 if parm == 'sql_params':
-                    self.sql_params = value
+                    self.sql_params = json.loads(value)
             else:
                 continue
 
@@ -55,9 +56,14 @@ class VolteInvestigation(BasePostGres):
         """
 
         volte_response = None
+        myvals = []
+        for value in self.sql_params.values():
+            myvals.append(value)
+
+        print(myvals)
         if self.establish_connection():
             if self.create_cursor():
-                if self.execute_statement(self.sql_cmd, self.sql_params):
+                if self.execute_statement(self.sql_cmd, (myvals,)):
                     if self.commit_work():
                         volte_response = jsonify({self.msg_key: 'successful'})
                         volte_response.status_code = 200
