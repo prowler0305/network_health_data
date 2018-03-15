@@ -39,7 +39,7 @@ class Imsi(Resource):
 
         imsi_parser = Common.create_api_parser()
         imsi_parser.add_argument('no_alias', choices=['true', 'false'])
-        imsi_parser.add_argument('userid')
+        imsi_parser.add_argument('userid', required=True)
         imsi_get_args = Common.parse_request_args(imsi_parser)
         imsi_file_path = Imsi.imsi_subscribers_file + imsi_get_args.get('userid')
         if Common.check_path_exists(imsi_file_path):
