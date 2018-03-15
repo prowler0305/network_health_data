@@ -29,8 +29,8 @@ try:
         uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=int(sys.argv[2]))
         uscc_eng_app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(seconds=int(sys.argv[3]))
 except IndexError:
-        pass  # Take the JWT Manager default values.
-        # uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=20)
+    # pass  # Take the JWT Manager default values.
+    uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=20)
 jwt = JWTManager(uscc_eng_app)
 api = Api(uscc_eng_app, prefix='/v1')
 
