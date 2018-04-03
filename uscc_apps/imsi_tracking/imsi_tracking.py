@@ -47,12 +47,17 @@ class ImsiTracking(MethodView):
         imsi_list_get_resp = requests.get(self.imsi_tracking_api_url, params=self.imsi_tracking_dict, headers=auth_header)
         if imsi_list_get_resp.status_code == requests.codes.ok:
             if request.args.get('imsi_filter') is not None and request.args.get('imsi_filter') != '':
+                user_filter = request.args.get('imsi_filter').lower()
                 for key, imsi_value in imsi_list_get_resp.json().items():
                     if '(' in imsi_value:
                         imsi, alias_right_paren = imsi_value.split('(', 1)
                         alias = alias_right_paren.rstrip(')')
-                        if request.args.get('imsi_filter').lower() == alias.lower():
-                            imsi_list[key] = imsi_value
+                        if user_filter.isdigit():
+                            if user_filter == imsi:
+                                imsi_list[key] = imsi_value
+                        else:
+                            if user_filter == alias.lower():
+                                imsi_list[key] = imsi_value
             else:
                 imsi_list = imsi_list_get_resp.json()
         elif imsi_list_get_resp.status_code == requests.codes.unauthorized:
