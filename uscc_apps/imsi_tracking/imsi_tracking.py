@@ -58,6 +58,9 @@ class ImsiTracking(MethodView):
                         else:
                             if user_filter == alias.lower():
                                 imsi_list[key] = imsi_value
+                    else:
+                        if user_filter == imsi_value:
+                            imsi_list[key] = imsi_value
             else:
                 imsi_list = imsi_list_get_resp.json()
         elif imsi_list_get_resp.status_code == requests.codes.unauthorized:
