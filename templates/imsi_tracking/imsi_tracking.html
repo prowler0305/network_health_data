@@ -1,87 +1,93 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:width="http://www.w3.org/1999/xhtml"
-      xmlns:overflow="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>U.S. Cellular Engineering</title>
 </head>
 <body>
     <img src="static/usc_logo.jpg" alt="U.S. Cellular Logo" width="20%">
-    <div style="width: 100%; overflow: hidden;">
-        <div style="width: 600px; float: left;">
-            {% block content %}
-                <h1>
-                    Imsi Tracking
-                </h1>
-                <p>Specify only the Imsi (e.g. 123456789) or with an identifier in () after the Imsi.</p>
-                <ul>
-                    <strong>Example: 123456789(bob)</strong>
-                </ul>
-                <p>Can add multiple Imsis at a time by using a comma separated string:</p>
-                <ul>
-                    With or without an identifier - <strong>123456789(andrew),987654321,147258369(bill)</strong>
-                </ul>
-                <p>Delete an Imsi(s) from the list by only specifying the Imsi without the identifier:</p>
-                <ul>
-                    <p>Example: <strong>123456789</strong> or <strong>123456789,987654321</strong></p>
-                </ul>
+    {% block content %}
+        <h1>
+            Imsi Tracking
+        </h1>
+        <p>Specify only the Imsi (e.g. 123456789) or with an identifier in () after the Imsi.</p>
+        <ul>
+            <strong>Example: 123456789(bob)</strong>
+        </ul>
+        <p>Can add multiple Imsis at a time by using a comma separated string:</p>
+        <ul>
+            With or without an identifier - <strong>123456789(andrew),987654321,147258369(bill)</strong>
+        </ul>
+        <p>Delete an Imsi(s) from the list by only specifying the Imsi without the identifier:</p>
+        <ul>
+            <p>Example: <strong>123456789</strong> or <strong>123456789,987654321</strong></p>
+        </ul>
 
-                <form method="POST">
-                    {{ form.csrf_token }}
-                    {{ form.imsis.label }}
-                    {{ form.imsis(size=70) }}
-                    {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                    <ul>
-                        {% for message in messages %}
-                        <p>
-                            {% if message == "This field is required." %}
-                                {{ message }}
-                            {% endif%}
-                        </p>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                    {% endwith%}
-                    {{ form.add_delete_radio.label }} {{form.add_delete_radio }}
-                    {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                            <ul>
-                                {% for message in messages %}
-                                <p>
-                                    {% if message in "Not a valid choice" %}
-                                        {{ message }}
-                                    {% endif%}
-                                </p>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    {% endwith %}
-                    {{ form.submit() }}
-                </form>
-            {% endblock %}
+        <form method="POST">
+            {{ form.csrf_token }}
+            {{ form.imsis.label }}
+            {{ form.imsis(size=70) }}
+            <p></p>
+            {{ form.email.label }}
+            {{ form.email(size=40) }}
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             <ul>
                 {% for message in messages %}
                 <p>
-                    <h3>{{ message }}</h3>
+                    {% if message == "This field is required." %}
+                        {{ message }}
+                    {% endif%}
                 </p>
                 {% endfor %}
             </ul>
             {% endif %}
+            {% endwith%}
+            {{ form.add_delete_radio.label }} {{form.add_delete_radio }}
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                        <p>
+                            {% if message in "Not a valid choice" %}
+                                {{ message }}
+                            {% endif%}
+                        </p>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             {% endwith %}
+            {{ form.submit() }}
+        </form>
+    {% endblock %}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <p>
+            <h3>{{ message }}</h3>
+        </p>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
 
+    <div style="width: 100%; overflow: hidden;">
+        <div style="width: 600px; float: left;">
             <h2>List of Current Tracked Imsis</h2>
             <form method="GET">
                 {{ form.imsi_filter.label }}
-                {{ form.imsi_filter(size=100, placeholder='Search by Imsi or by Alias')}}
+                {{ form.imsi_filter(size=50, placeholder='Search by Imsi or by Alias')}}
                 <h5>To reset the list and clear the filter click "Submit" without a value.</h5>
                 {{ form.submit() }}
                 <p></p>
                 {% if imsi_list %}
                     {% for imsi in imsi_list.values() %}
-                    <li>{{ imsi }}</li>
+                        <div>
+                            <ul style="list-style: none;">
+                                <li>{{ imsi }}</li>
+                            </ul>
+                        </div>
                     {% endfor %}
                 {% endif %}
                 {% if art %}
@@ -90,45 +96,23 @@
                 {% if userid %}
                     {{ form.userid(value=userid) }}
                 {% endif %}
+
             </form>
         </div>
-        <div style="margin-left: 620px;">
+        <div style="margin-left: 640px;">
             <h1>
-                Email Alarming
+                Email Alarms
             </h1>
-            <form method="POST">
-                {{ form.csrf_token }}
-                {{ form.imsis.label }}
-                {{ form.imsis(size=100) }}
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <ul>
-                    {% for message in messages %}
-                    <p>
-                        {% if message == "This field is required." %}
-                        {{ message }}
-                        {% endif%}
-                    </p>
+            <p>Below is the list of email addresses that are registered to receive the Imsi tracking email alerts</p>
+            {% if email_list %}
+                <div>
+                    {% for email in email_list.values() %}
+                        <ul style="list-style: none;">
+                            <li>{{ email }}</li>
+                        </ul>
                     {% endfor %}
-                </ul>
-                {% endif %}
-                {% endwith%}
-                {{ form.add_delete_radio.label }} {{form.add_delete_radio }}
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <ul>
-                    {% for message in messages %}
-                    <p>
-                        {% if message in "Not a valid choice" %}
-                        {{ message }}
-                        {% endif%}
-                    </p>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                {% endwith %}
-                {{ form.submit() }}
-            </form>
+                </div>
+            {% endif %}
         </div>
     </div>
 

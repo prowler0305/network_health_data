@@ -24,8 +24,10 @@ class ImsiTracking(MethodView):
         self.art = None
         self.imsi_header = {'content-type': 'application/json'}
         self.imsi_tracking_dict = dict(imsi=None,
-                                       userid=None
+                                       userid=None,
+                                       email=None
                                        )
+        self.imsi_list_get_resp = None
 
     def get(self):
         """
@@ -44,36 +46,26 @@ class ImsiTracking(MethodView):
         auth_header = {'Authorization': 'JWT {}'.format(self.art)}
         form = ImsiForm()
         imsi_list = {}
-        imsi_list_get_resp = requests.get(self.imsi_tracking_api_url, params=self.imsi_tracking_dict, headers=auth_header)
-        if imsi_list_get_resp.status_code == requests.codes.ok:
+        email_list = {}
+        self.imsi_list_get_resp = requests.get(self.imsi_tracking_api_url, params=self.imsi_tracking_dict, headers=auth_header)
+        if self.imsi_list_get_resp.status_code == requests.codes.ok:
             if request.args.get('imsi_filter') is not None and request.args.get('imsi_filter') != '':
-                user_filter = request.args.get('imsi_filter').lower()
-                for key, imsi_value in imsi_list_get_resp.json().items():
-                    if '(' in imsi_value:
-                        imsi, alias_right_paren = imsi_value.split('(', 1)
-                        alias = alias_right_paren.rstrip(')')
-                        if user_filter.isdigit():
-                            if user_filter == imsi:
-                                imsi_list[key] = imsi_value
-                        else:
-                            if user_filter == alias.lower():
-                                imsi_list[key] = imsi_value
-                    else:
-                        if user_filter == imsi_value:
-                            imsi_list[key] = imsi_value
+                imsi_list = self.filter_imsis()
             else:
-                imsi_list = imsi_list_get_resp.json()
-        elif imsi_list_get_resp.status_code == requests.codes.unauthorized:
+                imsi_list = self.imsi_list_get_resp.json().get('imsi_list')
+
+            email_list = self.imsi_list_get_resp.json().get('email_list')
+        elif self.imsi_list_get_resp.status_code == requests.codes.unauthorized:
             return redirect(url_for('uscc_login'))
-        elif imsi_list_get_resp.status_code == requests.codes.no_content:
+        elif self.imsi_list_get_resp.status_code == requests.codes.no_content:
             pass
         else:
             get_imsi_list_error = "Retrieving list of tracked Imsi failed with: %s:%s.\nPlease contact Core Automation Team" %\
-                            (str(imsi_list_get_resp.status_code), imsi_list_get_resp.reason)
+                            (str(self.imsi_list_get_resp.status_code), self.imsi_list_get_resp.reason)
             Common.create_flash_message(get_imsi_list_error)
 
         return render_template('imsi_tracking/imsi_tracking.html', form=form, imsi_list=imsi_list, art=self.art,
-                               userid=self.imsi_tracking_dict.get('userid'))
+                               userid=self.imsi_tracking_dict.get('userid'), email_list=email_list)
 
     def post(self):
         """
@@ -92,14 +84,16 @@ class ImsiTracking(MethodView):
         self.set_art()
         form = ImsiForm()
         if form.validate_on_submit():
-            self.imsi_tracking_dict['imsi'] = request.form['imsis']
+            self.imsi_tracking_dict['imsi'] = request.form.get('imsis')
+            self.imsi_tracking_dict['email'] = request.form.get('email')
             self.imsi_tracking_dict['userid'] = request.args.get('userid')
             if request.form['add_delete_radio'] == 'A':
                 imsi_post_resp = \
                     requests.post(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
                                   headers=self.imsi_header)
                 if imsi_post_resp.status_code == requests.codes.created:
-                    Common.create_flash_message('Imsi(s) successfully added')
+                    if imsi_post_resp.json().get('add_imsi_msg')
+                    Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
                 else:
                     Common.create_flash_message(imsi_post_resp)
                 return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
@@ -146,3 +140,20 @@ class ImsiTracking(MethodView):
 
         return False
 
+    def filter_imsis(self):
+        imsi_list = {}
+        user_filter = request.args.get('imsi_filter').lower()
+        for key, imsi_value in self.imsi_list_get_resp.json().get('imsi_list').items():
+            if '(' in imsi_value:
+                imsi, alias_right_paren = imsi_value.split('(', 1)
+                alias = alias_right_paren.rstrip(')')
+                if user_filter.isdigit():
+                    if user_filter == imsi:
+                        imsi_list[key] = imsi_value
+                else:
+                    if user_filter == alias.lower():
+                        imsi_list[key] = imsi_value
+            else:
+                if user_filter == imsi_value:
+                    imsi_list[key] = imsi_value
+        return imsi_list

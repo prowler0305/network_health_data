@@ -42,26 +42,48 @@ class Imsi(Resource):
         imsi_parser.add_argument('userid', required=True)
         imsi_get_args = Common.parse_request_args(imsi_parser)
         imsi_file_path = Imsi.imsi_subscribers_file + imsi_get_args.get('userid')
+        email_pos = 0
+        return_dict = dict(imsi_list=None, email_list=None)
         if Common.check_path_exists(imsi_file_path):
             list_o_subscriber_ids = []
+            list_o_emails = []
             dict_of_subscribers = {}
+            dict_of_emails = {}
             with open(imsi_file_path) as imsi_fh:
+                current_pos = 0
                 for line in imsi_fh:
-                    if imsi_get_args.get('no_alias') == 'true':
-                        if '(' in line:
-                            imsi, alias_right_paren = line.split('(', 1)
-                            list_o_subscriber_ids.append(imsi)
+                    current_pos = current_pos + len(line) + 1
+                    if '=' not in line:
+                        if imsi_get_args.get('no_alias') == 'true':
+                            if '(' in line:
+                                imsi, alias_right_paren = line.split('(', 1)
+                                list_o_subscriber_ids.append(imsi)
+                            else:
+                                line = line.rstrip('\n')
+                                list_o_subscriber_ids.append(line)
                         else:
                             line = line.rstrip('\n')
                             list_o_subscriber_ids.append(line)
                     else:
+                        email_pos = current_pos
+                        break
+
+            if email_pos != 0:
+                with open(imsi_file_path) as email_fh:
+                    email_fh.seek(email_pos)
+                    for line in email_fh:
                         line = line.rstrip('\n')
-                        list_o_subscriber_ids.append(line)
+                        list_o_emails.append(line)
 
             for list_index in range(len(list_o_subscriber_ids)):
                 dict_of_subscribers[list_index] = list_o_subscriber_ids[list_index]
+            for list_index in range(len(list_o_emails)):
+                dict_of_emails[list_index] = list_o_emails[list_index]
 
-            response = jsonify(dict_of_subscribers)
+            return_dict['imsi_list'] = dict_of_subscribers
+            return_dict['email_list'] = dict_of_emails
+
+            response = jsonify(return_dict)
             response.status_code = 200
         else:
             response = jsonify({"message": "File doesn't exist yet. Add an Imsi to create the File."})
@@ -108,25 +130,51 @@ class Imsi(Resource):
         uscc_eng_parser = Common.create_api_parser()
         uscc_eng_parser.add_argument('imsi', location='json')
         uscc_eng_parser.add_argument('userid', location='json')
+        uscc_eng_parser.add_argument('email', location='json')
         args = Common.parse_request_args(uscc_eng_parser)
         imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
+        add_response_dict = dict(add_imsi_msg=None, add_email_msg=None)
 
         # If the tracking file doesn't exist then create it
         if not Common.check_path_exists(imsi_file_path):
             with open(imsi_file_path, "w+") as sfhw:
                 pass
 
-        args['imsi'] = args.get('imsi').replace(' ', '')
-        list_imsi = args.get('imsi').split(',')
-        with open(imsi_file_path, "r") as sfhr:
-            lines = sfhr.readlines()
-            sfhr.close()
-            with open(imsi_file_path, "a") as sfh:
-                for imsi in list_imsi:
-                    if imsi + '\n' not in lines:
-                        sfh.write(imsi + "\n")
-                response = jsonify({'imsi_msg': 'IMSI(s) successfully added'})
-                response.status_code = 201
+        if args.get('imsi') is not None:
+            args['imsi'] = args.get('imsi').replace(' ', '')
+            list_imsi = args.get('imsi').split(',')
+            with open(imsi_file_path, "r") as sfhr:
+                lines = sfhr.readlines()
+                sfhr.close()
+                with open(imsi_file_path, "a") as sfh:
+                    for imsi in list_imsi:
+                        if imsi + '\n' not in lines:
+                            sfh.write(imsi + "\n")
+                            add_response_dict['add_imsi_msg'] = 'IMSI(s) successfully added'
+                            # response = jsonify(add_response_dict)
+                            # response.status_code = 201
+
+        if args.get('email') is not None:
+            with open(imsi_file_path, "r") as email_fh:
+                content = email_fh.read()
+                file_sep_index = content.index('=')
+                sep_content = content[file_sep_index]
+                email_content_start = file_sep_index + len(sep_content) + 4
+                email_fh.seek(email_content_start)
+                email_content = email_fh.readlines()
+                email_fh.close()
+                for email in email_content:
+                    email_index = email_content.index(email)
+                    email_content[email_index] = email.strip('\n')
+                with open(imsi_file_path, "a") as email_afh:
+                    if args.get('email') not in email_content:
+                        email_afh.write(args.get('email') + '\n')
+                        add_response_dict['add_email_msg'] = 'Email successfully added'
+                        # response = jsonify(add_response_dict)
+                        # response.status_code = 201
+
+        response = jsonify(add_response_dict)
+        response.status_code = 201
 
         return response
 
@@ -154,6 +202,7 @@ class Imsi(Resource):
         uscc_eng_parser = Common.create_api_parser()
         uscc_eng_parser.add_argument('imsi', location='json')
         uscc_eng_parser.add_argument('userid', location='json')
+        uscc_eng_parser.add_argument('email', location='json')
         args = Common.parse_request_args(uscc_eng_parser)
         imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
 

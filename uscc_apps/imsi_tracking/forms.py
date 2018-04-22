@@ -4,7 +4,8 @@ from wtforms.validators import InputRequired
 
 
 class ImsiForm(FlaskForm):
-    imsis = StringField('Imsi(s)', validators=[InputRequired()])
+    imsis = StringField('Imsi(s)')
+    email = StringField('Email')
     imsi_filter = StringField('Search:')
     art = HiddenField("hidden1")
     userid = HiddenField("hidden2")
