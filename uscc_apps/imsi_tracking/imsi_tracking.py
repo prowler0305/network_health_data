@@ -91,11 +91,7 @@ class ImsiTracking(MethodView):
                 imsi_post_resp = \
                     requests.post(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
                                   headers=self.imsi_header)
-                if imsi_post_resp.status_code == requests.codes.created:
-                    if imsi_post_resp.json().get('add_imsi_msg')
-                    Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
-                else:
-                    Common.create_flash_message(imsi_post_resp)
+                Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
                 return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
             else:
                 self.delete()

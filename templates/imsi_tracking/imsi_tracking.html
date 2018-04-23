@@ -8,19 +8,32 @@
     <img src="static/usc_logo.jpg" alt="U.S. Cellular Logo" width="20%">
     {% block content %}
         <h1>
-            Imsi Tracking
+            Imsi Tracking and Email Management
         </h1>
-        <p>Specify only the Imsi (e.g. 123456789) or with an identifier in () after the Imsi.</p>
+        <p>How to add Imsis to be tracked.</p>
         <ul>
-            <strong>Example: 123456789(bob)</strong>
-        </ul>
-        <p>Can add multiple Imsis at a time by using a comma separated string:</p>
-        <ul>
-            With or without an identifier - <strong>123456789(andrew),987654321,147258369(bill)</strong>
-        </ul>
-        <p>Delete an Imsi(s) from the list by only specifying the Imsi without the identifier:</p>
-        <ul>
-            <p>Example: <strong>123456789</strong> or <strong>123456789,987654321</strong></p>
+            <li>How to add Imsi(s) to be tracked:</li>
+                <ul>
+                    <li>Specify only the Imsi (e.g. 123456789) or with an identifier in () after the Imsi.</li>
+                        <ul>
+                            <li><strong>Example: 123456789(bob)</strong></li>
+                        </ul>
+                    <li>Add multiple Imsis at a time by using a comma separated string</li>
+                        <ul>
+                            <li>With or without an identifier</li>
+                                <ul>
+                                    <li><strong>123456789(andrew),987654321,147258369(bill)</strong></li>
+                                </ul>
+                        </ul>
+                    <li>Delete an Imsi(s) from the list by only specifying the Imsi without the identifier:</li>
+                        <ul>
+                            <li>Example: <strong>123456789</strong> or <strong>123456789,987654321</strong></li>
+                        </ul>
+                </ul>
+            <li>Add or delete emails by specifying each complete email address.</li>
+                <ul>
+                    <li><strong>Note: can only add or delete one email address per submission</strong></li>
+                </ul>
         </ul>
 
         <form method="POST">

@@ -52,7 +52,7 @@ class Imsi(Resource):
             with open(imsi_file_path) as imsi_fh:
                 current_pos = 0
                 for line in imsi_fh:
-                    current_pos = current_pos + len(line) + 1
+                    current_pos = current_pos + len(line)
                     if '=' not in line:
                         if imsi_get_args.get('no_alias') == 'true':
                             if '(' in line:
@@ -133,50 +133,82 @@ class Imsi(Resource):
         uscc_eng_parser.add_argument('email', location='json')
         args = Common.parse_request_args(uscc_eng_parser)
         imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
-        add_response_dict = dict(add_imsi_msg=None, add_email_msg=None)
+        add_resp_dictionary = dict(imsi_msg=None)
+        add_imsi = False
+        add_email = False
 
         # If the tracking file doesn't exist then create it
         if not Common.check_path_exists(imsi_file_path):
             with open(imsi_file_path, "w+") as sfhw:
                 pass
 
-        if args.get('imsi') is not None:
+        if args.get('imsi') != '':
             args['imsi'] = args.get('imsi').replace(' ', '')
             list_imsi = args.get('imsi').split(',')
             with open(imsi_file_path, "r") as sfhr:
                 lines = sfhr.readlines()
-                sfhr.close()
-                with open(imsi_file_path, "a") as sfh:
+                if '=\n' in lines:
+                    sep_index = lines.index("=\n")
                     for imsi in list_imsi:
                         if imsi + '\n' not in lines:
-                            sfh.write(imsi + "\n")
-                            add_response_dict['add_imsi_msg'] = 'IMSI(s) successfully added'
-                            # response = jsonify(add_response_dict)
-                            # response.status_code = 201
+                            lines.insert(sep_index, imsi + '\n')
+                    with open(imsi_file_path, "w") as wfhr:
+                        lines = "".join(lines)
+                        wfhr.write(lines)
+                        add_imsi = True
+                else:
+                    with open(imsi_file_path, "a") as afh:
+                        for imsi in list_imsi:
+                            if imsi + '\n' not in lines:
+                                afh.write(imsi + "\n")
+                        add_imsi = True
 
-        if args.get('email') is not None:
+        if args.get('email') != '':
+
             with open(imsi_file_path, "r") as email_fh:
                 content = email_fh.read()
-                file_sep_index = content.index('=')
-                sep_content = content[file_sep_index]
-                email_content_start = file_sep_index + len(sep_content) + 4
-                email_fh.seek(email_content_start)
-                email_content = email_fh.readlines()
-                email_fh.close()
-                for email in email_content:
-                    email_index = email_content.index(email)
-                    email_content[email_index] = email.strip('\n')
-                with open(imsi_file_path, "a") as email_afh:
-                    if args.get('email') not in email_content:
+                if '=\n' in content:
+                    file_sep_index = content.index('=')
+                    sep_content = content[file_sep_index]
+                    email_content_start = file_sep_index + len(sep_content) + 4
+                    email_fh.seek(email_content_start)
+                    email_content = email_fh.readlines()
+                    email_fh.close()
+                    for email in email_content:
+                        email_index = email_content.index(email)
+                        email_content[email_index] = email.strip('\n')
+                    with open(imsi_file_path, "a") as email_afh:
+                        if args.get('email') not in email_content:
+                            email_afh.write(args.get('email') + '\n')
+                            add_email = True
+                else:
+                    with open(imsi_file_path, "a") as email_afh:
+                        email_afh.write('=\n')
                         email_afh.write(args.get('email') + '\n')
-                        add_response_dict['add_email_msg'] = 'Email successfully added'
-                        # response = jsonify(add_response_dict)
-                        # response.status_code = 201
+                        add_email = True
 
-        response = jsonify(add_response_dict)
-        response.status_code = 201
-
-        return response
+        if add_imsi:
+            add_resp_dictionary['imsi_msg'] = 'IMSI(s)'
+            if add_email:
+                add_resp_dictionary['imsi_msg'] = add_resp_dictionary.get('imsi_msg') + 'and email successfully added'
+                response = jsonify(add_resp_dictionary)
+                response.status_code = 201
+                return response
+            else:
+                add_resp_dictionary['imsi_msg'] = add_resp_dictionary.get('imsi_msg') + 'successfully added'
+                response = jsonify(add_resp_dictionary)
+                response.status_code = 201
+                return response
+        elif add_email:
+            add_resp_dictionary['imsi_msg'] = 'Email successfully added'
+            response = jsonify(add_resp_dictionary)
+            response.status_code = 201
+            return response
+        else:
+            add_resp_dictionary['imsi_msg'] = 'Error adding IMSI(s) and/or email. Contact Core Automation Team'
+            response = jsonify(add_resp_dictionary)
+            response.status_code = 201
+            return response
 
     @staticmethod
     @jwt_required
