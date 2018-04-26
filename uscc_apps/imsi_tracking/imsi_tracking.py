@@ -57,8 +57,6 @@ class ImsiTracking(MethodView):
             email_list = self.imsi_list_get_resp.json().get('email_list')
         elif self.imsi_list_get_resp.status_code == requests.codes.unauthorized:
             return redirect(url_for('uscc_login'))
-        elif self.imsi_list_get_resp.status_code == requests.codes.no_content:
-            pass
         else:
             get_imsi_list_error = "Retrieving list of tracked Imsi failed with: %s:%s.\nPlease contact Core Automation Team" %\
                             (str(self.imsi_list_get_resp.status_code), self.imsi_list_get_resp.reason)
