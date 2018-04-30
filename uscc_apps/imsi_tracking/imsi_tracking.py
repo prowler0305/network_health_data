@@ -85,6 +85,9 @@ class ImsiTracking(MethodView):
             self.imsi_tracking_dict['imsi'] = request.form.get('imsis')
             self.imsi_tracking_dict['email'] = request.form.get('email')
             self.imsi_tracking_dict['userid'] = request.args.get('userid')
+            if self.imsi_tracking_dict.get('email') != '' and '@' not in self.imsi_tracking_dict.get('email'):
+                Common.create_flash_message('Email entered is not a valid email address', 'error')
+                return render_template('imsi_tracking/imsi_tracking.html', form=form)
             if request.form['add_delete_radio'] == 'A':
                 imsi_post_resp = \
                     requests.post(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),

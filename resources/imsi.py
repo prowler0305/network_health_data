@@ -50,10 +50,9 @@ class Imsi(Resource):
 
         if Common.check_path_exists(imsi_file_path):
             list_o_subscriber_ids = []
-
             dict_of_subscribers = {}
 
-            with open(imsi_file_path) as imsi_fh:
+            with open(imsi_file_path, "r") as imsi_fh:
                 # current_pos = 0
                 for line in imsi_fh:
                     # current_pos = current_pos + len(line)
@@ -73,11 +72,13 @@ class Imsi(Resource):
                 dict_of_subscribers[list_index] = list_o_subscriber_ids[list_index]
 
             return_dict['imsi_list'] = dict_of_subscribers
+        else:
+            return_dict['imsi_list'] = no_imsi_yet
 
         if Common.check_path_exists(email_file_path):
             list_o_emails = []
             dict_of_emails = {}
-            with open(email_file_path) as email_fh:
+            with open(email_file_path, "r") as email_fh:
                 for line in email_fh:
                     line = line.rstrip('\n')
                     list_o_emails.append(line)
@@ -86,6 +87,8 @@ class Imsi(Resource):
                 dict_of_emails[list_index] = list_o_emails[list_index]
 
             return_dict['email_list'] = dict_of_emails
+        else:
+            return_dict['email_list'] = no_email_yet
 
         if len(return_dict.get('imsi_list')) > 0 and len(return_dict.get('email_list')) > 0:
             response = jsonify(return_dict)
@@ -265,31 +268,36 @@ class Imsi(Resource):
         uscc_eng_parser.add_argument('email', location='json')
         args = Common.parse_request_args(uscc_eng_parser)
         imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
+        email_file_path = Imsi.email_address_file + args.get('userid')
 
-        if Common.check_path_exists(imsi_file_path):
-            if args.get('imsi') != '':
+        if args.get('imsi') != '':
+            if Common.check_path_exists(imsi_file_path):
                 args['imsi'] = args.get('imsi').replace(' ', '')
-                delete_list = args.get('imsi').split(',')
-            if args.get('email') != '':
-                delete_list.append(args.get('email'))
-            with open(imsi_file_path, "r") as sfhr:
-                lines = sfhr.readlines()
-                sfhr.close()
-                with open(imsi_file_path, "w") as sfhw:
-                    for line in lines:
-                        if '(' in line:
-                            imsi, junk = line.split('(', 1)
-                            imsi = imsi + '\n'  # Make imsi variable look like one that wasn't provided with an alias.
-                        else:
-                            imsi = line
+                delete_imsi_list = args.get('imsi').split(',')
+                with open(imsi_file_path, "r") as sfhr:
+                    lines = sfhr.readlines()
+                    sfhr.close()
+                    with open(imsi_file_path, "w") as sfhw:
+                        for line in lines:
+                            if '(' in line:
+                                imsi, junk = line.split('(', 1)
+                                imsi = imsi + '\n'  # Make imsi variable look like one that wasn't provided with an alias.
+                            else:
+                                imsi = line
 
-                        if imsi.strip('\n') not in delete_list and imsi.strip('\n') != args.get('email'):
-                            sfhw.write(line)
+                            if imsi.strip('\n') not in delete_imsi_list:
+                                sfhw.write(line)
 
-                    response = jsonify({'imsi_msg': 'IMSI(s) successfully deleted'})
-                    response.status_code = 200
-        else:
-            response = jsonify({"message": "Can't get to file containing subscriber IDs. Please contact Core "
-                                           "Automation Team."})
-            response.status_code = 500
-        return response
+                        response = jsonify({'imsi_msg': 'IMSI(s) successfully deleted'})
+                        response.status_code = 200
+                        return response
+            else:
+                response = jsonify({"message": "Nothing exists to delete. Try adding some Imsi(s) or emails first."})
+                response.status_code = 204
+                return response
+
+        if args.get('email') != '':
+            if Common.check_path_exists(email_file_path):
+
+            else:
+                response = jsonify({"message": "Nothing exists to delete. Try adding emails"})
