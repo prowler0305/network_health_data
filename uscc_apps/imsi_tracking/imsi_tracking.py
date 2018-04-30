@@ -117,11 +117,13 @@ class ImsiTracking(MethodView):
         imsi_delete_resp = requests.delete(self.imsi_tracking_api_url,
                                            data=json.dumps(self.imsi_tracking_dict),
                                            headers=self.imsi_header)
+
         if imsi_delete_resp.status_code == requests.codes.ok:
-            Common.create_flash_message('Imsi(s) successfully deleted')
+            Common.create_flash_message(imsi_delete_resp.json().get('imsi_msg'))
             return True
         else:
-            Common.create_flash_message(imsi_delete_resp)
+            delete_error_message = "%s: %s" % (imsi_delete_resp.status_code, imsi_delete_resp.reason)
+            Common.create_flash_message(delete_error_message, 'error')
             return False
 
     def set_art(self):

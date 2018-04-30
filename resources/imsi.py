@@ -1,6 +1,6 @@
 import sys
 import os
-from flask import jsonify
+from flask import jsonify, make_response, current_app
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 from common.common import Common
@@ -238,7 +238,7 @@ class Imsi(Resource):
         else:
             add_resp_dictionary['imsi_msg'] = 'Error adding IMSI(s) and/or email. Contact Core Automation Team'
             response = jsonify(add_resp_dictionary)
-            response.status_code = 201
+            response.status_code = 500
             return response
 
     @staticmethod
@@ -269,9 +269,15 @@ class Imsi(Resource):
         args = Common.parse_request_args(uscc_eng_parser)
         imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
         email_file_path = Imsi.email_address_file + args.get('userid')
+        delete_resp_dictionary = dict(imsi_msg=None)
+        delete_imsi = False
+        delete_email = False
+        imsi_file_exist = False
+        email_file_exist = False
 
         if args.get('imsi') != '':
             if Common.check_path_exists(imsi_file_path):
+                imsi_file_exist = True
                 args['imsi'] = args.get('imsi').replace(' ', '')
                 delete_imsi_list = args.get('imsi').split(',')
                 with open(imsi_file_path, "r") as sfhr:
@@ -288,16 +294,50 @@ class Imsi(Resource):
                             if imsi.strip('\n') not in delete_imsi_list:
                                 sfhw.write(line)
 
-                        response = jsonify({'imsi_msg': 'IMSI(s) successfully deleted'})
-                        response.status_code = 200
-                        return response
-            else:
-                response = jsonify({"message": "Nothing exists to delete. Try adding some Imsi(s) or emails first."})
-                response.status_code = 204
-                return response
+                    delete_imsi = True
 
         if args.get('email') != '':
             if Common.check_path_exists(email_file_path):
+                email_file_exist = True
+                with open(email_file_path, "r") as erfhr:
+                    lines = erfhr.readlines()
+                    erfhr.close()
+                    if len(lines) > 0:
+                        try:
+                            lines.remove(args.get('email') + '\n')
+                            delete_email = True
+                        except ValueError:
+                            pass
+                        with open(email_file_path, "w") as ewfhr:
+                            for line in lines:
+                                ewfhr.write(line)
+
+        if delete_imsi:
+            delete_resp_dictionary['imsi_msg'] = 'IMSI(s)'
+            if delete_email:
+                delete_resp_dictionary['imsi_msg'] = delete_resp_dictionary.get('imsi_msg') + 'and email successfully deleted'
+                response = jsonify(delete_resp_dictionary)
+                response.status_code = 200
+                return response
+            else:
+                delete_resp_dictionary['imsi_msg'] = delete_resp_dictionary.get('imsi_msg') + 'successfully deleted.'
+                response = jsonify(delete_resp_dictionary)
+                response.status_code = 200
+                return response
+        elif delete_email:
+            delete_resp_dictionary['imsi_msg'] = delete_resp_dictionary.get('imsi_msg') + 'Email successfully deleted.'
+            response = jsonify(delete_resp_dictionary)
+            response.status_code = 200
+            return response
+        else:
+            if not imsi_file_exist or not email_file_exist:
+                response = make_response('', 204)
+                response.mimetype = current_app.config['JSONIFY_MIMETYPE']
+                return response
 
             else:
-                response = jsonify({"message": "Nothing exists to delete. Try adding emails"})
+                delete_resp_dictionary['imsi_msg'] = delete_resp_dictionary.get('imsi_msg') + \
+                                                     'Error deleting IMSI(s) and/or email. Contact Core Automation Team.'
+                response = jsonify(delete_resp_dictionary)
+                response.status_code = 500
+                return response
