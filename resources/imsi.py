@@ -194,30 +194,6 @@ class Imsi(Resource):
                         email_afh.write(args.get('email') + '\n')
                     add_email = True
 
-                # content = email_fh.read()
-                # if args.get('email') not in content:
-                #     if '=\n' in content:
-                #         file_sep_index = content.index('=')
-                #         sep_content = content[file_sep_index]
-                #         email_content_start = file_sep_index + len(sep_content) + 4
-                #         email_fh.seek(email_content_start)
-                #         email_content = email_fh.readlines()
-                #         email_fh.close()
-                #         for email in email_content:
-                #             email_index = email_content.index(email)
-                #             email_content[email_index] = email.strip('\n')
-                #         with open(imsi_file_path, "a") as email_afh:
-                #             if args.get('email') not in email_content:
-                #                 email_afh.write(args.get('email') + '\n')
-                #                 add_email = True
-                #     else:
-                #         with open(imsi_file_path, "a") as email_afh:
-                #             email_afh.write('=\n')
-                #             email_afh.write(args.get('email') + '\n')
-                #             add_email = True
-                # else:
-                #     add_email = True
-
         if add_imsi:
             add_resp_dictionary['imsi_msg'] = 'IMSI(s)'
             if add_email:
@@ -294,7 +270,7 @@ class Imsi(Resource):
                             if imsi.strip('\n') not in delete_imsi_list:
                                 sfhw.write(line)
 
-                    delete_imsi = True
+                        delete_imsi = True
 
         if args.get('email') != '':
             if Common.check_path_exists(email_file_path):
