@@ -149,21 +149,18 @@ class Imsi(Resource):
         args = Common.parse_request_args(uscc_eng_parser)
         imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
         email_file_path = Imsi.email_address_file + args.get('userid')
-        print("Got to IMSI POST method")
-        print(imsi_file_path)
-        print(email_file_path)
-        print(args.get('imsi'))
-        print(args.get('userid'))
         add_resp_dictionary = dict(imsi_msg=None)
         add_imsi = False
         add_email = False
 
         # If the tracking files don't exist then create them
         if not Common.check_path_exists(imsi_file_path):
+            print('trying to create imsi data file')
             with open(imsi_file_path, "w+") as sfhw:
                 pass
 
         if not Common.check_path_exists(email_file_path):
+            print('trying to create email data file')
             with open(email_file_path, "w+") as sfhw:
                 pass
 
@@ -194,7 +191,8 @@ class Imsi(Resource):
                     if args.get('email') + '\n' not in emails:
                         email_afh.write(args.get('email') + '\n')
                     add_email = True
-
+        print(add_imsi)
+        print(add_email)
         if add_imsi:
             add_resp_dictionary['imsi_msg'] = 'IMSI(s)'
             if add_email:
