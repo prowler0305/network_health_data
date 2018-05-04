@@ -58,9 +58,7 @@ uscc_eng_app.add_url_rule('/login', view_func=login_view, methods=['POST', 'GET'
 
 if __name__ == '__main__':
 
-    print(os.environ.get('local_execution'))
     if os.environ.get('local_execution') is not None:
-        print("I'm going to run in debug mode")
         uscc_eng_app.run(debug=True, threaded=True)
     else:
         uscc_eng_app.run(host='0.0.0.0', port=8080, threaded=True)
