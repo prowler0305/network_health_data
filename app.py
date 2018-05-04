@@ -22,7 +22,10 @@ uscc_eng_app.config['SECRET_KEY'] = 'you-will-never-guess'
 # TODO: SECRET_KEY - digitally-sign for the JWT token. This needs to be more difficult. Maybe a random generated string?
 uscc_eng_app.config['JWT_SECRET_KEY'] = 'super-secret'
 uscc_eng_app.config['JWT_HEADER_TYPE'] = 'JWT'
-uscc_eng_app.config['PROPAGATE_EXCEPTIONS'] = bool(os.environ.get('propagate_excps'))
+if os.environ.get('propagate_excps') == 'True':
+    uscc_eng_app.config['PROPAGATE_EXCEPTIONS'] = True
+else:
+    uscc_eng_app.config['PROPAGATE_EXCEPTIONS'] = False
 
 if os.environ.get('access_token_expiration') is not None:
     uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=int(os.environ.get('access_token_expiration')))
