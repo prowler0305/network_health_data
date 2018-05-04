@@ -9,12 +9,8 @@ from common.common import Common
 class Imsi(Resource):
     """
     """
-    try:
-        if sys.argv[1] == '--dev':
-            imsi_subscribers_file = 'local_test_library/imsi_test_data_'
-            email_address_file = 'local_test_library/group_email_address_'
-    except IndexError:
-        imsi_subscribers_file = '/opt/app-root/src/data_only/imsi-Subscribers-'
+    imsi_subscribers_file = os.environ.get('imsi_file_path')
+    email_address_file = os.environ.get('email_file_path')
 
     @staticmethod
     @jwt_required

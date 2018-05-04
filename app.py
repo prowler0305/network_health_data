@@ -1,4 +1,5 @@
 import datetime
+import os
 from flask import Flask
 from flask_restful import Api
 from resources.list_all import ListAll
@@ -18,19 +19,17 @@ from flask_jwt_extended import JWTManager
 
 uscc_eng_app = Flask(__name__)
 uscc_eng_app.config['SECRET_KEY'] = 'you-will-never-guess'
-# App configuration is for use with FLASK JWT authentication. Which is not in use currently as the HBASE API access uses
-# the Kerboso authentication mechanism. Once the need for API Athentication via JWT is needed this code and the
-# associated import statements will need to be uncommented.
 # TODO: SECRET_KEY - digitally-sign for the JWT token. This needs to be more difficult. Maybe a random generated string?
 uscc_eng_app.config['JWT_SECRET_KEY'] = 'super-secret'
 uscc_eng_app.config['JWT_HEADER_TYPE'] = 'JWT'
-try:
-    if sys.argv[1] == '--dev':
-        uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=int(sys.argv[2]))
-        uscc_eng_app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(seconds=int(sys.argv[3]))
-except IndexError:
-    uscc_eng_app.config['PROPAGATE_EXCEPTIONS'] = True
-    # uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=20)
+uscc_eng_app.config['PROPAGATE_EXCEPTIONS'] = bool(os.environ.get('propagate_excps'))
+
+if os.environ.get('access_token_expiration') is not None:
+    uscc_eng_app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=int(os.environ.get('access_token_expiration')))
+
+if os.environ.get('refresh_token_expiration') is not None:
+    uscc_eng_app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(seconds=int(os.environ.get('refresh_token_expiration')))
+
 jwt = JWTManager(uscc_eng_app)
 api = Api(uscc_eng_app, prefix='/v1')
 
@@ -55,8 +54,8 @@ uscc_eng_app.add_url_rule('/login', view_func=login_view, methods=['POST', 'GET'
 
 
 if __name__ == '__main__':
-    try:
-        if sys.argv[1] == '--dev':
-            uscc_eng_app.run(debug=True, threaded=True)
-    except IndexError:
+
+    if os.environ.get('local_execution') is not None:
+        uscc_eng_app.run(debug=True, threaded=True)
+    else:
         uscc_eng_app.run(host='0.0.0.0', port=8080, threaded=True)

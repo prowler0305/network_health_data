@@ -10,17 +10,14 @@ from uscc_apps.common import Common
 import requests
 import json
 import sys
+import os
 
 
 class Login(MethodView):
     def __init__(self):
         self.headers = {'content-type': 'application/json'}
         self.auth_data = dict(username=None, password=None)
-        try:
-            if sys.argv[1] == '--dev':
-                self.auth_url = 'http://localhost:5000/v1/login'
-        except IndexError:
-            self.auth_url = 'http://www.uscc-eng-api.devengos.uscc.com/v1/login'
+        self.auth_url = os.environ.get('auth_api_url')
 
     def get(self):
         """
