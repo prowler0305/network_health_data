@@ -149,6 +149,11 @@ class Imsi(Resource):
         args = Common.parse_request_args(uscc_eng_parser)
         imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
         email_file_path = Imsi.email_address_file + args.get('userid')
+        print("Got to IMSI POST method")
+        print(imsi_file_path)
+        print(email_file_path)
+        print(args.get('imsi'))
+        print(args.get('userid'))
         add_resp_dictionary = dict(imsi_msg=None)
         add_imsi = False
         add_email = False
