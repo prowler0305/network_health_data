@@ -155,12 +155,10 @@ class Imsi(Resource):
 
         # If the tracking files don't exist then create them
         if not Common.check_path_exists(imsi_file_path):
-            print('trying to create imsi data file')
             with open(imsi_file_path, "w+") as sfhw:
                 pass
 
         if not Common.check_path_exists(email_file_path):
-            print('trying to create email data file')
             with open(email_file_path, "w+") as sfhw:
                 pass
 
@@ -191,8 +189,7 @@ class Imsi(Resource):
                     if args.get('email') + '\n' not in emails:
                         email_afh.write(args.get('email') + '\n')
                     add_email = True
-        print(add_imsi)
-        print(add_email)
+
         if add_imsi:
             add_resp_dictionary['imsi_msg'] = 'IMSI(s)'
             if add_email:
