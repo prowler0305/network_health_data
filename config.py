@@ -8,11 +8,11 @@ class BaseConfig:
     SECRET_KEY = os.environ.get('USCC_SECRET_KEY') or 'you-will-never-guess'
     JWT_SECRET_KEY = os.environ.get('USCC_JWT_KEY') or 'super-secret'
     JWT_HEADER_TYPE = 'JWT'
+    PROPAGATE_EXCEPTIONS = True
 
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
-    PROPAGATE_EXCEPTIONS = False
     if os.environ.get('access_token_expiration') is not None:
         JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(seconds=int(os.environ.get('access_token_expiration')))
     if os.environ.get('refresh_token_expiration') is not None:
@@ -21,7 +21,6 @@ class DevelopmentConfig(BaseConfig):
 
 class QaConfig(BaseConfig):
     DEBUG = os.environ.get('DEBUG') or False
-    PROPAGATE_EXCEPTIONS = os.environ.get('PROP_EXCPS') or False
     if os.environ.get('access_token_expiration') is not None:
         JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(seconds=int(os.environ.get('access_token_expiration')))
     if os.environ.get('refresh_token_expiration') is not None:
@@ -30,7 +29,6 @@ class QaConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
-    PROPAGATE_EXCEPTIONS = True
     if os.environ.get('access_token_expiration') is not None:
         JWT_ACCESS_EXP = datetime.timedelta(seconds=int(os.environ.get('access_token_expiration')))
     if os.environ.get('refresh_token_expiration') is not None:
