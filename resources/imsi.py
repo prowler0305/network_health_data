@@ -241,7 +241,7 @@ class Imsi(Resource):
         args = Common.parse_request_args(uscc_eng_parser)
         imsi_file_path = Imsi.imsi_subscribers_file + args.get('userid')
         email_file_path = Imsi.email_address_file + args.get('userid')
-        delete_resp_dictionary = dict(imsi_msg=None)
+        delete_resp_dictionary = dict(imsi_msg='')
         delete_imsi = False
         delete_email = False
         imsi_file_exist = False
