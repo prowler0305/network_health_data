@@ -6,8 +6,6 @@
 
     <!-- BootStrap CSS -->
     <link rel="stylesheet" media="screen" href={{ url_for('static', filename='bootstrap.min.css') }}>
-    <!-- BootStrap Javascript -->
-    <script src="\uscc_api\static\bootstrap.min.js"></script>
     <title>Imsi Web Tracker</title>
 </head>
 <body>
@@ -46,75 +44,93 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-4">
-                <form method="POST">
+                <form method="POST" class="needs-validation" novalidate>
                     {{ form.csrf_token }}
                     <div class="form-group">
-                        <input class="form-control form-control-sm" type="text" id="imsi" name="imsi"
+                        <input class="form-control form-control-sm" type="text" id="imsis" name="imsis"
                                placeholder="Enter Imsi (i.e. 311508975632)">
+                        <div class="invalid-feedback">Please enter an Imsi</div>
                     </div>
                     <div class="form-group">
                         <input class="form-control form-control-sm" type="text" id="email" name="email"
                                placeholder="Enter Email">
                     </div>
-                    {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                            <ul>
-                                {% for message in messages %}
-                                    <p>
-                                        {% if message == "This field is required." %}
-                                            {{ message }}
-                                        {% endif%}
-                                    </p>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    {% endwith%}
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="addradio" id="addradio"
-                               value="Add" checked>
+                        <input class="form-check-input" type="radio" name="add_delete_radio" id="addradio"
+                               value="A">
                         <label class="form-check-label" for="addradio">
                             Add
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deleteradio" id="deleteradio" value="Delete">
+                        <input class="form-check-input" type="radio" name="add_delete_radio" id="deleteradio" value="D">
                         <label class="form-check-label" for="deleteradio">
                             Delete
                         </label>
                     </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                     {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        <ul>
+                        {% if messages %}
                             {% for message in messages %}
-                                <p>
-                                    {% if message in "Not a valid choice" %}
+                                {% if 'successfully' not in message %}
+                                    <div class="alert alert-danger" role="alertdialog">
                                         {{ message }}
-                                    {% endif%}
-                                </p>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-success" role="alertdialog">
+                                        {{ message }}
+                                    </div>
+                                {% endif %}
                             {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {% endwith %}
-                    {{ form.submit() }}
+                        {% endif %}
+                    {% endwith%}
                 </form>
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        <ul>
-                            {% for message in messages %}
-                                <p>
-                                    <h3>{{ message }}</h3>
-                                </p>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                {% endwith %}
-
+            <!--<form method="POST">-->
+                    <!--{{ form.csrf_token }}-->
+                    <!--<div class="form-group">-->
+                        <!--<input class="form-control form-control-sm" type="text" id="imsis" name="imsis"-->
+                               <!--placeholder="Enter Imsi (i.e. 311508975632)">-->
+                    <!--</div>-->
+                    <!--<div class="form-group">-->
+                        <!--<input class="form-control form-control-sm" type="text" id="email" name="email"-->
+                               <!--placeholder="Enter Email">-->
+                    <!--</div>-->
+                    <!--<div class="form-check">-->
+                        <!--<input class="form-check-input" type="radio" name="add_delete_radio" id="addradio"-->
+                               <!--value="A">-->
+                        <!--<label class="form-check-label" for="addradio">-->
+                            <!--Add-->
+                        <!--</label>-->
+                    <!--</div>-->
+                    <!--<div class="form-check">-->
+                        <!--<input class="form-check-input" type="radio" name="add_delete_radio" id="deleteradio" value="D">-->
+                        <!--<label class="form-check-label" for="deleteradio">-->
+                            <!--Delete-->
+                        <!--</label>-->
+                    <!--</div>-->
+                    <!--<button type="submit" class="btn btn-primary">Submit</button>-->
+                    <!--{% with messages = get_flashed_messages() %}-->
+                        <!--{% if messages %}-->
+                            <!--{% for message in messages %}-->
+                                <!--{% if 'successfully' not in message %}-->
+                                    <!--<div class="alert alert-danger" role="alertdialog">-->
+                                        <!--{{ message }}-->
+                                    <!--</div>-->
+                                <!--{% else %}-->
+                                    <!--<div class="alert alert-success" role="alertdialog">-->
+                                        <!--{{ message }}-->
+                                    <!--</div>-->
+                                <!--{% endif %}-->
+                            <!--{% endfor %}-->
+                        <!--{% endif %}-->
+                    <!--{% endwith%}-->
+                <!--</form>-->
             </div>
             <div class="col-sm-4">
                 <h4>List of Current Tracked Imsis</h4>
                 <form method="GET" role="form">
                     <div class="form-group">
-                        <input class="form-control form-control-sm" type="text" id="imsi_list" name="imsi"
+                        <input class="form-control form-control-sm" type="text" id="imsi_filter" name="imsi_filter"
                                placeholder="Search by Imsi or by Alias">
                     </div>
                     <!--{{ form.imsi_filter.label }}-->
@@ -123,14 +139,17 @@
                         To reset the list and clear the filter click "Submit" without a value.
                     </small>
                     <button type="submit" class="btn btn-primary">Search</button>
-                    <p></p>
                     {% if imsi_list %}
                         {% for imsi in imsi_list.values() %}
-                            <div>
-                                <ul style="list-style: none;">
-                                    <li>{{ imsi }}</li>
+                            {% if "No Imsi(s)" in imsi %}
+                                <div class="alert alert-info">
+                                    {{ imsi }}
+                                </div>
+                            {% else %}
+                                <ul class="list-group">
+                                    <li class="list-group-item">{{ imsi }}</li>
                                 </ul>
-                            </div>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                     {% if art %}
@@ -149,106 +168,26 @@
                 {% if email_list %}
                     <div>
                         {% for email in email_list.values() %}
-                            <ul style="list-style: none;">
-                                <li>{{ email }}</li>
+                            {% if "No email" in email %}
+                            <div class="alert alert-info">
+                                {{ email }}
+                            </div>
+                            {% else %}
+                            <ul class="list-group">
+                                <li class="list-group-item">{{ email }}</li>
                             </ul>
+                            {% endif %}
                         {% endfor %}
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
-        <!--<form method="POST">-->
-            <!--{{ form.csrf_token }}-->
-            <!--{{ form.imsis.label }}-->
-            <!--{{ form.imsis(size=70) }}-->
-            <!--<p></p>-->
-            <!--{{ form.email.label }}-->
-            <!--{{ form.email(size=40) }}-->
-            <!--{% with messages = get_flashed_messages() %}-->
-            <!--{% if messages %}-->
-            <!--<ul>-->
-                <!--{% for message in messages %}-->
-                <!--<p>-->
-                    <!--{% if message == "This field is required." %}-->
-                        <!--{{ message }}-->
-                    <!--{% endif%}-->
-                <!--</p>-->
-                <!--{% endfor %}-->
-            <!--</ul>-->
-            <!--{% endif %}-->
-            <!--{% endwith%}-->
-            <!--{{ form.add_delete_radio.label }} {{form.add_delete_radio }}-->
-            <!--{% with messages = get_flashed_messages() %}-->
-                <!--{% if messages %}-->
-                    <!--<ul>-->
-                        <!--{% for message in messages %}-->
-                        <!--<p>-->
-                            <!--{% if message in "Not a valid choice" %}-->
-                                <!--{{ message }}-->
-                            <!--{% endif%}-->
-                        <!--</p>-->
-                        <!--{% endfor %}-->
-                    <!--</ul>-->
-                <!--{% endif %}-->
-            <!--{% endwith %}-->
-            <!--{{ form.submit() }}-->
-        <!--</form>-->
-    <!--{% with messages = get_flashed_messages() %}-->
-    <!--{% if messages %}-->
-    <!--<ul>-->
-        <!--{% for message in messages %}-->
-        <!--<p>-->
-            <!--<h3>{{ message }}</h3>-->
-        <!--</p>-->
-        <!--{% endfor %}-->
-    <!--</ul>-->
-    <!--{% endif %}-->
-    <!--{% endwith %}-->
 
-    <!--<div style="width: 100%; overflow: hidden;">-->
-        <!--<div style="width: 600px; float: left;">-->
-            <!--<h2>List of Current Tracked Imsis</h2>-->
-            <!--<form method="GET">-->
-                <!--{{ form.imsi_filter.label }}-->
-                <!--{{ form.imsi_filter(size=50, placeholder='Search by Imsi or by Alias')}}-->
-                <!--<h5>To reset the list and clear the filter click "Submit" without a value.</h5>-->
-                <!--{{ form.submit() }}-->
-                <!--<p></p>-->
-                <!--{% if imsi_list %}-->
-                    <!--{% for imsi in imsi_list.values() %}-->
-                        <!--<div>-->
-                            <!--<ul style="list-style: none;">-->
-                                <!--<li>{{ imsi }}</li>-->
-                            <!--</ul>-->
-                        <!--</div>-->
-                    <!--{% endfor %}-->
-                <!--{% endif %}-->
-                <!--{% if art %}-->
-                    <!--{{ form.art(value=art) }}-->
-                <!--{% endif %}-->
-                <!--{% if userid %}-->
-                    <!--{{ form.userid(value=userid) }}-->
-                <!--{% endif %}-->
-
-            <!--</form>-->
-        <!--</div>-->
-        <!--<div style="margin-left: 640px;">-->
-            <!--<h1>-->
-                <!--Email Alarms-->
-            <!--</h1>-->
-            <!--<p>Below is the list of email addresses that are registered to receive the Imsi tracking email alerts</p>-->
-            <!--{% if email_list %}-->
-                <!--<div>-->
-                    <!--{% for email in email_list.values() %}-->
-                        <!--<ul style="list-style: none;">-->
-                            <!--<li>{{ email }}</li>-->
-                        <!--</ul>-->
-                    <!--{% endfor %}-->
-                <!--</div>-->
-            <!--{% endif %}-->
-        <!--</div>-->
-    <!--</div>-->
-
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="../../static/bootstrap.min.js"></script>
 </body>
 </html>
