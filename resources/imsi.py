@@ -9,7 +9,9 @@ from common.common import Common
 class Imsi(Resource):
     """
     """
+    # noinspection PyTypeChecker
     imsi_subscribers_file = os.environ.get('imsi_file_path')
+    # noinspection PyTypeChecker
     email_address_file = os.environ.get('email_file_path')
 
     @staticmethod
