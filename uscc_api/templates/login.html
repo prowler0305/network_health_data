@@ -1,38 +1,46 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- BootStrap CSS -->
+    <link rel="stylesheet" media="screen" href={{ url_for('static', filename='bootstrap.min.css') }}>
+    <!-- BootStrap Javascript -->
+    <script src="\uscc_api\static\bootstrap.min.js"></script>
     <title>U.S. Cellular Engineering API</title>
 </head>
 <body>
-    <img src="static/usc_logo.jpg" alt="U.S. Cellular Logo" width="20%">
-    {% block content %}
-    <div align="center">
-        <h1>U.S. Cellular<br>Engineering API Login</h1>
-        <form method="POST">
-            {{ form.csrf_token }}
-            {{ form.username.label }}
-            {{ form.username(size=25) }}
-            <p>
-            {{ form.password.label }}
-            {{ form.password(size=25) }}
-            </p>
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <ul>
-                {% for message in messages %}
-                <p>
-                    {% if message %}
-                        {{ message }}
-                    {% endif%}
-                </p>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            {% endwith%}
-            {{ form.submit() }}
+    <!-- Image and text -->
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+            <img src="/static/usc_logo.jpg" width="30" class="d-inline-block align-top" alt="U.S. Cellular Logo">
+            Automation Portal Login
+        </a>
+    </nav>
+
+    <div class="container w-50">
+         <form method="post" role="form" class="needs-validation" novalidate>
+             {{ form.csrf_token }}
+             <div class="form-group">
+                <input class="form-control form-control-sm" type="text" id="loginUsername" name="username"
+                       placeholder="Username" required>
+             </div>
+            <div class="form-group">
+                <input class="form-control form-control-sm" type="password" id="loginPassword" name="password" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
         </form>
-    </div>
-    {% endblock %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message %}
+                            <div class="alert alert-danger" role="alertdialog">
+                                {{ message }}
+                            </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith%}
 </body>
 </html>
