@@ -20,14 +20,15 @@
     </nav>
 
     <div class="container w-50">
-         <form method="post" role="form" class="needs-validation" novalidate>
+         <form method="post" role="form">
              {{ form.csrf_token }}
              <div class="form-group">
                 <input class="form-control form-control-sm" type="text" id="loginUsername" name="username"
                        placeholder="Username" required>
              </div>
             <div class="form-group">
-                <input class="form-control form-control-sm" type="password" id="loginPassword" name="password" placeholder="Password">
+                <input class="form-control form-control-sm" type="password" id="loginPassword" name="password"
+                       placeholder="Password" required>
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
