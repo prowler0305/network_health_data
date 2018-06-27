@@ -78,7 +78,7 @@ class ImsiTracking(MethodView):
         self.set_art()
         form = ImsiForm()
         if form.validate_on_submit():
-            if request.form.get('imsis') is not None and request.form.get('email') is not None:
+            if request.form.get('imsis') == "" and request.form.get('email') == "":
                 Common.create_flash_message("Please fill in either the Imsi or Email fields.")
 
             else:
