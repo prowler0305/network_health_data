@@ -78,21 +78,25 @@ class ImsiTracking(MethodView):
         self.set_art()
         form = ImsiForm()
         if form.validate_on_submit():
-            self.imsi_tracking_dict['imsi'] = request.form.get('imsis')
-            self.imsi_tracking_dict['email'] = request.form.get('email')
-            self.imsi_tracking_dict['userid'] = request.args.get('userid')
-            if self.imsi_tracking_dict.get('email') != '' and '@' not in self.imsi_tracking_dict.get('email'):
-                Common.create_flash_message('Email entered is not a valid email address', 'error')
-                return render_template('imsi_tracking/imsi_tracking.html', form=form)
-            if request.form['add_delete_radio'] == 'A':
-                imsi_post_resp = \
-                    requests.post(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
-                                  headers=self.imsi_header)
-                Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
-                return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
+            if request.form.get('imsis') is not None and request.form.get('email') is not None:
+                Common.create_flash_message("Please fill in either the Imsi or Email fields.")
+
             else:
-                self.delete()
-                return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
+                self.imsi_tracking_dict['imsi'] = request.form.get('imsis')
+                self.imsi_tracking_dict['email'] = request.form.get('email')
+                self.imsi_tracking_dict['userid'] = request.args.get('userid')
+                if self.imsi_tracking_dict.get('email') != '' and '@' not in self.imsi_tracking_dict.get('email'):
+                    Common.create_flash_message('Email entered is not a valid email address', 'error')
+                    return render_template('imsi_tracking/imsi_tracking.html', form=form)
+                if request.form['add_delete_radio'] == 'A':
+                    imsi_post_resp = \
+                        requests.post(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
+                                      headers=self.imsi_header)
+                    Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
+                    return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
+                else:
+                    self.delete()
+                    return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
         else:
             if len(form.errors) != 0:
                 for error_message_text in form.errors.values():
