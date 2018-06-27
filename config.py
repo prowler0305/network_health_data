@@ -14,6 +14,8 @@ class BaseConfig:
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
+    PORT = int(os.environ.get('PORT')) or 5000
+    HOST = os.environ.get('HOST') or 'localhost'
     if os.environ.get('access_token_expiration') is not None:
         JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(seconds=int(os.environ.get('access_token_expiration')))
     if os.environ.get('refresh_token_expiration') is not None:
@@ -22,7 +24,7 @@ class DevelopmentConfig(BaseConfig):
 
 class QaConfig(BaseConfig):
     DEBUG = False
-    PORT = os.environ.get('PORT') or 8080
+    PORT = int(os.environ.get('PORT')) or 8080
     HOST = os.environ.get('HOST') or '0.0.0.0'
     if os.environ.get('access_token_expiration') is not None:
         JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(seconds=int(os.environ.get('access_token_expiration')))
@@ -32,7 +34,7 @@ class QaConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
-    PORT = os.environ.get('PORT') or 8080
+    PORT = int(os.environ.get('PORT')) or 8080
     HOST = os.environ.get('HOST') or '0.0.0.0'
     if os.environ.get('access_token_expiration') is not None:
         JWT_ACCESS_EXP = datetime.timedelta(seconds=int(os.environ.get('access_token_expiration')))

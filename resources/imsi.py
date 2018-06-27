@@ -157,12 +157,22 @@ class Imsi(Resource):
 
         # If the tracking files don't exist then create them
         if not Common.check_path_exists(imsi_file_path):
-            with open(imsi_file_path, "w+") as sfhw:
-                pass
+            try:
+                with open(imsi_file_path, "w+") as sfhw:
+                    pass
+            except FileNotFoundError as file_excp:
+                response = jsonify({"imsi_msg": "%s:%s" % (file_excp.args[1], file_excp.filename)})
+                response.status_code = 500
+                return response
 
         if not Common.check_path_exists(email_file_path):
-            with open(email_file_path, "w+") as sfhw:
-                pass
+            try:
+                with open(email_file_path, "w+") as sfhw:
+                    pass
+            except FileNotFoundError as file_excp:
+                response = jsonify({"imsi_msg": "%s:%s" % (file_excp.args[1], file_excp.filename)})
+                response.status_code = 500
+                return response
 
         if args.get('imsi') != '':
             args['imsi'] = args.get('imsi').replace(' ', '')
