@@ -34,12 +34,15 @@ class ImsiTracking(MethodView):
         :return: Renders the html page with all substituted content needed.
         """
 
-        if not self.set_art():
-            return redirect(url_for('uscc_login'))
+        print(request.cookies.get('session'))
+        print(request.cookies.get('access_token_cookie'))
+        if request.cookies.get('session') is None:
+            # return redirect(url_for(os.environ.get('login_app'), callback_url=url_for('imsi_tracking')))
+            return redirect(os.environ.get('login_app') + '?callback_url=' + url_for('imsi_tracking', _external=True))
 
-        self.imsi_tracking_dict['userid'] = request.args.get('userid')
+        self.imsi_tracking_dict['userid'] = request.cookies.get('userid')
 
-        auth_header = {'Authorization': 'JWT {}'.format(self.art)}
+        auth_header = {'Authorization': 'JWT {}'.format(request.cookies.get('session'))}
         form = ImsiForm()
         imsi_list = {}
         email_list = {}
