@@ -1,7 +1,12 @@
-import os, config
+import os
 from flask import Flask, url_for
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+
+uscc_eng_app = Flask(__name__)
+uscc_eng_app.config.from_object(os.environ.get('ENV'))
+jwt = JWTManager(uscc_eng_app)
+api = Api(uscc_eng_app, prefix='/v1')
 
 from resources.list_all import ListAll
 from resources.table_action import TableAction
@@ -15,13 +20,6 @@ from uscc_apps.uscc_login.uscc_app_login import *
 from resources.auth import Authenticate
 from resources.refresh import Refresh
 from resources.volte_load import VolteLoad
-
-
-uscc_eng_app = Flask(__name__)
-uscc_eng_app.config.from_object(os.environ.get('FLASK_ENV'))
-jwt = JWTManager(uscc_eng_app)
-api = Api(uscc_eng_app, prefix='/v1')
-
 
 # Add resources via the add_resource method
 

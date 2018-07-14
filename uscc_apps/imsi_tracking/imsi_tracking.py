@@ -3,6 +3,8 @@ from flask import render_template, redirect, request, url_for
 from flask.views import MethodView
 
 # USCC
+from uscc_api import api
+from resources.imsi import Imsi
 from uscc_apps.imsi_tracking.forms import ImsiForm
 from uscc_apps.common import Common
 
@@ -24,6 +26,7 @@ class ImsiTracking(MethodView):
                                        email=None
                                        )
         self.imsi_list_get_resp = None
+        self.login_redirect_response = None
 
     def get(self):
         """
@@ -34,19 +37,19 @@ class ImsiTracking(MethodView):
         :return: Renders the html page with all substituted content needed.
         """
 
-        print(request.cookies.get('session'))
-        print(request.cookies.get('access_token_cookie'))
-        if request.cookies.get('session') is None:
-            # return redirect(url_for(os.environ.get('login_app'), callback_url=url_for('imsi_tracking')))
-            return redirect(os.environ.get('login_app') + '?callback_url=' + url_for('imsi_tracking', _external=True))
+        if request.cookies.get('access_token_cookie') is None:
+            self.redirect_to_uscc_login()
+            # login_redirect_response = redirect(os.environ.get('login_app'))
+            # login_redirect_response.set_cookie('callback_url', value=url_for('imsi_tracking', _external=True))
+            return self.login_redirect_response
 
-        self.imsi_tracking_dict['userid'] = request.cookies.get('userid')
+        self.imsi_tracking_dict['userid'] = request.cookies.get('username')
 
-        auth_header = {'Authorization': 'JWT {}'.format(request.cookies.get('session'))}
+        auth_header = {'Authorization': 'JWT {}'.format(request.cookies.get('access_token_cookie'))}
         form = ImsiForm()
         imsi_list = {}
         email_list = {}
-        self.imsi_list_get_resp = requests.get(self.imsi_tracking_api_url, params=self.imsi_tracking_dict, headers=auth_header)
+        self.imsi_list_get_resp = requests.get(api.url_for(Imsi, _external=True), params=self.imsi_tracking_dict, headers=auth_header)
         if self.imsi_list_get_resp.status_code == requests.codes.ok:
             if request.args.get('imsi_filter') is not None and request.args.get('imsi_filter') != '':
                 imsi_list = self.filter_imsis()
@@ -55,10 +58,12 @@ class ImsiTracking(MethodView):
 
             email_list = self.imsi_list_get_resp.json().get('email_list')
         elif self.imsi_list_get_resp.status_code == requests.codes.unauthorized:
-            return redirect(url_for('uscc_login'))
+            Common.create_flash_message(self.imsi_list_get_resp.text)
+            # return redirect(url_for('uscc_login'))
         else:
-            get_imsi_list_error = "Retrieving list of tracked Imsi failed with: %s:%s.\nPlease contact Core Automation Team" %\
-                            (str(self.imsi_list_get_resp.status_code), self.imsi_list_get_resp.reason)
+            get_imsi_list_error = "Retrieving list of tracked Imsi failed with: %s:%s." \
+                                  "\nPlease contact Core Automation Team" \
+                                  % (str(self.imsi_list_get_resp.status_code), self.imsi_list_get_resp.reason)
             Common.create_flash_message(get_imsi_list_error)
 
         return render_template('imsi_tracking/imsi_tracking.html', form=form, imsi_list=imsi_list, art=self.art,
@@ -143,6 +148,11 @@ class ImsiTracking(MethodView):
         return False
 
     def filter_imsis(self):
+        """
+
+        :return:
+        """
+
         imsi_list = {}
         user_filter = request.args.get('imsi_filter').lower()
         for key, imsi_value in self.imsi_list_get_resp.json().get('imsi_list').items():
@@ -159,3 +169,13 @@ class ImsiTracking(MethodView):
                 if user_filter == imsi_value:
                     imsi_list[key] = imsi_value
         return imsi_list
+
+    def redirect_to_uscc_login(self):
+        """
+        Redirects to the USCC Login application
+        :return: redirect response
+        """
+
+        self.login_redirect_response = redirect(os.environ.get('login_app'))
+        self.login_redirect_response.set_cookie('callback_url', value=url_for('imsi_tracking', _external=True))
+        return
