@@ -175,6 +175,6 @@ class ImsiTracking(MethodView):
         :return: redirect response
         """
 
-        self.login_redirect_response = redirect(os.environ.get('login_app'))
-        self.login_redirect_response.set_cookie('callback_url', value=url_for('imsi_tracking', _external=True), samesite='Lax')
+        self.login_redirect_response = redirect(os.environ.get('login_app') + '?referrer=' +
+                                                url_for('imsi_tracking', _external=True))
         return
