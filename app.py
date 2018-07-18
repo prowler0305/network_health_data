@@ -62,7 +62,3 @@ if __name__ == '__main__':
 
     uscc_eng_app.run(debug=uscc_eng_app.config.get('DEBUG'), threaded=uscc_eng_app.config.get('THREADED'),
                      port=uscc_eng_app.config.get('PORT'), host=uscc_eng_app.config.get('HOST'))
-    # if os.environ.get('FLASK_ENV') == 'config.':
-    #     uscc_eng_app.run(debug=True, threaded=True)
-    # else:
-    #     uscc_eng_app.run(host='0.0.0.0', port=8080, threaded=True)

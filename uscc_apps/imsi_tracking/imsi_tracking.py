@@ -18,7 +18,6 @@ import os
 class ImsiTracking(MethodView):
     def __init__(self):
 
-        self.imsi_tracking_api_url = os.environ.get('imsi_tracking_api_url')
         self.art = None
         self.imsi_header = {'content-type': 'application/json'}
         self.imsi_tracking_dict = dict(imsi=None,
@@ -98,7 +97,7 @@ class ImsiTracking(MethodView):
                     return render_template('imsi_tracking/imsi_tracking.html', form=form)
                 if request.form['add_delete_radio'] == 'A':
                     imsi_post_resp = \
-                        requests.post(self.imsi_tracking_api_url, data=json.dumps(self.imsi_tracking_dict),
+                        requests.post(api.url_for(Imsi, _external=True), data=json.dumps(self.imsi_tracking_dict),
                                       headers=self.imsi_header)
                     Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
                     return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
@@ -177,5 +176,5 @@ class ImsiTracking(MethodView):
         """
 
         self.login_redirect_response = redirect(os.environ.get('login_app'))
-        self.login_redirect_response.set_cookie('callback_url', value=url_for('imsi_tracking', _external=True))
+        self.login_redirect_response.set_cookie('callback_url', value=url_for('imsi_tracking', _external=True), samesite='Lax')
         return

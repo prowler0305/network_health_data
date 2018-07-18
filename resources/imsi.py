@@ -2,7 +2,7 @@ import sys
 import os
 from flask import jsonify, make_response, current_app
 from flask_restful import Resource
-from flask_jwt_extended import fresh_jwt_required
+from flask_jwt_extended import jwt_required
 from common.common import Common
 
 
@@ -15,7 +15,7 @@ class Imsi(Resource):
     email_address_file = os.environ.get('email_file_path')
 
     @staticmethod
-    @fresh_jwt_required
+    @jwt_required
     def get():
         """
 
@@ -109,7 +109,7 @@ class Imsi(Resource):
         return response
 
     @staticmethod
-    @fresh_jwt_required
+    @jwt_required
     def post():
         """
         Looks for the "imsi" parameter to be provided in the body of the POST to add to the imsi-Subscribers file.
@@ -226,7 +226,7 @@ class Imsi(Resource):
             return response
 
     @staticmethod
-    @fresh_jwt_required
+    @jwt_required
     def delete():
         """
         Removes either a single imsi or a comma delimited string of imsis from the imsi-subscribers file.
