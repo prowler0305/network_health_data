@@ -6,7 +6,7 @@ from flask.views import MethodView
 from uscc_api import api
 from resources.imsi import Imsi
 from uscc_apps.imsi_tracking.forms import ImsiForm
-from uscc_apps.common import Common
+from common.common import Common
 
 # Misc
 import requests
@@ -19,7 +19,7 @@ class ImsiTracking(MethodView):
     def __init__(self):
 
         self.art = None
-        self.imsi_header = {'content-type': 'application/json'}
+        self.imsi_header = {'Authorization': None}
         self.imsi_tracking_dict = dict(imsi=None,
                                        userid=None,
                                        email=None
@@ -38,20 +38,22 @@ class ImsiTracking(MethodView):
 
         if request.cookies.get('access_token_cookie') is None:
             self.redirect_to_uscc_login()
-            # login_redirect_response = redirect(os.environ.get('login_app'))
-            # login_redirect_response.set_cookie('callback_url', value=url_for('imsi_tracking', _external=True))
             return self.login_redirect_response
 
         self.imsi_tracking_dict['userid'] = request.cookies.get('username')
 
-        auth_header = {'Authorization': 'JWT {}'.format(request.cookies.get('access_token_cookie'))}
+        self.imsi_header['Authorization'] = 'JWT {}'.format(request.cookies.get('access_token_cookie'))
         form = ImsiForm()
         imsi_list = {}
         email_list = {}
-        self.imsi_list_get_resp = requests.get(api.url_for(Imsi, _external=True), params=self.imsi_tracking_dict, headers=auth_header)
+        self.imsi_list_get_resp = requests.get(api.url_for(Imsi, _external=True), params=self.imsi_tracking_dict,
+                                               headers=self.imsi_header)
+
         if self.imsi_list_get_resp.status_code == requests.codes.ok:
             if request.args.get('imsi_filter') is not None and request.args.get('imsi_filter') != '':
                 imsi_list = self.filter_imsis()
+                if len(imsi_list) == 0:
+                    imsi_list['0'] = "No Imsi(s) matching filter: '%s'" % request.args.get('imsi_filter')
             else:
                 imsi_list = self.imsi_list_get_resp.json().get('imsi_list')
 
@@ -82,7 +84,12 @@ class ImsiTracking(MethodView):
         displayed.
         """
 
-        self.set_art()
+        if request.cookies.get('access_token_cookie') is None:
+            self.redirect_to_uscc_login()
+        else:
+            self.imsi_header['Authorization'] = 'JWT {}'.format(request.cookies.get('access_token_cookie'))
+            self.imsi_header['content_type'] = 'application/json'
+
         form = ImsiForm()
         if form.validate_on_submit():
             if request.form.get('imsis') == "" and request.form.get('email') == "":
@@ -91,7 +98,7 @@ class ImsiTracking(MethodView):
             else:
                 self.imsi_tracking_dict['imsi'] = request.form.get('imsis')
                 self.imsi_tracking_dict['email'] = request.form.get('email')
-                self.imsi_tracking_dict['userid'] = request.args.get('userid')
+                self.imsi_tracking_dict['userid'] = request.cookies.get('username')
                 if self.imsi_tracking_dict.get('email') != '' and '@' not in self.imsi_tracking_dict.get('email'):
                     Common.create_flash_message('Email entered is not a valid email address', 'error')
                     return render_template('imsi_tracking/imsi_tracking.html', form=form)
@@ -99,7 +106,11 @@ class ImsiTracking(MethodView):
                     imsi_post_resp = \
                         requests.post(api.url_for(Imsi, _external=True), data=json.dumps(self.imsi_tracking_dict),
                                       headers=self.imsi_header)
-                    Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
+
+                    if imsi_post_resp.json().get('msg') is not None:
+                        Common.create_flash_message("%s. Please Contact Core Automation Team." % imsi_post_resp.json().get('msg'))
+                    else:
+                        Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
                     return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
                 else:
                     self.delete()
@@ -121,7 +132,7 @@ class ImsiTracking(MethodView):
                         Response object.
         """
 
-        imsi_delete_resp = requests.delete(self.imsi_tracking_api_url,
+        imsi_delete_resp = requests.delete(api.url_for(Imsi, _external=True),
                                            data=json.dumps(self.imsi_tracking_dict),
                                            headers=self.imsi_header)
 
@@ -148,8 +159,10 @@ class ImsiTracking(MethodView):
 
     def filter_imsis(self):
         """
+        Filters the list of imsi returned from the API to only give those that match the filter value specified by the
+        user.
 
-        :return:
+        :return: dictionary of imsis filter by value given in the request args 'imsi_filter' parameter.
         """
 
         imsi_list = {}

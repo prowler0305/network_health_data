@@ -1,6 +1,5 @@
-import sys
 import os
-from flask import jsonify, make_response, current_app
+from flask import jsonify, make_response, current_app, request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 from common.common import Common

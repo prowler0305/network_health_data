@@ -10,6 +10,10 @@ class BaseConfig:
     JWT_HEADER_TYPE = 'JWT'
     PROPAGATE_EXCEPTIONS = True
     THREADED = True
+    # INFO: temporary code while login app is being used here.
+    JWT_COOKIE_SECURE = False
+    JWT_COOKIE_CSRF_PROTECT = True
+    JWT_TOKEN_LOCATION = ['cookies', 'headers']
 
 
 class DevelopmentConfig(BaseConfig):
