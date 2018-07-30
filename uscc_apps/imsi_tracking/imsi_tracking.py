@@ -111,10 +111,10 @@ class ImsiTracking(MethodView):
                         Common.create_flash_message("%s. Please Contact Core Automation Team." % imsi_post_resp.json().get('msg'))
                     else:
                         Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
-                    return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
+                    return redirect(url_for('imsi_tracking'))
                 else:
                     self.delete()
-                    return redirect(url_for('imsi_tracking', art=self.art, userid=self.imsi_tracking_dict.get('userid')))
+                    return redirect(url_for('imsi_tracking'))
         else:
             if len(form.errors) != 0:
                 for error_message_text in form.errors.values():
