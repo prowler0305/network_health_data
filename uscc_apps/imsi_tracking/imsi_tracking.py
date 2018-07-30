@@ -107,10 +107,14 @@ class ImsiTracking(MethodView):
                         requests.post(api.url_for(Imsi, _external=True), data=json.dumps(self.imsi_tracking_dict),
                                       headers=self.imsi_header)
 
-                    if imsi_post_resp.json().get('msg') is not None:
-                        Common.create_flash_message("%s. Please Contact Core Automation Team." % imsi_post_resp.json().get('msg'))
+                    if imsi_post_resp.status_code == requests.codes.unauthorized:
+                        self.redirect_to_uscc_login()
+                        return self.login_redirect_response
                     else:
-                        Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
+                        if imsi_post_resp.json().get('msg') is not None:
+                            Common.create_flash_message("%s. Please Contact Core Automation Team." % imsi_post_resp.json().get('msg'))
+                        else:
+                            Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
                     return redirect(url_for('imsi_tracking'))
                 else:
                     self.delete()
@@ -140,9 +144,13 @@ class ImsiTracking(MethodView):
             Common.create_flash_message(imsi_delete_resp.json().get('imsi_msg'))
             return True
         else:
-            delete_error_message = "%s: %s" % (imsi_delete_resp.status_code, imsi_delete_resp.reason)
-            Common.create_flash_message(delete_error_message, 'error')
-            return False
+            if imsi_delete_resp.status_code == requests.codes.unauthorized:
+                self.redirect_to_uscc_login()
+                return self.login_redirect_response
+            else:
+                delete_error_message = "%s: %s" % (imsi_delete_resp.status_code, imsi_delete_resp.reason)
+                Common.create_flash_message(delete_error_message, 'error')
+                return False
 
     def set_art(self):
         """
