@@ -67,7 +67,7 @@
                             Delete
                         </label>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-outline-primary">Submit</button>
                     {% with messages = get_flashed_messages() %}
                         {% if messages %}
                             {% for message in messages %}
@@ -95,7 +95,7 @@
                     <small id="imsiSearchHelpBlock" class="form-text text-muted">
                         To reset the list and clear the filter click "Submit" without a value.
                     </small>
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="submit" class="btn btn-outline-secondary">Search</button>
                     {% if imsi_list %}
                         {% for imsi in imsi_list.values() %}
                             {% if "No Imsi(s)" in imsi %}
