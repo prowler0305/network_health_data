@@ -3,6 +3,7 @@ from flask import render_template, redirect, request, url_for
 from flask.views import MethodView
 
 # USCC
+from resources.logout import Logout
 from uscc_api import api
 from resources.imsi import Imsi
 from uscc_apps.imsi_tracking.forms import ImsiForm
@@ -84,6 +85,9 @@ class ImsiTracking(MethodView):
         displayed.
         """
 
+        if 'logout_btn' in request.form:
+            self.delete()
+
         if request.cookies.get('access_token_cookie') is None:
             self.redirect_to_uscc_login()
         else:
@@ -136,21 +140,27 @@ class ImsiTracking(MethodView):
                         Response object.
         """
 
-        imsi_delete_resp = requests.delete(api.url_for(Imsi, _external=True),
-                                           data=json.dumps(self.imsi_tracking_dict),
-                                           headers=self.imsi_header)
-
-        if imsi_delete_resp.status_code == requests.codes.ok:
-            Common.create_flash_message(imsi_delete_resp.json().get('imsi_msg'))
-            return True
-        else:
-            if imsi_delete_resp.status_code == requests.codes.unauthorized:
+        if 'logout_btn' in request.form:
+            imsi_logout_resp = requests.delete(api.url_for(Logout, _external=True))
+            if imsi_logout_resp.status_code == requests.codes.ok:
                 self.redirect_to_uscc_login()
-                return self.login_redirect_response
+
+        else:
+            imsi_delete_resp = requests.delete(api.url_for(Imsi, _external=True),
+                                               data=json.dumps(self.imsi_tracking_dict),
+                                               headers=self.imsi_header)
+
+            if imsi_delete_resp.status_code == requests.codes.ok:
+                Common.create_flash_message(imsi_delete_resp.json().get('imsi_msg'))
+                return True
             else:
-                delete_error_message = "%s: %s" % (imsi_delete_resp.status_code, imsi_delete_resp.reason)
-                Common.create_flash_message(delete_error_message, 'error')
-                return False
+                if imsi_delete_resp.status_code == requests.codes.unauthorized:
+                    self.redirect_to_uscc_login()
+                    return self.login_redirect_response
+                else:
+                    delete_error_message = "%s: %s" % (imsi_delete_resp.status_code, imsi_delete_resp.reason)
+                    Common.create_flash_message(delete_error_message, 'error')
+                    return False
 
     def set_art(self):
         """

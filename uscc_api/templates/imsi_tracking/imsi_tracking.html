@@ -15,6 +15,10 @@
             <img src="/static/usc_logo.jpg" width="30" class="d-inline-block align-top" alt="U.S. Cellular Logo">
             Imsi Web Tracker
         </a>
+        <form method="POST">
+            {{ form.csrf_token }}
+            <button type="submit" name="logout_btn" value='logout' class="btn btn-outline-danger">Logout</button>
+        </form>
     </nav>
 
     <div class="container">
