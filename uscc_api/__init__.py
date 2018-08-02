@@ -20,11 +20,13 @@ from uscc_apps.uscc_login.uscc_app_login import *
 from resources.auth import Authenticate
 from resources.refresh import Refresh
 from resources.volte_load import VolteLoad
+from resources.logout import Logout
 
 # Add resources via the add_resource method
 
 api.add_resource(Authenticate, '/login')
 api.add_resource(Refresh, '/refresh_token')
+api.add_resource(Logout, 'logout')
 # api.add_resource(AuthenticateKerberos, '/auth')
 api.add_resource(SiteMap, '/')
 api.add_resource(ListAll, '/list_all')
