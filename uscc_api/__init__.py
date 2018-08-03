@@ -7,7 +7,7 @@ uscc_eng_app = Flask(__name__)
 uscc_eng_app.config.from_object(os.environ.get('imsi_app_env'))
 jwt = JWTManager(uscc_eng_app)
 api = Api(uscc_eng_app, prefix='/v1')
-
+blacklist = set()
 from resources.list_all import ListAll
 from resources.table_action import TableAction
 from resources.row_query import RowQuery

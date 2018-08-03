@@ -49,7 +49,7 @@ class Login(MethodView):
                 login_data_dict = json.loads(auth_response.text)
                 if self.client_referrer is not None:
                     response = redirect(self.client_referrer)
-                    response.set_cookie('username', value=self.auth_data.get('username'))
+                    response.set_cookie('username', value=self.auth_data.get('username'), httponly=True)
                     response.set_cookie('automations', value=json.dumps(login_data_dict.get('automations')),
                                         max_age=uscc_eng_app.config.get('JWT_ACCESS_TOKEN_EXPIRES'))
                     set_access_cookies(response, login_data_dict.get('art').get('access_token'),
@@ -68,7 +68,7 @@ class Login(MethodView):
                     return response
             elif auth_response.status_code == requests.codes.unauthorized:
                 uscc_eng_app.logger.info('Invalid login occurred. IP=%s:Username=%s'
-                                           % (request.remote_addr, self.auth_data.get('username')))
+                                         % (request.remote_addr, self.auth_data.get('username')))
                 bad_cred_mmsg = 'Username and/or password is invalid. Please reenter.'
                 Common.create_flash_message(bad_cred_mmsg)
             else:

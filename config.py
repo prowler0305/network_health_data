@@ -13,7 +13,7 @@ class BaseConfig:
     # INFO: temporary code while login app is being used here.
     JWT_COOKIE_SECURE = False
     JWT_COOKIE_CSRF_PROTECT = True
-    JWT_TOKEN_LOCATION = ['cookies', 'headers']
+    JWT_TOKEN_LOCATION = ['cookies']
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
 

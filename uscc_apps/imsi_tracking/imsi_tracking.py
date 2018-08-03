@@ -1,10 +1,10 @@
 # Flask
-from flask import render_template, redirect, request, url_for
+from flask import render_template, redirect, request, url_for, abort, make_response
 from flask.views import MethodView
 
 # USCC
 from resources.logout import Logout
-from uscc_api import api
+from uscc_api import api, uscc_eng_app
 from resources.imsi import Imsi
 from uscc_apps.imsi_tracking.forms import ImsiForm
 from common.common import Common
@@ -43,12 +43,20 @@ class ImsiTracking(MethodView):
 
         self.imsi_tracking_dict['userid'] = request.cookies.get('username')
 
-        self.imsi_header['Authorization'] = 'JWT {}'.format(request.cookies.get('access_token_cookie'))
+        # INFO: needed if JWT_TOKEN_LOCATION is set to headers as opposed to in cookies
+        # self.imsi_header['Authorization'] = 'JWT {}'.format(request.cookies.get('access_token_cookie'))
         form = ImsiForm()
         imsi_list = {}
         email_list = {}
         self.imsi_list_get_resp = requests.get(api.url_for(Imsi, _external=True), params=self.imsi_tracking_dict,
-                                               headers=self.imsi_header)
+                                               headers=self.imsi_header,
+                                               cookies={'access_token_cookie': request.cookies.get('access_token_cookie')})
+                                               # Uncomment below cookies parameter for JWT token revoke testing.
+                                               # Paste existing JWT here and save change (i.e. reload flask app.
+                                               # Then use "Logout" button which will register the JWT in the apps
+                                               # blacklist. Then login as usual and GET request should fail with a
+                                               # "token revoked" type unauthorized response.
+                                               # cookies={'access_token_cookie': ''})
 
         if self.imsi_list_get_resp.status_code == requests.codes.ok:
             if request.args.get('imsi_filter') is not None and request.args.get('imsi_filter') != '':
@@ -60,8 +68,11 @@ class ImsiTracking(MethodView):
 
             email_list = self.imsi_list_get_resp.json().get('email_list')
         elif self.imsi_list_get_resp.status_code == requests.codes.unauthorized:
-            Common.create_flash_message(self.imsi_list_get_resp.text)
-            # return redirect(url_for('uscc_login'))
+            if self.imsi_list_get_resp.json().get('msg') == 'Token has been revoked':
+                self.token_revoked_error()
+            else:
+                self.redirect_to_uscc_login()
+                return self.login_redirect_response
         else:
             get_imsi_list_error = "Retrieving list of tracked Imsi failed with: %s:%s." \
                                   "\nPlease contact Core Automation Team" \
@@ -87,18 +98,22 @@ class ImsiTracking(MethodView):
 
         if 'logout_btn' in request.form:
             self.delete()
+            return self.login_redirect_response
 
         if request.cookies.get('access_token_cookie') is None:
             self.redirect_to_uscc_login()
+            return self.login_redirect_response
         else:
-            self.imsi_header['Authorization'] = 'JWT {}'.format(request.cookies.get('access_token_cookie'))
+            # INFO: needed if JWT_TOKEN_LOCATION is set to headers as opposed to in cookies
+            # self.imsi_header['Authorization'] = 'JWT {}'.format(request.cookies.get('access_token_cookie'))
+            # INFO: With JWT in cookies set the CSRF token is still expected to be in the header for POST to succeed
+            self.imsi_header['X-CSRF-TOKEN'] = request.cookies.get('csrf_access_token')
             self.imsi_header['content_type'] = 'application/json'
 
         form = ImsiForm()
         if form.validate_on_submit():
             if request.form.get('imsis') == "" and request.form.get('email') == "":
                 Common.create_flash_message("Please fill in either the Imsi or Email fields.")
-
             else:
                 self.imsi_tracking_dict['imsi'] = request.form.get('imsis')
                 self.imsi_tracking_dict['email'] = request.form.get('email')
@@ -109,7 +124,8 @@ class ImsiTracking(MethodView):
                 if request.form['add_delete_radio'] == 'A':
                     imsi_post_resp = \
                         requests.post(api.url_for(Imsi, _external=True), data=json.dumps(self.imsi_tracking_dict),
-                                      headers=self.imsi_header)
+                                      headers=self.imsi_header,
+                                      cookies={'access_token_cookie': request.cookies.get('access_token_cookie')})
 
                     if imsi_post_resp.status_code == requests.codes.unauthorized:
                         self.redirect_to_uscc_login()
@@ -141,14 +157,18 @@ class ImsiTracking(MethodView):
         """
 
         if 'logout_btn' in request.form:
-            imsi_logout_resp = requests.delete(api.url_for(Logout, _external=True))
+            self.imsi_header['X-CSRF-TOKEN'] = request.cookies.get('csrf_access_token')
+            imsi_logout_resp = requests.delete(api.url_for(Logout, _external=True), headers=self.imsi_header,
+                                               cookies={'access_token_cookie': request.cookies.get('access_token_cookie')})
             if imsi_logout_resp.status_code == requests.codes.ok:
                 self.redirect_to_uscc_login()
+
 
         else:
             imsi_delete_resp = requests.delete(api.url_for(Imsi, _external=True),
                                                data=json.dumps(self.imsi_tracking_dict),
-                                               headers=self.imsi_header)
+                                               headers=self.imsi_header,
+                                               cookies={'access_token_cookie': request.cookies.get('access_token_cookie')})
 
             if imsi_delete_resp.status_code == requests.codes.ok:
                 Common.create_flash_message(imsi_delete_resp.json().get('imsi_msg'))
@@ -209,3 +229,20 @@ class ImsiTracking(MethodView):
         self.login_redirect_response = redirect(os.environ.get('login_app') + '?referrer=' +
                                                 url_for('imsi_tracking', _external=True))
         return
+
+    def token_revoked_error(self):
+        """
+        Scrubs the environment in response to a request to the imsi web app that was made with a revoked token. Which
+        includes the following:
+
+            1. Logs the occurrence recording information about the client that made the request and the token used.
+            2.  Abort the request with a 401 (unauthorized) response page. Which prevents the browser/client from
+                reaching any valid page within the application by just refreshing.
+
+        :return:
+        """
+
+        uscc_eng_app.logger.info('Unauthorized access with revoked token attempted. IP=%s: Username=%s: JWT used=%s' %
+                                 (request.remote_addr, request.cookies.get('username'),
+                                  request.cookies.get('access_token_cookie')))
+        abort(401)
