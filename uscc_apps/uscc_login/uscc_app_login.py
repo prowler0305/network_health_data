@@ -61,6 +61,7 @@ class Login(MethodView):
                     response = make_response(render_template('login_welcome.html', username=self.auth_data.get('username')))
                     response.set_cookie('automations', value=json.dumps(login_data_dict.get('automations')),
                                         max_age=uscc_eng_app.config.get('JWT_ACCESS_TOKEN_EXPIRES'))
+                    response.set_cookie('username', value=self.auth_data.get('username'), httponly=True)
                     set_access_cookies(response, login_data_dict.get('art').get('access_token'),
                                        max_age=uscc_eng_app.config.get('JWT_ACCESS_TOKEN_EXPIRES'))
                     set_refresh_cookies(response, login_data_dict.get('art').get('refresh_token'),
