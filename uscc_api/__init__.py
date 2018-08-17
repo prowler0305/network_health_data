@@ -22,6 +22,7 @@ from resources.refresh import Refresh
 # from resources.volte_load import VolteLoad
 from resources.logout import Logout
 from uscc_apps.dev_container_status.container_status import ContainerStatus
+from uscc_apps.dev_container_status.update_container_status import UpdateContainer
 
 # Add resources via the add_resource method
 
@@ -29,7 +30,7 @@ api.add_resource(Authenticate, '/login')
 api.add_resource(Refresh, '/refresh_token')
 api.add_resource(Logout, 'logout')
 # api.add_resource(AuthenticateKerberos, '/auth')
-api.add_resource(SiteMap, '/')
+# api.add_resource(SiteMap, '/')
 # api.add_resource(ListAll, '/list_all')
 # api.add_resource(TableAction, '/action')
 # api.add_resource(RowQuery, '/row_query')
@@ -38,7 +39,8 @@ api.add_resource(SiteMap, '/')
 # api.add_resource(VolteLoad, '/volte_load')
 
 container_status_view = ContainerStatus.as_view(name='container_status')
+update_container_view = UpdateContainer.as_view(name='update_container')
 login_view = Login.as_view(name='uscc_login')
 uscc_eng_app.add_url_rule('/cstatus', view_func=container_status_view, methods=['GET'])
-uscc_eng_app.add_url_rule('/cstatus_update', view_func=container_status_view, methods=['GET', 'POST'])
+uscc_eng_app.add_url_rule('/cstatus_update', view_func=update_container_view, methods=['GET', 'POST'])
 uscc_eng_app.add_url_rule('/login', view_func=login_view, methods=['POST', 'GET'])

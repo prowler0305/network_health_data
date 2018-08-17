@@ -5,8 +5,7 @@ from flask.views import MethodView
 # USCC
 from resources.logout import Logout
 from uscc_api import api, uscc_eng_app
-from resources.imsi import Imsi
-from uscc_apps.imsi_tracking.forms import ImsiForm
+from uscc_apps.dev_container_status.forms import ContainerForm
 from common.common import Common
 
 # Misc
@@ -15,7 +14,7 @@ import json
 import os
 
 
-class ContainerStatus(MethodView):
+class UpdateContainer(MethodView):
     def __init__(self):
 
         # self.imsi_header = {'Authorization': None}
@@ -32,24 +31,12 @@ class ContainerStatus(MethodView):
 
         :return: Renders the html page with all substituted content needed.
         """
+        form = ContainerForm()
 
-        with open(os.environ.get('container_status_path')) as csfh:
-            self.container_status_dict = json.load(csfh)
-
-        return render_template('container_status/container_status.html', cs=self.container_status_dict)
+        return render_template('container_status/update_container_status.html', form=form)
 
     def post(self):
         """
-        Receives control after the users clicks submit on the web page via the HTTP POST request done on the HTML form
-        action method.
-
-        The string of imsis is extracted from the form and passed on to either a HTTP POST or DELETE request to the
-        USCC ENG REST API. Which request to perform is determined by interrogating the Add or Delete radio button to
-        determine which value the radio button contains.
-
-        :return: If the form validates correctly then a redirect to the same page is done to reload the page with the
-        updated imsi list. If not then the web page is loaded without the imsi list so that any error messages can be
-        displayed.
         """
 
         if 'logout_btn' in request.form:
