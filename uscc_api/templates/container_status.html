@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- BootStrap CSS -->
+    <link rel="stylesheet" media="screen" href={{ url_for('static', filename='bootstrap.min.css') }}>
+    <title>Imsi Web Tracker</title>
+</head>
+<body>
+    <!-- Image and text -->
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+            <img src="/static/usc_logo.jpg" width="30" class="d-inline-block align-top" alt="U.S. Cellular Logo">
+            NAS Development Container Status
+        </a>
+    </nav>
+    <div class="row mt-1">
+        <div class="col-sm-6">
+            <div class="card border-primary">
+                <div class="card-body">
+                    {% if cs.dev_container_1.status == 'open' %}
+                        <h5 class="card-title">NAS Platform DEV Container 1 <span class="badge badge-success">{{ cs.dev_container_1.status }}</span></h5>
+                    {% else %}
+                        <h5 class="card-title">NAS Platform DEV Container 1 <span class="badge badge-danger">{{ cs.dev_container_1.status }}</span></h5>
+                    {% endif %}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Time Frame: {{cs.dev_container_1.time_frame.start_date}} - {{cs.dev_container_1.time_frame.end_date}}</li>
+                        <li class="list-group-item">Point of Contact: {{cs.dev_container_1.poc.name}} <a href="mailto:{{cs.dev_container_1.poc.email}}">{{cs.dev_container_1.poc.email}}</a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card border-primary">
+                <div class="card-body">
+                    {% if cs.dev_container_2.status == 'open' %}
+                        <h5 class="card-title">NAS Platform DEV Container 2 <span class="badge badge-success">{{cs.dev_container_2.status}}</span></h5>
+                    {% else %}
+                        <h5 class="card-title">NAS Platform DEV Container 2 <span class="badge badge-danger">{{cs.dev_container_2.status}}</span></h5>
+                    {% endif %}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Time Frame: {{cs.dev_container_2.time_frame.start_date}} - {{cs.dev_container_2.time_frame.end_date}}</li>
+                        <li class="list-group-item">Point of Contact: {{cs.dev_container_2.poc.name}} <a href="mailto:{{cs.dev_container_2.poc.email}}">{{cs.dev_container_2.poc.email}}</a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="../../static/bootstrap.min.js"></script>
+</body>
+</html>
