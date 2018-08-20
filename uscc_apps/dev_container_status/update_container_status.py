@@ -31,6 +31,10 @@ class UpdateContainer(MethodView):
 
         :return: Renders the html page with all substituted content needed.
         """
+        if request.cookies.get('access_token_cookie') is None:
+            self.redirect_to_uscc_login()
+            return self.login_redirect_response
+
         form = ContainerForm()
 
         return render_template('container_status/update_container_status.html', form=form)
@@ -46,48 +50,34 @@ class UpdateContainer(MethodView):
         if request.cookies.get('access_token_cookie') is None:
             self.redirect_to_uscc_login()
             return self.login_redirect_response
-        else:
-            # INFO: needed if JWT_TOKEN_LOCATION is set to headers as opposed to in cookies
-            # self.imsi_header['Authorization'] = 'JWT {}'.format(request.cookies.get('access_token_cookie'))
-            # INFO: With JWT in cookies set the CSRF token is still expected to be in the header for POST to succeed
-            self.imsi_header['X-CSRF-TOKEN'] = request.cookies.get('csrf_access_token')
-            self.imsi_header['content_type'] = 'application/json'
+        # else:
+        #     # INFO: needed if JWT_TOKEN_LOCATION is set to headers as opposed to in cookies
+        #     # self.imsi_header['Authorization'] = 'JWT {}'.format(request.cookies.get('access_token_cookie'))
+        #     # INFO: With JWT in cookies set the CSRF token is still expected to be in the header for POST to succeed
+        #     self.imsi_header['X-CSRF-TOKEN'] = request.cookies.get('csrf_access_token')
+        #     self.imsi_header['content_type'] = 'application/json'
 
-        form = ImsiForm()
+        form = ContainerForm()
         if form.validate_on_submit():
-            if request.form.get('imsis') == "" and request.form.get('email') == "":
-                Common.create_flash_message("Please fill in either the Imsi or Email fields.")
-            else:
-                self.imsi_tracking_dict['imsi'] = request.form.get('imsis')
-                self.imsi_tracking_dict['email'] = request.form.get('email')
-                self.imsi_tracking_dict['userid'] = request.cookies.get('username')
-                if self.imsi_tracking_dict.get('email') != '' and '@' not in self.imsi_tracking_dict.get('email'):
-                    Common.create_flash_message('Email entered is not a valid email address', 'error')
-                    return render_template('imsi_tracking/imsi_tracking.html', form=form)
-                if request.form['add_delete_radio'] == 'A':
-                    imsi_post_resp = \
-                        requests.post(api.url_for(Imsi, _external=True), data=json.dumps(self.imsi_tracking_dict),
-                                      headers=self.imsi_header,
-                                      cookies={'access_token_cookie': request.cookies.get('access_token_cookie')})
+            with open(os.environ.get('container_status_path')) as csrfh:
+                status_file_dict = json.load(csrfh)
 
-                    if imsi_post_resp.status_code == requests.codes.unauthorized:
-                        self.redirect_to_uscc_login()
-                        return self.login_redirect_response
-                    else:
-                        if imsi_post_resp.json().get('msg') is not None:
-                            Common.create_flash_message("%s. Please Contact Core Automation Team." % imsi_post_resp.json().get('msg'))
-                        else:
-                            Common.create_flash_message(imsi_post_resp.json().get('imsi_msg'))
-                    return redirect(url_for('imsi_tracking'))
-                else:
-                    self.delete()
-                    return redirect(url_for('imsi_tracking'))
+            update_container_dict = status_file_dict.get(request.form.get('container_name'))
+            update_container_dict['status'] = 'not open'
+            update_container_dict.get('time_frame')['start_date'] = request.form.get('start_date')
+            update_container_dict.get('time_frame')['end_date'] = request.form.get('end_date')
+            update_container_dict.get('poc')['name'] = request.form.get('poc_name')
+            update_container_dict.get('poc')['email'] = request.form.get('poc_email')
+            status_file_dict[request.form.get('container_name')] = update_container_dict
+
+            with open(os.environ.get('container_status_path'),mode='w') as cswfh:
+                json.dump(status_file_dict, cswfh)
         else:
             if len(form.errors) != 0:
-                for error_message_text in form.errors.values():
-                    Common.create_flash_message(error_message_text[0])
+                for form_field, error_message_text in form.errors.items():
+                    Common.create_flash_message(message=form_field + ':' + error_message_text[0])
 
-        return render_template('imsi_tracking/imsi_tracking.html', form=form)
+        return render_template('container_status/update_container_status.html', form=form)
 
     def delete(self):
         """
@@ -124,3 +114,13 @@ class UpdateContainer(MethodView):
                     delete_error_message = "%s: %s" % (imsi_delete_resp.status_code, imsi_delete_resp.reason)
                     Common.create_flash_message(delete_error_message, 'error')
                     return False
+
+    def redirect_to_uscc_login(self):
+        """
+        Redirects to the USCC Login application
+        :return: redirect response
+        """
+
+        self.login_redirect_response = redirect(os.environ.get('login_app') + '?referrer=' +
+                                                url_for('update_container', _external=True))
+        return
