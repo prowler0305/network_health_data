@@ -4,7 +4,7 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 
 uscc_eng_app = Flask(__name__)
-uscc_eng_app.config.from_object(os.environ.get('imsi_app_env'))
+uscc_eng_app.config.from_object(os.environ.get('app_env'))
 jwt = JWTManager(uscc_eng_app)
 api = Api(uscc_eng_app, prefix='/v1')
 blacklist = set()
