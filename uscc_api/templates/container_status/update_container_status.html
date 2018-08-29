@@ -25,14 +25,26 @@
             <div class="col ml-1">
                 <form method="POST">
                     {{ form.csrf_token }}
-                    <p>Requested Container Environment:</p>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="container_name" id="dev_1" value="dev_container_1" required>
-                        <label class="form-check-label" for="dev_1">Dev Container 1</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="container_name" id="dev_2" value="dev_container_2">
-                        <label class="form-check-label" for="dev_1">Dev Container 2</label>
+                    <h5>Requested Container Environment:</h5>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="container_name" id="dev_1" value="dev_container_1" required>
+                                    <label class="form-check-label" for="dev_1">Dev Container 1</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="container_name" id="dev_2" value="dev_container_2">
+                                    <label class="form-check-label" for="dev_1">Dev Container 2</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="open_status" id="open_check">
+                                    <label class="form-check-label" for="open_check">Set to open status</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="container">
                         <div class="row">
