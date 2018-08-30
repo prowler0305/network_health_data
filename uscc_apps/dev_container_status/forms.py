@@ -3,7 +3,7 @@ from wtforms import StringField, SubmitField, DateField, RadioField, BooleanFiel
 
 
 class ContainerForm(FlaskForm):
-    container_name = RadioField('', choices=[('dev_container_1', 'Dev Container 1'), ('dev_container_2', 'Dev Container 2')])
+    container_name = RadioField('', choices=[('dev_container_1', 'Dev Container 1'), ('dev_container_2', 'Dev Container 2'), ('dev_container_3', 'Dev Container 3')])
     open_check = BooleanField(default=False)
     start_date = DateField('Start Date')
     end_date = DateField('End Date')

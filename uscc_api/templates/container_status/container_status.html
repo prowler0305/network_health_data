@@ -17,37 +17,25 @@
         </a>
     </nav>
     <div class="row mt-1">
-        <div class="col-sm-6">
-            <div class="card border-primary">
-                <div class="card-body">
-                    {% if cs.dev_container_1.status == 'open' %}
-                        <h5 class="card-title">NAS Platform DEV Container 1 <span class="badge badge-success">{{ cs.dev_container_1.status }}</span></h5>
-                    {% else %}
-                        <h5 class="card-title">NAS Platform DEV Container 1 <span class="badge badge-danger">{{ cs.dev_container_1.status }}</span></h5>
-                    {% endif %}
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Time Frame: {{cs.dev_container_1.time_frame.start_date}} - {{cs.dev_container_1.time_frame.end_date}}</li>
-                        <li class="list-group-item">Point of Contact: {{cs.dev_container_1.poc.name}} <a href="mailto:{{cs.dev_container_1.poc.email}}">{{cs.dev_container_1.poc.email}}</a> </li>
-                    </ul>
+        {% for container_name, container_status_data in cs.items() %}
+            <div class="col-sm-6">
+                <div class="card border-primary">
+                    <div class="card-body">
+                        {% if container_status_data.status == 'open' %}
+                            <h5 class="card-title">NAS Platform {{container_status_data.display_name}} <span class="badge badge-success">{{container_status_data.status}}</span></h5>
+                        {% else %}
+                            <h5 class="card-title">NAS Platform {{container_status_data.display_name}} <span class="badge badge-danger">{{container_status_data.status}}</span></h5>
+                        {% endif %}
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Time Frame: {{container_status_data.time_frame.start_date}} - {{container_status_data.time_frame.end_date}}</li>
+                            <li class="list-group-item">Point of Contact: {{container_status_data.poc.name}} <a href="mailto:{{container_status_data.poc.email}}">{{container_status_data.poc.email}}</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="card border-primary">
-                <div class="card-body">
-                    {% if cs.dev_container_2.status == 'open' %}
-                        <h5 class="card-title">NAS Platform DEV Container 2 <span class="badge badge-success">{{cs.dev_container_2.status}}</span></h5>
-                    {% else %}
-                        <h5 class="card-title">NAS Platform DEV Container 2 <span class="badge badge-danger">{{cs.dev_container_2.status}}</span></h5>
-                    {% endif %}
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Time Frame: {{cs.dev_container_2.time_frame.start_date}} - {{cs.dev_container_2.time_frame.end_date}}</li>
-                        <li class="list-group-item">Point of Contact: {{cs.dev_container_2.poc.name}} <a href="mailto:{{cs.dev_container_2.poc.email}}">{{cs.dev_container_2.poc.email}}</a> </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
