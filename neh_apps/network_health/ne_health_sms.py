@@ -4,8 +4,8 @@ from flask.views import MethodView
 
 # USCC
 from resources.logout import Logout
-from uscc_api import api, uscc_eng_app
-from uscc_apps.network_health.forms import NeTextForm
+from neh_api import api, network_health_app
+from neh_apps.network_health.forms import NeTextForm
 from common.common import Common
 
 # Misc

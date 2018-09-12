@@ -3,7 +3,7 @@ from flask import jsonify, request
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, create_refresh_token
 from common.common import Common
-from uscc_api import uscc_eng_app
+from neh_api import network_health_app
 
 
 class Authenticate(Resource):
@@ -27,7 +27,7 @@ class Authenticate(Resource):
         automation_login_data = dict(art=None, automations=automation_groups, message=None)
         api_cred_path = os.environ.get('api_cred_path')
         if api_cred_path is None:
-            uscc_eng_app.logger.critical("Environment Variable 'api_cred_path' is not set.")
+            network_health_app.logger.critical("Environment Variable 'api_cred_path' is not set.")
             automation_login_data['message'] = "Contact Core Automation Team."
             response = jsonify(automation_login_data)
             response.status_code = 500

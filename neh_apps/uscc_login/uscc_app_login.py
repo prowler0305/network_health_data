@@ -4,9 +4,9 @@ from flask_jwt_extended import set_access_cookies, set_refresh_cookies
 from flask.views import MethodView
 
 # USCC
-from uscc_api import api
-from uscc_api import uscc_eng_app
-from uscc_apps.uscc_login.login_form import LoginForm
+from neh_api import api
+from neh_api import network_health_app
+from neh_apps.uscc_login.login_form import LoginForm
 from common.common import Common
 from resources.auth import Authenticate
 
@@ -51,24 +51,24 @@ class Login(MethodView):
                     response = redirect(self.client_referrer)
                     response.set_cookie('username', value=self.auth_data.get('username'), httponly=True)
                     response.set_cookie('automations', value=json.dumps(login_data_dict.get('automations')),
-                                        max_age=uscc_eng_app.config.get('JWT_ACCESS_TOKEN_EXPIRES'))
+                                        max_age=network_health_app.config.get('JWT_ACCESS_TOKEN_EXPIRES'))
                     set_access_cookies(response, login_data_dict.get('art').get('access_token'),
-                                       max_age=uscc_eng_app.config.get('JWT_ACCESS_TOKEN_EXPIRES'))
+                                       max_age=network_health_app.config.get('JWT_ACCESS_TOKEN_EXPIRES'))
                     set_refresh_cookies(response, login_data_dict.get('art').get('refresh_token'),
-                                        max_age=uscc_eng_app.config.get('JWT_REFRESH_TOKEN_EXPIRES'))
+                                        max_age=network_health_app.config.get('JWT_REFRESH_TOKEN_EXPIRES'))
                     return response
                 else:
                     response = make_response(render_template('login_welcome.html', username=self.auth_data.get('username')))
                     response.set_cookie('automations', value=json.dumps(login_data_dict.get('automations')),
-                                        max_age=uscc_eng_app.config.get('JWT_ACCESS_TOKEN_EXPIRES'))
+                                        max_age=network_health_app.config.get('JWT_ACCESS_TOKEN_EXPIRES'))
                     response.set_cookie('username', value=self.auth_data.get('username'), httponly=True)
                     set_access_cookies(response, login_data_dict.get('art').get('access_token'),
-                                       max_age=uscc_eng_app.config.get('JWT_ACCESS_TOKEN_EXPIRES'))
+                                       max_age=network_health_app.config.get('JWT_ACCESS_TOKEN_EXPIRES'))
                     set_refresh_cookies(response, login_data_dict.get('art').get('refresh_token'),
-                                        max_age=uscc_eng_app.config.get('JWT_REFRESH_TOKEN_EXPIRES'))
+                                        max_age=network_health_app.config.get('JWT_REFRESH_TOKEN_EXPIRES'))
                     return response
             elif auth_response.status_code == requests.codes.unauthorized:
-                uscc_eng_app.logger.info('Invalid login occurred. IP=%s:Username=%s'
+                network_health_app.logger.info('Invalid login occurred. IP=%s:Username=%s'
                                          % (request.remote_addr, self.auth_data.get('username')))
                 bad_cred_mmsg = 'Username and/or password is invalid. Please reenter.'
                 Common.create_flash_message(bad_cred_mmsg)
@@ -82,7 +82,7 @@ class Login(MethodView):
                     # INFO: Temporary code. Once LDAP integration put in place this is not needed.
                     api_cred_dir_found_list = Common.find_file_in_project('api_cred')
                     if len(api_cred_dir_found_list) > 0:
-                        uscc_eng_app.logger.critical(auth_response_text_dict.get('message') +
+                        network_health_app.logger.critical(auth_response_text_dict.get('message') +
                                                        '. Path set as %s. Did you mean to set path as %s?'
                                                        % (os.environ.get('api_cred_path'), api_cred_dir_found_list[0]))
 

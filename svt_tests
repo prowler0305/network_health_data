@@ -1,0 +1,24 @@
+{
+  "test_names": [
+    "1001-0-VoLTE-VoLTE_Call",
+    "1002-0-VoLTE-CDMA_Call",
+    "1003-0-CDMA-CDMA_SMS M2M",
+    "1004-0-CDMA-CDMA_Voice M2M",
+    "1010-0-CDMA_1xRTT WAP GET USCC homepage",
+    "1012-0-CDMA_1xRTT Web Browse Google",
+    "1021-0-CDMA_EVDO Web Browse Google",
+    "1028-0-LTE_Web Browse Youtube",
+    "1029-0-LET_Web Browse Google",
+    "1030-0-LTE_Web Browse Apple",
+    "1031-0-LTE_Web Browse Facebook",
+    "1034-0-CDMA_Voice *228",
+    "1035-0-LTE_Web Browse MUSC",
+    "1036-0-LTE_Web Browse USC",
+    "1037-0-CDMA_EVDO Web Browse MUSC",
+    "1038-0-CDMA_EVDO Web Browse USC",
+    "TC-59-135-VoLTE-CDMA SMS",
+    "TC-60-136-CDMA-VoLTE SMS",
+    "TC-58-134-VoLTE-VoLTE SMS",
+    "108-4-VCDMA-VCDMA"
+  ]
+}

@@ -1,7 +1,7 @@
 import os
 import datetime
 
-uscc_app_dir = os.path.abspath(os.path.dirname(__file__))
+network_health_app_dir = os.path.abspath(os.path.dirname(__file__))
 
 
 class BaseConfig:
