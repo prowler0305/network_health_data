@@ -21,14 +21,15 @@ from resources.auth import Authenticate
 from resources.refresh import Refresh
 # from resources.volte_load import VolteLoad
 from resources.logout import Logout
-from uscc_apps.dev_container_status.container_status import ContainerStatus
-from uscc_apps.dev_container_status.update_container_status import UpdateContainer
+from uscc_apps.network_health.ne_health_sms import NeText
+from uscc_apps.network_health.nh_dashboard import NetworkHealthDashboard
+from resources.sms import Sms
 
 # Add resources via the add_resource method
-
 api.add_resource(Authenticate, '/login')
 api.add_resource(Refresh, '/refresh_token')
 api.add_resource(Logout, 'logout')
+# api.add_resource(SmsNum, '/sms')
 # api.add_resource(AuthenticateKerberos, '/auth')
 # api.add_resource(SiteMap, '/')
 # api.add_resource(ListAll, '/list_all')
@@ -38,9 +39,9 @@ api.add_resource(Logout, 'logout')
 # api.add_resource(Imsi, '/imsis')
 # api.add_resource(VolteLoad, '/volte_load')
 
-container_status_view = ContainerStatus.as_view(name='container_status')
-update_container_view = UpdateContainer.as_view(name='update_container')
+network_health_text = NeText.as_view(name='ne_text')
+network_health_dashboard = NetworkHealthDashboard.as_view(name='nh_dashboard')
 login_view = Login.as_view(name='uscc_login')
-uscc_eng_app.add_url_rule('/cstatus', view_func=container_status_view, methods=['GET'])
-uscc_eng_app.add_url_rule('/cstatus_update', view_func=update_container_view, methods=['GET', 'POST'])
+uscc_eng_app.add_url_rule('/sms_register', view_func=network_health_text, methods=['GET', 'POST'])
+uscc_eng_app.add_url_rule('/network_health', view_func=network_health_dashboard, methods=['GET'])
 uscc_eng_app.add_url_rule('/login', view_func=login_view, methods=['POST', 'GET'])
