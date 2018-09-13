@@ -37,23 +37,7 @@ class NetworkHealthDashboard(MethodView):
         #     self.redirect_to_uscc_login()
         #     return self.login_redirect_response
 
-        form = NeTextForm()
-        if len(self.neh_text_dir_found_list) != 0:
-            neh_file_path = self.neh_text_dir_found_list[0]
-            if request.args.get('search_first') is not None and request.args.get('search_first') != '' and \
-                    request.args.get('search_last') is not None and request.args.get('search_last') != '':
-                search_key = '{} {}'.format(request.args.get('search_first'), request.args.get('search_last'))
-                neh_text_dict = self.data_file_to_dict(neh_file_path)
-
-                if neh_text_dict.get(search_key) is not None:
-                    # Get the phone number (which is a key in the sub dictionary for the search name)
-                    user_phone = list(neh_text_dict.get(search_key).keys())[0]
-                else:
-                    Common.create_flash_message(message="No phone number for {} has been registered".format(search_key))
-            else:
-                user_phone = None
-
-        return render_template('network_health/ne_text_tracking.html', form=form, display_phone=user_phone)
+        return render_template('network_health/nh_dashboard.html')
 
     def post(self):
         """

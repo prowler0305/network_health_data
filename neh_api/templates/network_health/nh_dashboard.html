@@ -6,82 +6,709 @@
 
     <!-- BootStrap CSS -->
     <link rel="stylesheet" media="screen" href={{ url_for('static', filename='bootstrap.min.css') }}>
-    <title>Network Health Report SMS Tracker</title>
+    <title>Network Health Report Status</title>
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="#">
             <img src="/static/usc_logo.jpg" width="30" class="d-inline-block align-top" alt="U.S. Cellular Logo">
-            Network Health Report SMS Tracker
+            Network Health Status
         </a>
-        <form method="POST">
-            {{ form.csrf_token }}
-            <button type="submit" name="logout_btn" value='logout' class="btn btn-outline-danger">Logout</button>
-        </form>
     </nav>
 
-    <div class="container-fluid border border-primary ml-2 mt-2">
-        <div class="row mt-3">
-            <div class="col-lg-auto">
-                <h5>Register</h5>
-                <form method="POST">
-                    {{ form.csrf_token }}
-                    <div class="form-group form-inline">
-                        <input class="form-control corm-control-lg" name="first_name" type="text" id="first_name" placeholder="First">
-                        <input class="form-control corm-control-lg" name="last_name" type="text" id="last_name" placeholder="Last">
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input " type="radio" name="carrier" id="att" value="att" required>
-                        <label class="form-check-label mr-sm-3" for="att">AT&T</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="carrier" id="verizon" value="verizon">
-                        <label class="form-check-label mr-sm-3" for="verizon">Verizon</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="carrier" id="uscc" value="uscc">
-                        <label class="form-check-label mr-sm-3" for="uscc">U.S. Cellular</label>
-                    </div>
-                    <div class="form-group">
-                        <input class="form-control form-control-lg" name="phone_num" type="text" id="phone_num" maxlength="10" aria-describedby="phoneHelpBlock"
-                        placeholder="Phone Number(i.e. 6302536781)">
-                    </div>
-                    <button type="submit" class="btn btn-outline-dark mb-3">Submit</button>
-                    {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                            {% for message in messages %}
-                                {% if 'Phone Number added' not in message: %}
-                                    <div class="alert alert-danger" role="alertdialog">
-                                        {{ message }}
-                                    </div>
-                                {% else %}
-                                    <div class="alert alert-success" role="alertdialog">
-                                        Registration Successful!
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-                </form>
-            </div>
-            <div class="col-lg-auto">
-                <h5>Search</h5>
-                <form method="GET" role="form">
-                    {{ form.csrf_token }}
-                    <div class="form-group form-inline">
-                        <input class="form-control form-control-lg" name="search_first" type="text" id="search_first" placeholder="First">
-                        <input class="form-control form-control-lg" name="search_last" type="text" id="search_last" placeholder="Last">
-                    </div>
-                    <button type="submit" class="btn btn-outline-dark mb-3">Submit</button>
-                    {% if display_phone %}
-                        <div class="alert alert-info" role="alertdialog">
-                            {{ display_phone }}
-                        </div>
-                    {% endif %}
-                </form>
-            </div>
+        <div class="table-responsive">
+        <table class="table table-striped table-sm table-hover table-bordered text-nowrap">
+            <thead class="thead-light">
+                <tr>
+                    <th>InfoVista SVT Test</th>
+                    <th>Asheville, NC</th>
+                    <th>Cedar Rapids, IA</th>
+                    <th>Clinton,NC</th>
+                    <th>Columbia, OH</th>
+                    <th>Congress Park, NH</th>
+                    <th>Eureka, CA</th>
+                    <th>Granite Hill, ME</th>
+                    <th>Greenville, NC</th>
+                    <th>Johnston, IA</th>
+                    <th>Joplin, MO</th>
+                    <th>Knoxville, TN</th>
+                    <th>Lynchburg, VA</th>
+                    <th>Madison, WI</th>
+                    <th>Medford, OR</th>
+                    <th>Menasha, WI</th>
+                    <th>Morgantown, WV</th>
+                    <th>New Berlin, WI</th>
+                    <th>Oklahoma City, OK</th>
+                    <th>Omaha, NE</th>
+                    <th>Owasso, OK</th>
+                    <th>Peoria, IL</th>
+                    <th>Roanoke, VA</th>
+                    <th>Rockford, IL</th>
+                    <th>Salina, KS</th>
+                    <th>Yakima, WA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    {{% if neh_status %}}
+                        {{% for test_name, }}
+                    {{% endif %}}
+                    <th>1001-0-VoLTE-VoLTE_Call</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-warning"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1002-0-VoLTE-CDMA_Call</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-warning"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1003-0-0CDMA-CDMA_SMS M2M</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-warning"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1004-0-0CDMA-CDMA_Voice M2M</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-warning"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1010-0-CDMA_1xRTT WAP GET USCC homepage</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1012-0-CDMA_1xRTT Web Browse Google</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1021-0-CDMA_EVDO Web Browse Google</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1028-0-LTE_Web Browse Youtube</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1029-0-LET_Web Browse Google</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1030-0-LTE_Web Browse Apple</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1031-0-LTE_Web Browse Facebook</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1034-0-CDMA_Voice *228</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1035-0-LTE_Web Browse MUSC</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1036-0-LTE_Web Browse USC</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1037-0-CDMA_EVDO Web Browse MUSC</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>1038-0-CDMA_EVDO Web Browse USC</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>TC-59-135-VoLTE-CDMA SMS</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>TC-60-136-CDMA-VoLTE SMS</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>TC-58-134-VoLTE-VoLTE SMS</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+                <tr>
+                    <th>108-4-VCDMA-VCDMA</th>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-success"></td>
+                    <td class="table-danger"></td>
+                </tr>
+            </tbody>
+        </table>
         </div>
-    </div>
+    <!--<table class="table table-sm table-hover table-striped">-->
+        <!--<thead class="thead-light">-->
+            <!--<tr>-->
+                <!--<th>InfoVista SVT Test Name</th>-->
+                <!--<th>Asheville, NC</th>-->
+                <!--<th>Cedar Rapids, IA</th>-->
+                <!--<th>Clinton, NC</th>-->
+                <!--<th>Columbio, OH</th>-->
+                <!--<th>Congress Park, NH</th>-->
+                <!--<th>Eureka, CA</th>-->
+                <!--<th>Granite Hill, ME</th>-->
+                <!--<th>Greenville, NC</th>-->
+                <!--<th>Johnston, IA</th>-->
+                <!--<th>Joplin, MO</th>-->
+                <!--<th>Knoxville, TN</th>-->
+                <!--<th>Lynchburg, VA</th>-->
+                <!--<th>Madison, WI</th>-->
+                <!--<th>Medford, OR</th>-->
+                <!--<th>Menasha, WI</th>-->
+                <!--<th>Morgantown, WV</th>-->
+                <!--<th>New Berlin, WI</th>-->
+                <!--<th>Oklahoma City, OK</th>-->
+                <!--<th>Omaha, NE</th>-->
+                <!--<th>Owasso, OK</th>-->
+                <!--<th>Peoria, IL</th>-->
+                <!--<th>Roanoke, VA</th>-->
+                <!--<th>Rockford, IL</th>-->
+                <!--<th>Salina, KS</th>-->
+                <!--<th>Yakima, WA</th>-->
+            <!--</tr>-->
+        <!--</thead>-->
+        <!--<tbody>-->
+            <!--<tr>-->
+                <!--<th>1001-0-VoLTE-VoLTE_Call</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1002-0-VoLTE-CDMA_Call</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1003-0-CDMA-CDMA_SMS M2M</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1004-0-CDMA-CDMA_Voice M2M</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1010-0-CDMA_1xRTT WAP GET USCC homepage</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1012-0-CDMA_1xRTT Web Browse Google</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1021-0-CDMA_EVDO Web Browse Google</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1028-0-LTE_Web Browse Youtube</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1029-0-LET_Web Browse Google</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1030-0-LTE_Web Browse Apple</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1031-0-LTE_Web Browse Facebook</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1034-0-CDMA_Voice *228</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1035-0-LTE_Web Browse MUSC</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1036-0-LTE_Web Browse USC</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1037-0-CDMA_EVDO Web Browse MUSC</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>1038-0-CDMA_EVDO Web Browse USC</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>TC-59-135-VoLTE-CDMA SMS</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>TC-60-136-CDMA-VoLTE SMS</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>TC-58-134-VoLTE-VoLTE SMS</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<th>108-4-VCDMA-VCDMA</th>-->
+            <!--</tr>-->
+        <!--</tbody>-->
+    <!--</table>-->
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
