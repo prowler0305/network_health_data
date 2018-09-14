@@ -19,7 +19,7 @@ RUN cd /usr/lib64 && \
     ln -s libodbcinst.so.2.0.0 libodbcinst.so.1 && \
     ldconfig
 
-RUN pip3.6 install -r /neh_main/requirements.txt
+RUN pip install -r /neh_main/requirements.txt
 
 ENV LANG en_US.UTF-8
 
