@@ -4,7 +4,7 @@ MAINTAINER  Andrew Spear andrew.speare@uscellular.com
 RUN yum -y install epel-release
 RUN yum -y install python36 python36-devel python36-pip
 RUN yum -y install epel-release && yum clean all
-RUN yum -y install python-pip && clean all
+RUN yum -y install python-pip
 COPY localpkgs/* /tmp/
 RUN yum -y localinstall --nogpgcheck /tmp/*
 
