@@ -15,20 +15,7 @@ def main():
     # if svt_rc:
     #     for test_name in svt_dict.get('test_names'):
     #         print(test_name)
-    """
-    "netcool": {
-        "host": "shracdev-scan.uscc.com:1521",
-        "user": "automation_ro",
-        "passwd": "automation_ro",
-        "db": "netcoold"
-    },
-    "netcool_prod": {
-        "host": "shrac-scan.uscc.com:1521",
-        "user": "automation_ro",
-        "passwd": "automation_ro",
-        "db": "netcool"
-    }
-    """
+
     nh_status_path = os.environ.get('neh_status')
     nh_lcc_map_path = os.environ.get('neh_lcc_map')
     nh_status_rc, nh_status_dict = Common.read_json_file(nh_status_path)
