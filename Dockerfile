@@ -9,7 +9,7 @@ RUN yum -y localinstall --nogpgcheck /tmp/*
 RUN mkdir -p /neh_main
 RUN mkdir -p /neh_main/common
 
-ADD common.py /neh_main/common
+ADD common/common.py /neh_main/common/
 ADD network_health_main.py /neh_main/
 ADD requirements.txt /neh_main/
 
