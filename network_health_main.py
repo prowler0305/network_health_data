@@ -41,9 +41,10 @@ def main():
     column_name_list = [x[0] for x in cursor.description]
 
     # Join the column names and the data for each row into a dictionary for easier processing.
-    result_dicts = [dict(zip(column_name_list, row)) for row in cursor.fetchall()]
+    # result_dicts = [dict(zip(column_name_list, row)) for row in cursor.fetchall()]
+    print(cursor.fetchone())
+    result_dicts = [dict(zip(column_name_list, cursor.fetchone()))]
     print(result_dicts)
-    # result_dicts = [dict(zip(column_name_list, cursor.fetchone()))]
 
     # Initialize a dictionary of lists by SVT test name that contains list of LCCs. These lists are used to keep track
     # of what LCCs we updated by removing the LCC for the SVT test name in the result set. At the end of processing the
@@ -55,30 +56,21 @@ def main():
         lcc_tracking_results_dict[test_name] = list(nh_lcc_dict.values())
 
     for test_name in nh_status_dict.keys():
-        print(test_name)
         for result in result_dicts:
-            print(result)
-            print("{} = {}".format(result.get('C_ALERTKEY'), test_name))
             if test_name in result.get('C_ALERTKEY'):
-                print("Test names match---> {} = {}".format(test_name, result.get('C_ALERTKEY')))
                 if nh_lcc_dict.get(result.get('C_ALARMSOURCE')) in lcc_tracking_results_dict.get(test_name):
-                    print("Removing LCC {} from tracking list for test name {}".format(nh_lcc_dict.get(result.get('C_ALARMSOURCE')), test_name))
                     lcc_tracking_results_dict.get(test_name).remove(nh_lcc_dict.get(result.get('C_ALARMSOURCE')))
 
                 if 'Success' in result.get('C_SUMMARY'):
-                    print("setting a LCC to success")
                     nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "success"
                 elif 'Failure' in result.get('C_SUMMARY'):
-                    print("setting a LCC to failure")
                     nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "failure"
                 elif 'Comm Alarm' in result.get('C_SUMMARY'):
-                    print("Comm Alarm found setting LCC to warning")
                     nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "warning"
                 else:
                     nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = ""
 
     for tracking_test_name, no_lcc_status_list in lcc_tracking_results_dict.items():
-        print("{} ---> {}".format(tracking_test_name, no_lcc_status_list))
         for location in no_lcc_status_list:
             nh_status_dict.get(tracking_test_name)[location] = 'warning'
 
