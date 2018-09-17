@@ -49,6 +49,7 @@ def main():
     # result set any LCCs that didn't get their status updated will be left in the lists and are assumed to have a
     # "COMM AlARM" status that indicates the test didn't run within the last hour. In the status config dictionary this
     # will be replaced with a 'warning' status.
+    print("Ready to set lcc_tracking_results_dict")
     lcc_tracking_results_dict = dict()
     for test_name in nh_status_dict.keys():
         lcc_tracking_results_dict[test_name] = list(nh_lcc_dict.values())
