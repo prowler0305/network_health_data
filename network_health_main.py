@@ -55,6 +55,7 @@ def main():
 
     for test_name in nh_status_dict.keys():
         for result in result_dicts:
+            print("{} = {}".format(result.get('C_ALERTKEY'), test_name))
             if test_name in result.get('C_ALERTKEY'):
                 print("Test names match---> {} = {}".format(test_name, result.get('C_ALERTKEY')))
                 if nh_lcc_dict.get(result.get('C_ALARMSOURCE')) in lcc_tracking_results_dict.get(test_name):
