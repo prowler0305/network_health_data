@@ -42,6 +42,7 @@ def main():
 
     # Join the column names and the data for each row into a dictionary for easier processing.
     result_dicts = [dict(zip(column_name_list, row)) for row in cursor.fetchall()]
+    print(result_dicts)
     # result_dicts = [dict(zip(column_name_list, cursor.fetchone()))]
 
     # Initialize a dictionary of lists by SVT test name that contains list of LCCs. These lists are used to keep track
