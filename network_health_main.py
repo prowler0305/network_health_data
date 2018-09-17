@@ -34,9 +34,10 @@ def main():
     print(con)
 
     cursor = con.cursor()
-    cursor.execute("""SELECT c_alarmsource, c_lastoccurrence, c_summary, c_alertkey, c_suppressescl, c_ttnumber 
+    print(cursor)
+    print(cursor.execute("""SELECT c_alarmsource, c_lastoccurrence, c_summary, c_alertkey, c_suppressescl, c_ttnumber 
     FROM netcoold.alerts_status_t WHERE c_lastoccurrence > (CURRENT_TIMESTAMP - .0833) 
-    AND c_alertgroup = 'ASCOM Availibility Alarms' ORDER BY 1,4,2 """)
+    AND c_alertgroup = 'ASCOM Availibility Alarms' ORDER BY 1,4,2 """))
 
     # Get all the column names for the result set
     column_name_list = [x[0] for x in cursor.description]
