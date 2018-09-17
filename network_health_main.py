@@ -3,6 +3,7 @@ import cx_Oracle
 import os
 import json
 import time
+import sys
 
 def main():
     """
@@ -59,15 +60,19 @@ def main():
                     lcc_tracking_results_dict.get(test_name).remove(nh_lcc_dict.get(result.get('C_ALARMSOURCE')))
 
                 if 'Success' in result.get('C_SUMMARY'):
+                    print("setting a LCC to success")
                     nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "success"
                 elif 'Failure' in result.get('C_SUMMARY'):
+                    print("setting a LCC to failure")
                     nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "failure"
                 elif 'Comm Alarm' in result.get('C_SUMMARY'):
+                    print("Comm Alarm found setting LCC to warning")
                     nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "warning"
                 else:
                     nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = ""
 
     for tracking_test_name, no_lcc_status_list in lcc_tracking_results_dict.items():
+        print("{} ---> {}".format(tracking_test_name, no_lcc_status_list))
         for location in no_lcc_status_list:
             nh_status_dict.get(tracking_test_name)[location] = 'warning'
 
@@ -80,4 +85,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    rc = main()
+    if rc:
+        sys.exit(0)
+    else:
+        sys.exit(False)
