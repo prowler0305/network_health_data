@@ -2,6 +2,7 @@ from common.common import Common
 import cx_Oracle
 import os
 import json
+import time
 
 def main():
     """
@@ -72,7 +73,9 @@ def main():
 
     with open(nh_status_path, 'w') as wfh:
         json.dump(nh_status_dict, wfh)
+        print("status file updated")
 
+    time.sleep(300)
     return True
 
 
