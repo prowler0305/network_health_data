@@ -50,11 +50,12 @@ def main():
     # "COMM AlARM" status that indicates the test didn't run within the last hour. In the status config dictionary this
     # will be replaced with a 'warning' status.
     lcc_tracking_results_dict = dict()
-    for test_name in nh_status_dict:
+    for test_name in nh_status_dict.keys():
         lcc_tracking_results_dict[test_name] = list(nh_lcc_dict.values())
 
     for test_name in nh_status_dict.keys():
         for result in result_dicts:
+            print(result)
             print("{} = {}".format(result.get('C_ALERTKEY'), test_name))
             if test_name in result.get('C_ALERTKEY'):
                 print("Test names match---> {} = {}".format(test_name, result.get('C_ALERTKEY')))
