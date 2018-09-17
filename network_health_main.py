@@ -31,6 +31,7 @@ def main():
         return False
 
     con = cx_Oracle.connect("automation_ro/automation_ro@shracdev-scan.uscc.com:1521/netcoold")
+    print(con)
 
     cursor = con.cursor()
     cursor.execute("""SELECT c_alarmsource, c_lastoccurrence, c_summary, c_alertkey, c_suppressescl, c_ttnumber 
@@ -43,8 +44,8 @@ def main():
     # Join the column names and the data for each row into a dictionary for easier processing.
     # result_dicts = [dict(zip(column_name_list, row)) for row in cursor.fetchall()]
     print(cursor.fetchone())
-    result_dicts = [dict(zip(column_name_list, cursor.fetchone()))]
-    print(result_dicts)
+    return False
+    # result_dicts = [dict(zip(column_name_list, cursor.fetchone()))]
 
     # Initialize a dictionary of lists by SVT test name that contains list of LCCs. These lists are used to keep track
     # of what LCCs we updated by removing the LCC for the SVT test name in the result set. At the end of processing the
