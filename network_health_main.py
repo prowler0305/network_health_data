@@ -47,8 +47,8 @@ def main():
     # Initialize a dictionary of lists by SVT test name that contains list of LCCs. These lists are used to keep track
     # of what LCCs we updated by removing the LCC for the SVT test name in the result set. At the end of processing the
     # result set any LCCs that didn't get their status updated will be left in the lists and are assumed to have a
-    # "COMM AlARM" status that indicates the test didn't run. In the status config dictionary this will be replaced
-    # with a 'warning' status.
+    # "COMM AlARM" status that indicates the test didn't run within the last hour. In the status config dictionary this
+    # will be replaced with a 'warning' status.
     lcc_tracking_results_dict = dict()
     for test_name in nh_status_dict:
         lcc_tracking_results_dict[test_name] = list(nh_lcc_dict.values())
@@ -56,7 +56,9 @@ def main():
     for test_name in nh_status_dict.keys():
         for result in result_dicts:
             if test_name in result.get('C_ALERTKEY'):
+                print("Test names match---> {} = {}".format(test_name, result.get('C_ALERTKEY')))
                 if nh_lcc_dict.get(result.get('C_ALARMSOURCE')) in lcc_tracking_results_dict.get(test_name):
+                    print("Removing LCC {} from tracking list for test name {}".format(nh_lcc_dict.get(result.get('C_ALARMSOURCE')), test_name))
                     lcc_tracking_results_dict.get(test_name).remove(nh_lcc_dict.get(result.get('C_ALARMSOURCE')))
 
                 if 'Success' in result.get('C_SUMMARY'):
