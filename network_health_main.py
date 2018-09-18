@@ -5,6 +5,7 @@ import json
 import time
 import sys
 
+
 def main():
     """
     
@@ -35,10 +36,7 @@ def main():
     con = cx_Oracle.connect("automation_ro/automation_ro@shracdev-scan.uscc.com:1521/netcoold")
 
     cursor = con.cursor()
-    # cursor.execute("""SELECT c_alarmsource, c_lastoccurrence, c_summary, c_alertkey, c_suppressescl, c_ttnumber
-    # FROM netcoold.alerts_status_t WHERE c_lastoccurrence > (CURRENT_TIMESTAMP - .0833)
-    # AND c_alertgroup = 'ASCOM Availibility Alarms' ORDER BY 1,4,2 """)
-    #
+
     cursor.execute("""SELECT c_alarmsource, c_lastoccurrence, c_summary, c_alertkey, c_suppressescl, c_ttnumber 
     FROM netcoold.alerts_status_t WHERE c_lastoccurrence > (SYSTIMESTAMP - .0833) 
     AND c_alertgroup = 'ASCOM Availibility Alarms' ORDER BY 1,4,2 """)
@@ -84,7 +82,7 @@ def main():
         json.dump(nh_status_dict, wfh)
         print("status file updated")
 
-    time.sleep(300)
+    # time.sleep(300)
     return True
 
 
