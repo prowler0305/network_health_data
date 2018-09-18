@@ -18,8 +18,10 @@ def main():
     #     for test_name in svt_dict.get('test_names'):
     #         print(test_name)
 
-    nh_status_path = os.environ.get('neh_status')
-    nh_lcc_map_path = os.environ.get('neh_lcc_map')
+    # nh_status_path = os.environ.get('neh_status')
+    # nh_lcc_map_path = os.environ.get('neh_lcc_map')
+    nh_status_path = '/neh_status_files/neh_status/neh_test_status'
+    nh_lcc_map_path = '/neh_status_files/neh_lcc_config'
     nh_status_rc, nh_status_dict = Common.read_json_file(nh_status_path)
     nh_lcc_rc, nh_lcc_dict = Common.read_json_file(nh_lcc_map_path)
     if not nh_status_rc:

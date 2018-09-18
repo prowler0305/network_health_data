@@ -27,7 +27,6 @@ class Common(object):
         :return:
         """
 
-        # if os.path.exists(json_file_path):
         if Common.check_path_exists(json_file_path):
             with open(json_file_path) as jsfh:
                 return True, json.load(jsfh)
