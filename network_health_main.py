@@ -31,21 +31,23 @@ def main():
         return False
 
     con = cx_Oracle.connect("automation_ro/automation_ro@shracdev-scan.uscc.com:1521/netcoold")
-    print(con)
 
     cursor = con.cursor()
-    print(cursor)
-    print(cursor.execute("""SELECT c_alarmsource, c_lastoccurrence, c_summary, c_alertkey, c_suppressescl, c_ttnumber 
-    FROM netcoold.alerts_status_t WHERE c_lastoccurrence > (CURRENT_TIMESTAMP - .0833) 
-    AND c_alertgroup = 'ASCOM Availibility Alarms' ORDER BY 1,4,2 """))
+    # cursor.execute("""SELECT c_alarmsource, c_lastoccurrence, c_summary, c_alertkey, c_suppressescl, c_ttnumber
+    # FROM netcoold.alerts_status_t WHERE c_lastoccurrence > (CURRENT_TIMESTAMP - .0833)
+    # AND c_alertgroup = 'ASCOM Availibility Alarms' ORDER BY 1,4,2 """)
+    #
+    cursor.execute("""SELECT c_alarmsource, c_lastoccurrence, c_summary, c_alertkey, c_suppressescl, c_ttnumber 
+    FROM netcoold.alerts_status_t WHERE c_lastoccurrence > (SYSTIMESTAMP - .0833) 
+    AND c_alertgroup = 'ASCOM Availibility Alarms' ORDER BY 1,4,2 """)
 
     # Get all the column names for the result set
     column_name_list = [x[0] for x in cursor.description]
 
     # Join the column names and the data for each row into a dictionary for easier processing.
-    # result_dicts = [dict(zip(column_name_list, row)) for row in cursor.fetchall()]
-    print(cursor.fetchone())
-    return False
+    result_dicts = [dict(zip(column_name_list, row)) for row in cursor.fetchall()]
+
+    # return False
     # result_dicts = [dict(zip(column_name_list, cursor.fetchone()))]
 
     # Initialize a dictionary of lists by SVT test name that contains list of LCCs. These lists are used to keep track
