@@ -19,10 +19,13 @@ def main():
     #     for test_name in svt_dict.get('test_names'):
     #         print(test_name)
 
-    # nh_status_path = os.environ.get('neh_status')
-    # nh_lcc_map_path = os.environ.get('neh_lcc_map')
-    nh_status_path = '/neh_status_files/neh_status/neh_test_status'
-    nh_lcc_map_path = '/neh_status_files/neh_lcc_config'
+    if os.environ.get('exec_env') == 'dev':
+        nh_status_path = os.environ.get('neh_status')
+        nh_lcc_map_path = os.environ.get('neh_lcc_map')
+    else:
+        nh_status_path = '/neh_status_files/neh_status/neh_test_status'
+        nh_lcc_map_path = '/neh_status_files/neh_lcc_config'
+
     nh_status_rc, nh_status_dict = Common.read_json_file(nh_status_path)
     nh_lcc_rc, nh_lcc_dict = Common.read_json_file(nh_lcc_map_path)
     if not nh_status_rc:
@@ -57,22 +60,30 @@ def main():
     # will be replaced with a 'warning' status.
     lcc_tracking_results_dict = dict()
     for test_name in nh_status_dict.keys():
-        lcc_tracking_results_dict[test_name] = list(nh_lcc_dict.values())
+        temp_list = []
+        for lcc in nh_lcc_dict.values():
+            if lcc_tracking_results_dict.get(test_name) is None:
+                temp_list.append(lcc)
+                lcc_tracking_results_dict[test_name] = temp_list
+            else:
+                if lcc not in lcc_tracking_results_dict.get(test_name):
+                    lcc_tracking_results_dict.get(test_name).append(lcc)
 
     for test_name in nh_status_dict.keys():
         for result in result_dicts:
             if test_name in result.get('C_ALERTKEY'):
-                if nh_lcc_dict.get(result.get('C_ALARMSOURCE')) in lcc_tracking_results_dict.get(test_name):
-                    lcc_tracking_results_dict.get(test_name).remove(nh_lcc_dict.get(result.get('C_ALARMSOURCE')))
+                if result.get('C_ALARMSOURCE') in nh_lcc_dict.keys():
+                    if nh_lcc_dict.get(result.get('C_ALARMSOURCE')) in lcc_tracking_results_dict.get(test_name):
+                        lcc_tracking_results_dict.get(test_name).remove(nh_lcc_dict.get(result.get('C_ALARMSOURCE')))
 
-                if 'Success' in result.get('C_SUMMARY'):
-                    nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "success"
-                elif 'Failure' in result.get('C_SUMMARY'):
-                    nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "failure"
-                elif 'Comm Alarm' in result.get('C_SUMMARY'):
-                    nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "warning"
-                else:
-                    nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = ""
+                    if 'Success' in result.get('C_SUMMARY'):
+                        nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "success"
+                    elif 'Failure' in result.get('C_SUMMARY'):
+                        nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "failure"
+                    elif 'Comm Alarm' in result.get('C_SUMMARY'):
+                        nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = "warning"
+                    else:
+                        nh_status_dict[test_name][nh_lcc_dict.get(result.get('C_ALARMSOURCE'))] = ""
 
     for tracking_test_name, no_lcc_status_list in lcc_tracking_results_dict.items():
         for location in no_lcc_status_list:
