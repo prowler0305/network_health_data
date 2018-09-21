@@ -3,6 +3,7 @@ import cx_Oracle
 import os
 import json
 import time
+import datetime
 import sys
 
 
@@ -60,14 +61,15 @@ def main():
     # will be replaced with a 'warning' status.
     lcc_tracking_results_dict = dict()
     for test_name in nh_status_dict.keys():
-        temp_list = []
-        for lcc in nh_lcc_dict.values():
-            if lcc_tracking_results_dict.get(test_name) is None:
-                temp_list.append(lcc)
-                lcc_tracking_results_dict[test_name] = temp_list
-            else:
-                if lcc not in lcc_tracking_results_dict.get(test_name):
-                    lcc_tracking_results_dict.get(test_name).append(lcc)
+        if test_name != 'last_refreshed':
+            temp_list = []
+            for lcc in nh_lcc_dict.values():
+                if lcc_tracking_results_dict.get(test_name) is None:
+                    temp_list.append(lcc)
+                    lcc_tracking_results_dict[test_name] = temp_list
+                else:
+                    if lcc not in lcc_tracking_results_dict.get(test_name):
+                        lcc_tracking_results_dict.get(test_name).append(lcc)
 
     for test_name in nh_status_dict.keys():
         for result in result_dicts:
@@ -89,6 +91,7 @@ def main():
         for location in no_lcc_status_list:
             nh_status_dict.get(tracking_test_name)[location] = 'warning'
 
+    nh_status_dict['last_refreshed'] = datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")
     with open(nh_status_path, 'w') as wfh:
         json.dump(nh_status_dict, wfh)
         print("status file updated")
