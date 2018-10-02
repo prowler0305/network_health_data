@@ -1,2 +1,2 @@
-# daily_network_health
-Network Health status information from InfoVista SVT results
+# network_health_data
+Back end job that gets SVT test status data from netcool
