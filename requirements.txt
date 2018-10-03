@@ -1,2 +1,2 @@
-certifi==2018.4.16
+certifi==2018.8.24
 cx-Oracle==7.0.0

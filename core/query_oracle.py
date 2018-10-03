@@ -99,14 +99,70 @@ class QueryOracle(object):
         else:
             return False
 
-    def retrieve_results(self, retrieve_type: str='all', return_as_dict: bool=True) -> bool:
+    def retrieve_results(self, retrieve_type: str='all', return_as_dict: bool=True) -> List[dict]:
         """
         Fetches the results from an SQL query. Can either fetch either all rows at once or one at time. Can return the
-        results as a dictionary object that joins the column names and the data together or can return
+        results as a list of dictionary object that joins the column names and the data together as key: value pairs.
+        This allows you to iterate over each row in the results set and access the data using dictionary object attributes
+        and methods. If you turn off this setting then the data is returned as the original data object created by the
+        cx_Oracle package. See the :return section below for details.
 
-        :param retrieve_type: Choices are 'all' or an integer indicating the number of rows to fetch. Defaults to 'all'.
+        If this method is called before the :class QueryOracle: execute_sql() method an exception is raised by the
+        cx_Oracle package which is caught and logged in which 'False' is returned.
+
+        Additionally if any parameters are passed with invalid values then an error message is logged and 'False' is
+        returned.
+
+
+        :param retrieve_type: Choices are 'all' or a positive integer indicating the number of rows to fetch.
+                                Defaults to 'all'.
         :param return_as_dict: Build a dictionary of the results and the tables columns into a Python dictionary object
                                 to be returned.
-        :return: either the built dictionary
+        :return: False if parameters are invalid otherwise the result set in one of the below ways depending on the
+                    param: retrieve_type above:
+                        1. As the requested dictionary.
+                            a. If no more rows are available an empty dictionary is returned.
+                        2. The original data structure depending on whether fetching one, many, or all rows was requested.
+                            a. If fetching many or all then a list of tuples is returned
+                                i. If no more rows available then an empty list is returned.
+                            b. If fetching one row then a single tuple.
+                                i. None is returned if no more data is available.
         """
 
+        fetch_num_rows = None
+        if retrieve_type != 'all' and not retrieve_type.isnumeric():
+            self.nh_logger.error("Parameter retrieve_type is not valid, choices are 'all' or an integer >= 1. Got value of {} instead.".format(retrieve_type))
+            return False
+        elif retrieve_type.isnumeric():
+            if not int(retrieve_type) >= 1:
+                self.nh_logger.error("Parameter retrieve_type is not >= 1. Value given was '{}'".format(retrieve_type))
+                return False
+            else:
+                fetch_num_rows = int(retrieve_type)
+        else:
+            pass
+
+        if return_as_dict:
+            # Gets all the column names for the result set
+            column_name_list = [x[0] for x in self.oracle_cursor.description]
+
+        try:
+            if fetch_num_rows is None:
+                if return_as_dict:
+                    return [dict(zip(column_name_list, row)) for row in self.oracle_cursor.fetchall()]
+                else:
+                    return self.oracle_cursor.fetchall()
+            elif fetch_num_rows == 1:
+                if return_as_dict:
+                    return [dict(zip(column_name_list, self.oracle_cursor.fetchone()))]
+                else:
+                    return(self.oracle_cursor.fetchone())
+            else:
+                if return_as_dict:
+                    return [dict(zip(column_name_list, row)) for row in self.oracle_cursor.fetchmany(numRows=fetch_num_rows)]
+                else:
+                    return self.oracle_cursor.fetchmany(numRows=fetch_num_rows)
+        except cx_Oracle.DatabaseError:
+            self.nh_logger.exception("Call to :class QueryOracle: execute_sql() must be called before the "
+                                     "retrieve_results() method can be called")
+            return False
