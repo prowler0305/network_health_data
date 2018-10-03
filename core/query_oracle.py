@@ -99,7 +99,7 @@ class QueryOracle(object):
         else:
             return False
 
-    def retrieve_results(self, retrieve_type: str='all', return_as_dict: bool=True) -> List[dict]:
+    def retrieve_results(self, retrieve_type: str='all', return_as_dict: bool=True):
         """
         Fetches the results from an SQL query. Can either fetch either all rows at once or one at time. Can return the
         results as a list of dictionary object that joins the column names and the data together as key: value pairs.
@@ -156,7 +156,7 @@ class QueryOracle(object):
                 if return_as_dict:
                     return [dict(zip(column_name_list, self.oracle_cursor.fetchone()))]
                 else:
-                    return(self.oracle_cursor.fetchone())
+                    return self.oracle_cursor.fetchone()
             else:
                 if return_as_dict:
                     return [dict(zip(column_name_list, row)) for row in self.oracle_cursor.fetchmany(numRows=fetch_num_rows)]

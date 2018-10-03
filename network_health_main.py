@@ -6,6 +6,9 @@ import time
 import datetime
 import sys
 
+from core.network_health_base import NhBase
+from core.query_oracle import QueryOracle
+
 
 def main():
     """
@@ -20,7 +23,10 @@ def main():
     #     for test_name in svt_dict.get('test_names'):
     #         print(test_name)
 
-    if os.environ.get('exec_env') == 'dev':
+    nh_base = NhBase()
+    nh_base.establish_logging(logger_config_json=nh_base.neh_log_config_file)
+
+    if nh_base.exec_env == 'dev':
         nh_status_path = os.environ.get('neh_status')
         nh_lcc_map_path = os.environ.get('neh_lcc_map')
     else:
@@ -30,13 +36,14 @@ def main():
     nh_status_rc, nh_status_dict = Common.read_json_file(nh_status_path)
     nh_lcc_rc, nh_lcc_dict = Common.read_json_file(nh_lcc_map_path)
     if not nh_status_rc:
-        print("Network Health Status file couldn't be obtained.")
+        nh_base.nh_logger.critical("Network Health Status file couldn't be obtained. Path specified: {}".format(nh_status_path))
         return False
 
     if not nh_lcc_rc:
-        print("Network Health LCC Map file couldn't be obtained.")
+        nh_base.nh_logger.critical("Network Health LCC configuration map file couldn't be obtained. Path specified: {}".format(nh_lcc_map_path))
         return False
 
+    netcool_db = QueryOracle()
     con = cx_Oracle.connect("automation_ro/automation_ro@shracdev-scan.uscc.com:1521/netcoold")
 
     cursor = con.cursor()
